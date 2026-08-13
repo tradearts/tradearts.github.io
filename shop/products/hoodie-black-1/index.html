@@ -12,15 +12,26 @@
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
-  <div class="shop-note">ENQUIRY STORE · NO ONLINE PAYMENT</div>
   <header class="shop-header">
-    <a class="shop-logo" href="/shop/" aria-label="Trade Arts Shop home"><img src="/shop/assets/images/trade-arts-shop.png" alt="Trade Arts Shop" width="170" height="91"></a>
-    <nav class="shop-nav" aria-label="Shop navigation">
-      <a href="/shop/">Home</a>
-      <a href="/">Trade Arts</a>
+    <a class="shop-logo" href="/" aria-label="Trade Arts home">
+      <span class="shop-logo-mark">TA</span>
+      <span class="shop-logo-name">TRADE<br>ARTS</span>
+    </a>
+    <nav class="shop-nav" aria-label="Main navigation">
+      <a href="/works">Work</a>
+      <a href="/services">Services</a>
+      <a href="/info">About</a>
+      <a href="/research">Research</a>
+      <a class="is-current" aria-current="page" href="/shop/">Shop</a>
       <a href="/contact/">Contact</a>
-      <a class="nav-enquire" href="/shop/order/">Enquire</a>
     </nav>
+    <details class="shop-mobile-menu">
+      <summary aria-label="Open navigation"><span></span><span></span></summary>
+      <nav aria-label="Mobile navigation">
+        <a href="/works">Work</a><a href="/services">Services</a><a href="/info">About</a>
+        <a href="/research">Research</a><a aria-current="page" href="/shop/">Shop</a><a href="/contact/">Contact</a>
+      </nav>
+    </details>
   </header>
   <main id="main" class="shop-main product-page">
     <div class="breadcrumbs"><a href="/shop/">Shop</a><span aria-hidden="true">/</span><span>BLACK ON BLACK TA HOODIE</span></div>
@@ -45,16 +56,26 @@
     <section class="more-products"><h2>More from the workshop</h2><a href="/shop/">View all products →</a></section>
   </main>
   <footer class="shop-footer">
-    <div>
-      <h2>info@tradearts.work</h2>
-      <p>Products are reserved and purchased by email. No payment is collected on this website.</p>
-      <a href="mailto:info@tradearts.work">Email Trade Arts</a>
+    <div class="shop-footer-lead">
+      <p class="footer-label">CONTACT</p>
+      <h2>Let’s pull tape on your next idea.</h2>
+      <a class="footer-email" href="mailto:info@tradearts.work">info@tradearts.work →</a>
+      <p class="footer-shop-note">Products are reserved and purchased by email. No payment is collected on this website.</p>
     </div>
-    <div class="footer-meta">
-      <p>Australia · AUD</p>
-      <p>© 2026 Trade Arts Shop</p>
-      <a href="/">Return to Trade Arts</a>
+    <div class="shop-footer-links">
+      <div>
+        <p class="footer-label">TRADE ARTS</p>
+        <a href="/works">Film / TV</a><a href="/commercial">Commercial</a><a href="/exhibitions">Exhibitions</a>
+        <a href="/public-art">Public Art</a><a href="/services">Services</a><a href="/info">About</a>
+        <a href="/research">Research</a><a href="/shop/">Shop</a><a href="/contact/">Contact</a>
+      </div>
+      <div>
+        <p class="footer-label">FOLLOW</p>
+        <a href="https://www.instagram.com/tradearts______" target="_blank" rel="noreferrer">Instagram</a>
+        <a href="https://www.linkedin.com/company/tradearts/" target="_blank" rel="noreferrer">LinkedIn</a>
+      </div>
     </div>
+    <p class="footer-credit">© Trade Arts 2026. All rights reserved. Serving the Gold Coast and Australia — Film, Exhibitions and Public Art.</p>
   </footer>
   <script src="/shop/assets/products.js" defer></script>
   <script src="/shop/assets/shop.js" defer></script>
