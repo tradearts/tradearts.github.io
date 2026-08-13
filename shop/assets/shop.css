@@ -1128,10 +1128,10 @@ body {
 
 .shop-experience-backdrop {
   z-index: -3;
-  background-image: linear-gradient(90deg, rgba(9, 9, 9, 0.72), rgba(9, 9, 9, 0.2)), url("/assets/webflow/9cbed2edab85-68b2da83b3c42eb8187316cb_7409b5f4d15c6321c8705ad51d89bbbe__MG_6811.webp");
-  background-position: center;
+  background-image: linear-gradient(90deg, rgba(9, 9, 9, 0.78) 0%, rgba(9, 9, 9, 0.42) 56%, rgba(9, 9, 9, 0.18) 100%), url("/shop/assets/images/shop-hero-worker-painting-v1.jpg");
+  background-position: center 48%;
   background-size: cover;
-  filter: grayscale(1) contrast(1.08);
+  filter: saturate(0.78) contrast(1.08) brightness(0.9);
   transform: scale(1.015);
 }
 
