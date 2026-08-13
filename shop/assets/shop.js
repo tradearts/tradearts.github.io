@@ -55,3 +55,29 @@
     quantityInput.value = requestedQuantity;
   }
 }());
+
+window.Webflow = window.Webflow || [];
+window.Webflow.push(function () {
+  document
+    .querySelectorAll(".navbar5_menu-button > .hamburger-menu-hm10.w-nav-button")
+    .forEach(function (innerButton) {
+      var visual = innerButton.cloneNode(true);
+
+      visual.classList.remove("w-nav-button", "w--open");
+      visual.removeAttribute("data-w-id");
+      visual.setAttribute("aria-hidden", "true");
+
+      [
+        "aria-label",
+        "role",
+        "tabindex",
+        "aria-controls",
+        "aria-haspopup",
+        "aria-expanded"
+      ].forEach(function (attribute) {
+        visual.removeAttribute(attribute);
+      });
+
+      innerButton.replaceWith(visual);
+    });
+});

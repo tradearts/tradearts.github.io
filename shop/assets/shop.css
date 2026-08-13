@@ -705,8 +705,132 @@ body {
 }
 
 .navbar5_component {
-  position: relative;
+  position: sticky;
+  top: 0;
   z-index: 50;
+}
+
+/* Match the navigation refinements used throughout the main Trade Arts site. */
+.nav_dropdown-list .is-menu-item {
+  color: #111 !important;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  margin-left: -0.5rem;
+  margin-right: -0.5rem;
+  border-radius: 8px;
+  transition: background-color 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.nav_dropdown-list .is-menu-item:hover,
+.nav_dropdown-list .is-menu-item:focus-visible {
+  color: #111 !important;
+  background-color: rgba(255, 90, 0, 0.14);
+  transform: translateX(4px);
+}
+
+.navbar5_menu-button > .hamburger-menu-hm10 {
+  pointer-events: none;
+}
+
+.navbar5_menu-button > .hamburger-menu-hm10 .top-bar-hm10,
+.navbar5_menu-button > .hamburger-menu-hm10 .bottom-bar-hm10 {
+  transition: transform 300ms ease;
+}
+
+.navbar5_menu-button.w--open > .hamburger-menu-hm10 .top-bar-hm10 {
+  transform: translate3d(0, 7px, 0) rotate(135deg) !important;
+}
+
+.navbar5_menu-button.w--open > .hamburger-menu-hm10 .bottom-bar-hm10 {
+  transform: translate3d(0, -7px, 0) rotate(45deg) !important;
+}
+
+@media screen and (max-width: 767px) {
+  .mobile-work-dropdown {
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  .mobile-work-dropdown > .is-work-toggle {
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 3.75rem !important;
+    margin: 0 !important;
+    padding: 0 3rem 0 0 !important;
+    overflow: visible !important;
+    text-align: left !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .mobile-work-dropdown > .is-work-toggle > div:not(.nav_dropdown-caret) {
+    line-height: 1.1 !important;
+  }
+
+  .mobile-work-dropdown > .is-work-toggle:focus {
+    outline: none;
+  }
+
+  .mobile-work-dropdown > .is-work-toggle:focus-visible {
+    outline: 2px solid #161514;
+    outline-offset: 4px;
+  }
+
+  .mobile-work-dropdown .nav_dropdown-caret {
+    position: absolute !important;
+    top: 50% !important;
+    right: 0.25rem !important;
+    bottom: auto !important;
+    left: auto !important;
+    width: 1.75rem !important;
+    height: 1.75rem !important;
+    margin: 0 !important;
+    font-size: 1.75rem !important;
+    line-height: 1.75rem !important;
+    transform: translateY(-50%) rotate(0deg) !important;
+    transform-origin: center !important;
+    transition: transform 200ms ease !important;
+    pointer-events: none;
+  }
+
+  .mobile-work-dropdown > .is-work-toggle.w--open .nav_dropdown-caret {
+    transform: translateY(-50%) rotate(180deg) !important;
+  }
+
+  .mobile-work-dropdown > .nav_dropdown-list {
+    box-sizing: border-box !important;
+    position: static !important;
+    width: 100% !important;
+    margin: 0.5rem 0 0 !important;
+    padding: 0.75rem 1rem 0.9rem !important;
+    flex-direction: column !important;
+    gap: 0.15rem !important;
+    overflow: hidden !important;
+    border-radius: 0.75rem !important;
+  }
+
+  .mobile-work-dropdown > .nav_dropdown-list.w--open {
+    display: flex !important;
+  }
+
+  .mobile-work-dropdown > .nav_dropdown-list > .is-menu-item {
+    box-sizing: border-box !important;
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0.35rem 0 !important;
+    font-size: clamp(1.75rem, 8vw, 2.1rem) !important;
+    line-height: 1.05 !important;
+    white-space: normal !important;
+    border-radius: 0 !important;
+  }
 }
 
 .footer3_component {
