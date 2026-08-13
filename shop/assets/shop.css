@@ -1658,3 +1658,232 @@ body {
   display: none;
   content: none;
 }
+
+/* Idle masonry logo */
+.idle-brick-builder {
+  position: fixed;
+  z-index: 2147483000;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  color: #fff;
+  background:
+    linear-gradient(90deg, rgba(6, 6, 6, 0.96), rgba(6, 6, 6, 0.88)),
+    url("/shop/assets/images/shop-hero-worker-painting-v1.jpg") center / cover;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 280ms ease, visibility 0s linear 280ms;
+  pointer-events: none;
+}
+
+.idle-brick-builder.is-active {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+  pointer-events: auto;
+}
+
+.idle-brick-builder__grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.055) 1px, transparent 1px);
+  background-size: 54px 28px;
+  mask-image: linear-gradient(180deg, transparent, #000 20%, #000 80%, transparent);
+}
+
+.idle-brick-builder__site {
+  position: relative;
+  width: min(84vw, 1060px);
+  padding: 2rem 0;
+}
+
+.idle-brick-builder__eyebrow,
+.idle-brick-builder__return {
+  margin: 0;
+  font-size: clamp(0.62rem, 0.85vw, 0.78rem);
+  font-weight: 850;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.idle-brick-builder__eyebrow {
+  display: inline-block;
+  margin-bottom: clamp(2rem, 6vh, 4.5rem);
+  padding: 0.55rem 0.7rem;
+  color: #111;
+  background: var(--brand-orange);
+}
+
+.idle-brick-builder__return {
+  margin-top: clamp(2.2rem, 7vh, 5rem);
+  color: rgba(255, 255, 255, 0.72);
+  text-align: right;
+}
+
+.idle-brick-builder__logo {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 980 / 152;
+  filter: drop-shadow(18px 24px 16px rgba(0, 0, 0, 0.68));
+}
+
+.idle-brick-builder__pieces,
+.idle-brick-builder__piece {
+  position: absolute;
+  inset: 0;
+}
+
+.idle-brick-builder__piece {
+  overflow: hidden;
+  opacity: 0;
+  transform: translate3d(var(--brick-drift), 72px, 0) rotate(var(--brick-turn)) scale(0.88);
+  transform-origin: 50% 100%;
+  will-change: transform, opacity;
+}
+
+.idle-brick-builder__piece img {
+  position: absolute;
+  display: block;
+  max-width: none;
+  pointer-events: none;
+  user-select: none;
+}
+
+.idle-brick-builder.is-building .idle-brick-builder__piece {
+  animation: idle-brick-lay 520ms cubic-bezier(0.18, 0.78, 0.2, 1) forwards;
+  animation-delay: var(--brick-delay);
+}
+
+.idle-brick-builder__trowel {
+  position: absolute;
+  z-index: 4;
+  top: 52%;
+  left: 0;
+  width: 86px;
+  height: 42px;
+  opacity: 0;
+  transform: translate3d(-80px, 40px, 0) rotate(-13deg);
+}
+
+.idle-brick-builder__trowel::before {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 60px;
+  height: 23px;
+  content: "";
+  background: linear-gradient(145deg, #f3eee4, #716d67 72%);
+  clip-path: polygon(0 100%, 100% 50%, 0 0);
+  filter: drop-shadow(4px 5px 0 rgba(0, 0, 0, 0.75));
+}
+
+.idle-brick-builder__trowel::after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 13px;
+  border: 3px solid #111;
+  border-radius: 999px;
+  content: "";
+  background: var(--brand-orange);
+  transform: rotate(-18deg);
+}
+
+.idle-brick-builder.is-building .idle-brick-builder__trowel {
+  animation: idle-trowel-sweep 4.8s ease-in-out 120ms forwards;
+}
+
+@keyframes idle-brick-lay {
+  0% {
+    opacity: 0;
+    transform: translate3d(var(--brick-drift), 72px, 0) rotate(var(--brick-turn)) scale(0.88);
+  }
+
+  72% {
+    opacity: 1;
+    transform: translate3d(0, -4px, 0) rotate(0) scale(1.015);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotate(0) scale(1);
+  }
+}
+
+@keyframes idle-trowel-sweep {
+  0% {
+    opacity: 0;
+    transform: translate3d(-80px, 55px, 0) rotate(-13deg);
+  }
+
+  8%,
+  88% {
+    opacity: 1;
+  }
+
+  24% {
+    transform: translate3d(74vw, 55px, 0) rotate(-5deg);
+  }
+
+  31% {
+    transform: translate3d(74vw, 12px, 0) rotate(8deg);
+  }
+
+  51% {
+    transform: translate3d(10vw, 12px, 0) rotate(-8deg);
+  }
+
+  59% {
+    transform: translate3d(10vw, -34px, 0) rotate(7deg);
+  }
+
+  82% {
+    transform: translate3d(71vw, -34px, 0) rotate(-5deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(78vw, -60px, 0) rotate(8deg);
+  }
+}
+
+@media (max-width: 720px) {
+  .idle-brick-builder__site {
+    width: 91vw;
+  }
+
+  .idle-brick-builder__eyebrow {
+    margin-bottom: 2.2rem;
+  }
+
+  .idle-brick-builder__return {
+    margin-top: 2.5rem;
+    text-align: left;
+  }
+
+  .idle-brick-builder__trowel {
+    scale: 0.72;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .idle-brick-builder,
+  .idle-brick-builder__piece,
+  .idle-brick-builder__trowel {
+    transition: none;
+    animation: none !important;
+  }
+
+  .idle-brick-builder.is-active .idle-brick-builder__piece {
+    opacity: 1;
+    transform: none;
+  }
+
+  .idle-brick-builder__trowel {
+    display: none;
+  }
+}
