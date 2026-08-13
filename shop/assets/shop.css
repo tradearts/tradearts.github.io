@@ -624,6 +624,21 @@ body {
   letter-spacing: -0.01em;
 }
 
+/* The shop uses the exact Webflow header and footer from the main website. */
+.navbar5_component,
+.footer3_component {
+  font-family: inherit;
+}
+
+.navbar5_component {
+  position: relative;
+  z-index: 50;
+}
+
+.footer3_component {
+  color: #111;
+}
+
 .shop-header {
   position: relative;
   z-index: 20;
