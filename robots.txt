@@ -1,2 +1,1 @@
-User-agent: *
-Disallow: /
+Sitemap: https://tradearts.work/sitemap.xml
