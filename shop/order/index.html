@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Product enquiry | Trade Arts Shop</title>
+  <meta name="description" content="Send Trade Arts a product enquiry with your preferred product, size and quantity.">
+  <meta name="robots" content="noindex,follow">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="canonical" href="https://tradearts.work/shop/order/">
+  <link rel="icon" href="/assets/webflow/7764e3d86c6c-6891a3a3a2ca8320c7c67c83_favecon.png" type="image/png">
+  <link rel="stylesheet" href="/shop/assets/shop.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="shop-note">ENQUIRY STORE · NO ONLINE PAYMENT</div>
+  <header class="shop-header">
+    <a class="shop-logo" href="/shop/" aria-label="Trade Arts Shop home"><img src="/shop/assets/images/trade-arts-shop.png" alt="Trade Arts Shop" width="170" height="91"></a>
+    <nav class="shop-nav" aria-label="Shop navigation">
+      <a href="/shop/">Home</a>
+      <a href="/">Trade Arts</a>
+      <a href="/contact/">Contact</a>
+      <a class="nav-enquire" aria-current="page" href="/shop/order/">Enquire</a>
+    </nav>
+  </header>
+  <main id="main" class="shop-main order-page">
+    <section class="order-intro">
+      <p class="eyebrow">PRODUCT ENQUIRY</p>
+      <h1>Tell us what you’d like.</h1>
+      <p>Choose the product, size and quantity. Trade Arts will reply to confirm availability, delivery or pickup, and payment.</p>
+      <p>No payment is taken through this website.</p>
+    </section>
+    <section class="order-form-wrap" data-form-wrapper>
+      <form class="order-form" action="https://formsubmit.co/info@tradearts.work" method="POST" data-email-form data-order-form data-success-message="Thanks — your product enquiry has been sent to Trade Arts.">
+        <input type="hidden" name="_subject" value="New Trade Arts Shop product enquiry" data-order-subject>
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_captcha" value="false">
+        <input class="honey" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <label><span>Product</span><select name="product" data-product-select required><option value="">Select a product</option><option value="workshop-gloves">WORKSHOP SERVICES GLOVES — $20.00 AUD</option><option value="workshop-hammer-ls-tee">HAMMER LS TEE WHITE — $90.00 AUD</option><option value="workshop-ls-tees">HIVIS LS TEE — $90.00 AUD</option><option value="hoodie-black-1">BLACK ON BLACK TA HOODIE — $100.00 AUD</option><option value="hoodie-black">CLASSIC TA HOODIE BLACK — $100.00 AUD</option><option value="hoodies">BLURRED TA HOODIE BLACK — $100.00 AUD</option><option value="hivis-ta-hoodie">HIVIS TA HOODIE — $100.00 AUD</option></select></label>
+        <div class="form-row">
+          <label><span>Size</span><select name="size" data-size-select required><option value="">Select a product first</option></select></label>
+          <label><span>Quantity</span><input type="number" name="quantity" value="1" min="1" max="99" inputmode="numeric" required></label>
+        </div>
+        <div class="form-row">
+          <label><span>Name</span><input type="text" name="name" autocomplete="name" required></label>
+          <label><span>Email</span><input type="email" name="email" autocomplete="email" required></label>
+        </div>
+        <div class="form-row">
+          <label><span>Phone <small>(optional)</small></span><input type="tel" name="phone" autocomplete="tel"></label>
+          <label><span>Suburb / postcode</span><input type="text" name="location" autocomplete="postal-code" required></label>
+        </div>
+        <label><span>Notes <small>(optional)</small></span><textarea name="notes" rows="5" placeholder="Anything else we should know?"></textarea></label>
+        <button class="primary-button" type="submit" data-wait="Sending…">Send product enquiry</button>
+      </form>
+      <div class="form-success" data-form-success role="status">Thanks — your product enquiry has been sent to Trade Arts.</div>
+      <div class="form-failure" data-form-failure role="alert">Sorry, the form could not be sent. Please email info@tradearts.work directly.</div>
+    </section>
+  </main>
+  <footer class="shop-footer">
+    <div>
+      <h2>info@tradearts.work</h2>
+      <p>Products are reserved and purchased by email. No payment is collected on this website.</p>
+      <a href="mailto:info@tradearts.work">Email Trade Arts</a>
+    </div>
+    <div class="footer-meta">
+      <p>Australia · AUD</p>
+      <p>© 2026 Trade Arts Shop</p>
+      <a href="/">Return to Trade Arts</a>
+    </div>
+  </footer>
+  <script src="/shop/assets/products.js" defer></script>
+  <script src="/shop/assets/shop.js" defer></script>
+  <script src="/assets/forms.js" defer></script>
+</body>
+</html>
