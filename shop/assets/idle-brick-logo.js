@@ -9,9 +9,9 @@
 
   var source = "/shop/assets/images/trade-arts-brick-logo-v1.png";
   var idleDelay = 8000;
-  var cycleDelay = 6500;
+  var buildDuration = 5000;
   var idleTimer = 0;
-  var cycleTimer = 0;
+  var spinTimer = 0;
   var isIdle = false;
   var logoReady = false;
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -97,17 +97,17 @@
     logoReady = true;
   }
 
-  function restartBuild() {
-    window.clearTimeout(cycleTimer);
-    overlay.classList.remove("is-building");
+  function startBuild() {
+    window.clearTimeout(spinTimer);
+    overlay.classList.remove("is-building", "is-spinning");
     void overlay.offsetWidth;
     overlay.classList.add("is-building");
 
     if (!reduceMotion.matches) {
-      cycleTimer = window.setTimeout(function repeatBuild() {
+      spinTimer = window.setTimeout(function startSpin() {
         if (!isIdle) return;
-        restartBuild();
-      }, cycleDelay);
+        overlay.classList.add("is-spinning");
+      }, buildDuration);
     }
   }
 
@@ -119,16 +119,14 @@
 
     isIdle = true;
     overlay.classList.add("is-active");
-    document.documentElement.classList.add("is-shop-idle");
-    restartBuild();
+    startBuild();
   }
 
   function hideIdle() {
     if (!isIdle) return;
     isIdle = false;
-    overlay.classList.remove("is-active", "is-building");
-    document.documentElement.classList.remove("is-shop-idle");
-    window.clearTimeout(cycleTimer);
+    overlay.classList.remove("is-active", "is-building", "is-spinning");
+    window.clearTimeout(spinTimer);
   }
 
   function scheduleIdle() {
