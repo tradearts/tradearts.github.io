@@ -15,8 +15,8 @@
   content: "";
   position: absolute;
   z-index: 2;
-  top: -5rem;
-  bottom: -5rem;
+  top: 0;
+  bottom: 0;
   width: clamp(1.5rem, 4vw, 3.5rem);
   pointer-events: none;
 }
@@ -89,6 +89,11 @@
   .logo-wrapper.client-logo-carousel {
     --logo-carousel-duration: 34s;
     --logo-carousel-gap: 1rem;
+  }
+
+  .client-logo-carousel::before,
+  .client-logo-carousel::after {
+    top: -1.25rem;
   }
 
   .logo-carousel__group .logo.sony {
