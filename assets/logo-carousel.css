@@ -1,6 +1,7 @@
 .logo-wrapper.client-logo-carousel {
   --logo-carousel-duration: 48s;
   --logo-carousel-gap: clamp(2rem, 3vw, 3.5rem);
+  --logo-carousel-background: #efefef;
   position: relative;
   width: 100%;
   min-width: 0;
@@ -22,12 +23,12 @@
 
 .client-logo-carousel::before {
   left: 0;
-  background: linear-gradient(90deg, #fff 8%, rgb(255 255 255 / 0%));
+  background: linear-gradient(90deg, var(--logo-carousel-background) 8%, rgb(239 239 239 / 0%));
 }
 
 .client-logo-carousel::after {
   right: 0;
-  background: linear-gradient(270deg, #fff 8%, rgb(255 255 255 / 0%));
+  background: linear-gradient(270deg, var(--logo-carousel-background) 8%, rgb(239 239 239 / 0%));
 }
 
 .logo-carousel__track {
