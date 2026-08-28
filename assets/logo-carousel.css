@@ -1,0 +1,140 @@
+.logo-wrapper.client-logo-carousel {
+  --logo-carousel-duration: 48s;
+  --logo-carousel-gap: clamp(2rem, 3vw, 3.5rem);
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow: visible;
+  clip-path: inset(-5rem 0);
+}
+
+.client-logo-carousel::before,
+.client-logo-carousel::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  top: -5rem;
+  bottom: -5rem;
+  width: clamp(1.5rem, 4vw, 3.5rem);
+  pointer-events: none;
+}
+
+.client-logo-carousel::before {
+  left: 0;
+  background: linear-gradient(90deg, #fff 8%, rgb(255 255 255 / 0%));
+}
+
+.client-logo-carousel::after {
+  right: 0;
+  background: linear-gradient(270deg, #fff 8%, rgb(255 255 255 / 0%));
+}
+
+.logo-carousel__track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  animation: logo-carousel-scroll var(--logo-carousel-duration) linear infinite;
+  will-change: transform;
+}
+
+.logo-block.logo-carousel__group {
+  display: flex !important;
+  flex: 0 0 auto;
+  flex-flow: row nowrap !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  width: max-content !important;
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+  padding-right: var(--logo-carousel-gap);
+  gap: var(--logo-carousel-gap) !important;
+}
+
+.logo-carousel__group .logo {
+  flex: 0 0 auto;
+  object-fit: contain;
+}
+
+.logo.carousel-apple-tv {
+  width: 100px;
+}
+
+.logo.carousel-lego {
+  width: 70px;
+}
+
+.logo.carousel-universal-music,
+.logo.carousel-xzibit,
+.logo.carousel-rockstar {
+  width: 100px;
+}
+
+.logo.carousel-blueys-world {
+  width: 61px;
+}
+
+.logo.carousel-city-coffs {
+  width: 77px;
+}
+
+@keyframes logo-carousel-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media screen and (max-width: 479px) {
+  .logo-wrapper.client-logo-carousel {
+    --logo-carousel-duration: 34s;
+    --logo-carousel-gap: 1rem;
+  }
+
+  .logo-carousel__group .logo.sony {
+    width: 26px;
+  }
+
+  .logo-carousel__group .logo.netflix {
+    width: 56px;
+  }
+
+  .logo-carousel__group .logo.amazon {
+    width: 67px;
+  }
+
+  .logo-carousel__group .logo.paramount,
+  .logo-carousel__group .logo.stan {
+    width: 44px;
+  }
+
+  .logo-carousel__group .logo.carousel-apple-tv {
+    width: 55px;
+  }
+
+  .logo-carousel__group .logo.carousel-lego {
+    width: 40px;
+  }
+
+  .logo-carousel__group .logo.carousel-universal-music {
+    width: 60px;
+  }
+
+  .logo-carousel__group .logo.carousel-xzibit,
+  .logo-carousel__group .logo.carousel-rockstar {
+    width: 65px;
+  }
+
+  .logo-carousel__group .logo.carousel-blueys-world {
+    width: 36px;
+  }
+
+  .logo-carousel__group .logo.carousel-city-coffs {
+    width: 45px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-carousel__track {
+    animation-play-state: paused;
+  }
+}

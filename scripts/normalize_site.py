@@ -324,13 +324,13 @@ def normalize_page(path: Path) -> bool:
     is_home = path == ROOT / "index.html"
 
     text = re.sub(
-        r'\s*<link\b(?=[^>]*\bhref=["\']/assets/site-fixes\.css["\'])[^>]*>',
+        r'\s*<link\b(?=[^>]*\bhref=["\']/assets/(?:site-fixes|logo-carousel)\.css["\'])[^>]*>',
         "",
         text,
         flags=re.I | re.S,
     )
     text = re.sub(
-        r'\s*<script\b(?=[^>]*\bsrc=["\']/assets/(?:site-fixes|media)\.js["\'])'
+        r'\s*<script\b(?=[^>]*\bsrc=["\']/assets/(?:site-fixes|media|logo-carousel)\.js["\'])'
         r'[^>]*>\s*</script>',
         "",
         text,
@@ -405,9 +405,13 @@ def normalize_page(path: Path) -> bool:
         )
 
     text = insert_before_head(text, '<link rel="stylesheet" href="/assets/site-fixes.css">')
+    if is_home:
+        text = insert_before_head(text, '<link rel="stylesheet" href="/assets/logo-carousel.css">')
     if had_media:
         text = insert_before_body_end(text, '<script src="/assets/media.js" defer></script>')
     text = insert_before_body_end(text, '<script src="/assets/site-fixes.js" defer></script>')
+    if is_home:
+        text = insert_before_body_end(text, '<script src="/assets/logo-carousel.js" defer></script>')
 
     text = normalize_iframe_titles(text)
     text = normalize_work_image_alts(text, path)
