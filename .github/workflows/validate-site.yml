@@ -18,3 +18,9 @@ jobs:
           python-version: "3.12"
       - name: Validate links, metadata and export fixes
         run: python scripts/validate_site.py
+      - name: Run regression tests
+        run: python -m unittest discover -s tests -v
+      - name: Confirm generated fixes are current
+        run: |
+          python scripts/normalize_site.py
+          git diff --exit-code
