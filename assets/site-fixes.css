@@ -10,8 +10,98 @@
   transform: translateY(-200%);
 }
 
-.skip-link:focus {
-  transform: translateY(0);
+.skip-link:focus,
+.skip-link:focus-visible {
+  top: 0.75rem;
+  transform: none !important;
+}
+
+.consent-banner {
+  position: fixed;
+  z-index: 99998;
+  right: 1rem;
+  bottom: 1rem;
+  left: 1rem;
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-end;
+  justify-content: space-between;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1.25rem;
+  color: #fff;
+  background: #161514;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.3);
+}
+
+.consent-banner__copy {
+  max-width: 50rem;
+}
+
+.consent-banner h2 {
+  margin: 0 0 0.4rem;
+  font-size: 1.25rem;
+}
+
+.consent-banner p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.consent-banner a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.consent-banner__actions {
+  display: flex;
+  flex: none;
+  gap: 0.65rem;
+}
+
+.consent-banner button,
+.consent-settings {
+  min-height: 44px;
+  padding: 0.65rem 0.9rem;
+  color: #fff;
+  background: transparent;
+  border: 1px solid currentColor;
+  cursor: pointer;
+}
+
+.consent-banner button.is-primary {
+  color: #161514;
+  background: #fff;
+}
+
+.consent-settings {
+  position: fixed;
+  z-index: 99990;
+  bottom: 0.5rem;
+  left: 0.5rem;
+  min-height: 36px;
+  padding: 0.4rem 0.6rem;
+  color: #161514;
+  background: rgba(255, 255, 255, 0.94);
+  font-size: 0.75rem;
+}
+
+@media (max-width: 767px) {
+  .consent-banner {
+    display: block;
+  }
+
+  .consent-banner__actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    margin-top: 1rem;
+  }
+
+  .consent-banner button {
+    width: 100%;
+  }
 }
 
 .form-privacy-note {

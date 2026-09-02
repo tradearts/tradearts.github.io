@@ -83,8 +83,14 @@ def validate_page(path: Path, errors: list[str], indexed_urls: set[str]) -> None
     parser = PageParser()
     parser.feed(source)
     noindex = is_noindex(parser)
+    is_redirect = "data-legacy-redirect" in source
 
-    if path.name == "404.html":
+    if is_redirect:
+        if not noindex:
+            errors.append(f"{relative}: legacy redirect must be noindex")
+        if len(parser.canonicals) != 1:
+            errors.append(f"{relative}: legacy redirect must have one destination canonical")
+    elif path.name == "404.html":
         if parser.canonicals:
             errors.append(f"{relative}: 404 page must not have a canonical URL")
         if not noindex:
@@ -112,7 +118,7 @@ def validate_page(path: Path, errors: list[str], indexed_urls: set[str]) -> None
         errors.append(f"{relative}: duplicate element IDs: {', '.join(duplicate_ids)}")
     if 'class="skip-link"' not in source:
         errors.append(f"{relative}: missing keyboard skip link")
-    if "/assets/site-fixes.css" not in source or "/assets/site-fixes.js" not in source:
+    if "/assets/site-fixes.css" not in source or (not is_redirect and "/assets/site-fixes.js" not in source):
         errors.append(f"{relative}: missing shared accessibility assets")
 
     for image in parser.images:
