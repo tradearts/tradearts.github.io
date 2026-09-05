@@ -486,6 +486,7 @@
 .ta-text-link { display: inline-flex; gap: 1rem; align-items: center; min-height: 2.75rem; color: #171716; font-size: 1rem; font-weight: 700; text-decoration: underline; text-underline-offset: .3em; text-decoration-thickness: 1px; }
 .ta-button:focus-visible, .ta-text-link:focus-visible, .ta-service-card:focus-visible, .ta-home-art:focus-visible { outline: 3px solid #e5570d; outline-offset: 5px; }
 .ta-home-hero { padding-top: 2rem; }
+.ta-home-hero .ta-actions > .button { flex: 0 0 auto; max-width: none; white-space: nowrap; }
 .ta-home-grid { display: grid; grid-template-columns: 1fr 1.05fr; gap: 3rem; align-items: stretch; }
 .ta-home-copy { display: flex; flex-direction: column; justify-content: center; padding: 1rem 0 2rem; }
 .ta-home-copy h1 { margin: 0 0 2rem; font-size: clamp(4rem, 7vw, 7rem); line-height: .95; letter-spacing: -.065em; font-weight: 700; }
