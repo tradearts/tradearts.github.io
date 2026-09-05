@@ -490,7 +490,7 @@
 .ta-home-copy { display: flex; flex-direction: column; justify-content: center; padding: 1rem 0 2rem; }
 .ta-home-copy h1 { margin: 0 0 2rem; font-size: clamp(4rem, 7vw, 7rem); line-height: .95; letter-spacing: -.065em; font-weight: 700; }
 .ta-home-lead { max-width: 34rem; margin: 0; font-size: 1.125rem; line-height: 1.5; }
-.ta-home-art { position: relative; display: block; height: 31rem; background: #050505; overflow: hidden; color: #fff; }
+.ta-home-art { position: relative; display: block; height: 31rem; border-radius: var(--_ui-styles---radius--medium, 12px); background: #050505; overflow: hidden; color: #fff; }
 .ta-home-art .image-5 { width: 100%; height: 100%; margin: 0; object-fit: contain; }
 .ta-art-caption { position: absolute; right: 1.25rem; bottom: 1rem; left: 1.25rem; display: flex; justify-content: space-between; gap: 1rem; padding-top: .8rem; border-top: 1px solid #666; font: 700 .7rem/1.3 "Courier New", monospace; text-transform: uppercase; }
 .ta-trust-row { display: grid; grid-template-columns: 15rem minmax(0, 1fr); gap: 3rem; align-items: center; padding: 2.5rem 0 3rem; }
