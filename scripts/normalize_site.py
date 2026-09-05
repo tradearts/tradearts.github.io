@@ -330,6 +330,20 @@ def normalize_media(text: str) -> tuple[str, bool]:
     return text, had_media
 
 
+def normalize_article_headings(text: str) -> str:
+    """Keep exported article section headings distinct from the page title."""
+    title = re.search(r"<h1\b[^>]*>(.*?)</h1>", text, re.I | re.S)
+    first_section = re.search(r"<h5\b[^>]*>(.*?)</h5>", text, re.I | re.S)
+
+    def label(value: str) -> str:
+        return " ".join(html.unescape(re.sub(r"<[^>]+>", "", value)).split())
+
+    if title and first_section and label(title.group(1)) == label(first_section.group(1)):
+        text = text[:first_section.start()] + text[first_section.end():]
+    text = re.sub(r"<(/?)h5(\b[^>]*)>", r"<\1h2\2>", text, flags=re.I)
+    return text.replace("The Pressure of Film-Set Builds§", "The Pressure of Film-Set Builds")
+
+
 def normalize_iframe_titles(text: str) -> str:
     def replace(match: re.Match[str]) -> str:
         tag = match.group(0)
@@ -651,11 +665,11 @@ def normalize_page(path: Path) -> bool:
             flags=re.I | re.S,
         )
 
-    text = insert_before_head(text, '<link rel="stylesheet" href="/assets/site-fixes.css?v=8">')
+    text = insert_before_head(text, '<link rel="stylesheet" href="/assets/site-fixes.css?v=9">')
     if is_home:
         text = insert_before_head(text, '<link rel="stylesheet" href="/assets/logo-carousel.css">')
     if had_media:
-        text = insert_before_head(text, '<link rel="stylesheet" href="/assets/media-controls.css?v=1">')
+        text = insert_before_head(text, '<link rel="stylesheet" href="/assets/media-controls.css?v=2">')
         text = insert_before_body_end(text, '<script src="/assets/media.js" defer></script>')
     text = insert_before_body_end(text, '<script src="/assets/site-fixes.js" defer></script>')
     if is_home:
@@ -681,13 +695,15 @@ def normalize_page(path: Path) -> bool:
                 flags=re.I,
             )
     if path.parent.parent == ROOT / "blog":
+        text = normalize_article_headings(text)
         text = text.replace("splide@main", f"splide@{SPLIDE_COMMIT}")
     text = normalize_links(text)
     text = normalize_external_targets(text)
     # Keep changed shared scripts/styles fresh without accumulating duplicate includes.
     cache_versions = {
         "/assets/consent.js": "2", "/assets/forms.js": "2", "/assets/media.js": "2",
-        "/shop/assets/shop.css": "10", "/shop/assets/shop.js": "3",
+        "/shop/assets/shop.css": "11", "/shop/assets/shop.js": "3",
+        "/assets/case-studies.css": "2", "/shop/assets/catalogue.css": "2",
         "/shop/assets/products.js": "2",
     }
     for asset, version in cache_versions.items():

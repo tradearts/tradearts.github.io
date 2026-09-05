@@ -1,5 +1,5 @@
 :root {
-  --ink: #121212;
+  --ink: #161514;
   --muted: #686868;
   --line: #e7e7e7;
   --soft: #f7f7f7;
@@ -347,7 +347,7 @@ textarea {
   min-height: 3.25rem;
   padding: 0.75rem 0.9rem;
   border: 1px solid #9b9b9b;
-  border-radius: 0;
+  border-radius: 0.75rem;
   background: #fff;
 }
 
@@ -361,10 +361,13 @@ textarea {
   min-height: 3.4rem;
   padding: 0.8rem 1.2rem;
   border: 1px solid var(--ink);
+  border-radius: 0.75rem;
   color: #fff;
   background: var(--ink);
-  font-weight: 600;
-  letter-spacing: 0.03em;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.5;
   transition: color 0.15s ease, background 0.15s ease;
 }
 
@@ -689,7 +692,7 @@ textarea {
 
 /* Trade Arts website integration */
 :root {
-  --brand-orange: #ff6f1f;
+  --brand-orange: #f60;
   --site-grey: #efefef;
 }
 
@@ -934,7 +937,7 @@ body {
 .product-card-media {
   padding: 0.5rem;
   background: #fff;
-  border-radius: 0.6rem;
+  border-radius: 0.75rem;
 }
 
 .product-card h2,
@@ -944,7 +947,7 @@ body {
 
 .primary-button,
 .order-form button[type="submit"] {
-  color: #111;
+  color: var(--ink);
   background: var(--brand-orange);
   border-color: var(--brand-orange);
   font-weight: 700;
@@ -953,9 +956,9 @@ body {
 
 .primary-button:hover,
 .order-form button[type="submit"]:hover {
-  color: #111;
-  background: #ff7d38;
-  border-color: #ff7d38;
+  color: #efefef;
+  background: var(--ink);
+  border-color: var(--ink);
 }
 
 .shop-footer {
@@ -1812,7 +1815,7 @@ body {
 .shop-main.order-page {
   padding-top: clamp(1.25rem, 3vw, 2.75rem);
   padding-bottom: clamp(3rem, 6vw, 6rem);
-  color: #171717;
+  color: var(--ink);
 }
 
 .product-page .breadcrumbs {
@@ -1831,6 +1834,8 @@ body {
   justify-content: center;
   height: clamp(22rem, 42vw, 35rem);
   aspect-ratio: auto;
+  overflow: hidden;
+  border-radius: 0.75rem;
 }
 
 .product-page .product-main-image img {
@@ -1857,7 +1862,11 @@ body {
   width: 5.5rem;
   aspect-ratio: auto;
   border: 1px solid #d2d2d2;
-  font-size: 0.7rem;
+  border-radius: 0.75rem;
+  color: var(--ink);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .product-page .gallery-thumb img {
@@ -1868,15 +1877,15 @@ body {
 .product-page .gallery-thumb span {
   display: block;
   padding: 0.4rem 0.2rem;
-  background: #f0f0ec;
+  background: #dfdedd;
 }
 
 .product-page .gallery-thumb[aria-pressed="true"] {
-  border-color: #171717;
+  border-color: var(--ink);
 }
 
 .product-page .gallery-thumb[aria-pressed="true"] span {
-  color: #111;
+  color: var(--ink);
   background: var(--brand-orange);
 }
 
@@ -1961,6 +1970,34 @@ body {
   gap: 1rem;
 }
 
+.product-page .more-products > a {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  min-height: 3.25rem;
+  padding: 0.75rem 1.5rem;
+  border: 1px solid transparent;
+  border-radius: 0.75rem;
+  color: var(--ink);
+  background: #dfdedd;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 160ms ease, background-color 160ms ease;
+}
+
+.product-page .more-products > a:hover {
+  color: #efefef;
+  background: var(--ink);
+}
+
+.product-page :is(input, select),
+.order-page :is(input, select, textarea) {
+  font-size: 1rem;
+}
+
 .shop-main.order-page {
   grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
   gap: clamp(2rem, 5vw, 5rem);
@@ -1979,7 +2016,8 @@ body {
 .order-page .order-form-wrap {
   padding: clamp(1.25rem, 3vw, 2.5rem);
   border-color: #d2d2d2;
-  background: #f3f3ee;
+  border-radius: 0.75rem;
+  background: #fff;
 }
 
 .order-page .order-form label > span {
@@ -1998,7 +2036,8 @@ body {
   margin: 1.5rem 0;
   padding: 1.25rem;
   border-top: 3px solid var(--brand-orange);
-  background: #f3f3ee;
+  border-radius: 0.75rem;
+  background: #dfdedd;
 }
 
 .order-summary [hidden] {
@@ -2026,6 +2065,7 @@ body {
   width: 5rem;
   height: 5rem;
   background: #fff;
+  border-radius: 0.75rem;
   object-fit: contain;
 }
 
@@ -2050,6 +2090,10 @@ body {
   color: #555;
   font-size: 0.8rem;
   line-height: 1.4;
+}
+
+.order-page :is(.form-success, .form-failure) {
+  border-radius: 0.75rem;
 }
 
 @media (max-width: 900px) {

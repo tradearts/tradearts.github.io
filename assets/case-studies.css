@@ -46,7 +46,7 @@
 .case-story p { margin: 0 0 .75rem; max-width: 60ch; }
 .case-story ul { padding-left: 1.2rem; margin: 0; }
 .case-figure { margin: 0; width: 100%; min-width: 0; }
-.case-figure img { display: block; width: 100%; height: auto; }
+.case-figure img { display: block; width: 100%; height: auto; border-radius: var(--_ui-styles---radius--medium, 12px); }
 .case-figure figcaption, .case-caption {
   display: block;
   max-width: 70ch;
@@ -56,8 +56,8 @@
   text-align: left;
 }
 .case-enquiry {
-  background: #f0eeea;
-  color: #161514;
+  background: var(--_primitives---opacity--grey, #dfdedd);
+  color: var(--_primitives---opacity--black, #161514);
   padding: clamp(2rem, 5vw, 4rem) 3%;
 }
 .case-enquiry__inner {
@@ -66,38 +66,44 @@
   gap: 2rem 4rem;
   max-width: 90rem;
   margin: 0 auto;
-  border-top: 2px solid #161514;
+  border-top: 2px solid currentColor;
   padding-top: 2rem;
 }
 .case-enquiry h2 { font-size: clamp(1.8rem, 3vw, 3rem); line-height: 1.05; margin: 0 0 1rem; letter-spacing: -.04em; }
 .case-enquiry p { font-size: 1rem; line-height: 1.6; max-width: 56ch; }
 .case-enquiry__links { display: flex; flex-wrap: wrap; align-content: start; gap: .65rem 1.25rem; }
 .case-enquiry__links p { flex-basis: 100%; margin: 0; font-weight: 700; }
-.case-enquiry__links a { text-decoration: underline; text-underline-offset: .2em; line-height: 1.5; }
-.case-enquiry__button,
-.service-brief-link {
+.case-enquiry__links a:not(.button) { text-decoration: underline; text-underline-offset: .2em; line-height: 1.5; }
+/* Shared .button classes own colour, type, corners and hover states. */
+.case-enquiry__button.button,
+.service-brief-link.button {
   display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 3rem;
-  padding: .8rem 1.15rem;
-  background: #ff5b21;
-  color: #161514;
-  font-weight: 700;
-  line-height: 1.25;
+  width: fit-content;
+  max-width: 100%;
+  max-height: none;
+  min-height: 44px;
+  white-space: normal;
   margin-top: .5rem;
+}
+.case-enquiry__button .icon-embed-xxsmall,
+.service-brief-link .icon-embed-xxsmall { flex-shrink: 0; }
+.case-enquiry a:focus-visible,
+.service-brief-link:focus-visible,
+.service-project:focus-visible {
+  outline: 3px solid var(--_primitives---opacity--orange, #f60);
+  outline-offset: 5px;
 }
 .ta-service-detail .padding-section-large.service { padding-top: 3rem; padding-bottom: 3rem; }
 .ta-service-detail .info_faq-1_item { padding-block: 1.75rem; }
 .ta-service-detail .services_text-rich-text { font-size: 1.0625rem; line-height: 1.6; }
-.service-examples { background: #f0eeea; color: #161514; padding: 3rem 3%; }
+.service-examples { background: var(--_primitives---opacity--dark-grey, #efefef); color: var(--_primitives---opacity--black, #161514); padding: 3rem 3%; }
 .service-examples__inner { max-width: 90rem; margin-inline: auto; }
 .service-examples h2 { font-size: clamp(2rem, 3.5vw, 3.5rem); line-height: 1.1; margin: 0 0 1rem; letter-spacing: -.04em; }
 .service-examples__intro { max-width: 60ch; font-size: 1.0625rem; line-height: 1.6; margin-bottom: 2rem; }
 .service-examples__grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 1.5rem; }
 .service-examples__grid--two { grid-template-columns: repeat(2,minmax(0,1fr)); }
-.service-project { display: block; min-width: 0; border-top: 1px solid #161514; padding-top: 1rem; }
-.service-project img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; background: #e5e2dc; }
+.service-project { display: block; min-width: 0; border-top: 1px solid currentColor; padding-top: 1rem; }
+.service-project img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--_ui-styles---radius--medium, 12px); background: var(--_primitives---opacity--grey, #dfdedd); }
 .service-project h3 { font-size: 1.4rem; line-height: 1.15; margin: 1rem 0 .5rem; letter-spacing: -.025em; }
 .service-project p { font-size: 1rem; line-height: 1.5; margin-bottom: .75rem; }
 .service-project span { display: inline-block; text-decoration: underline; text-underline-offset: .2em; font-size: .9375rem; }

@@ -12,7 +12,7 @@
   min-height: 44px;
   padding: .625rem .875rem;
   border: 1px solid rgba(255, 255, 255, .55);
-  border-radius: 4px;
+  border-radius: var(--_ui-styles---radius--medium, 12px);
   background: #161514;
   color: #fff;
   font-family: inherit;
@@ -20,6 +20,7 @@
   font-weight: 700;
   line-height: 1.2;
   text-align: center;
+  text-transform: uppercase;
   cursor: pointer;
 }
 
