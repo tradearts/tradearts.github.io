@@ -22,6 +22,18 @@ DEFAULT_SOCIAL_IMAGE = (
 
 SPLIDE_COMMIT = "00901b9ce10eaecfd8279350da06e5a5a246c1ac"
 
+ARTICLE_TOPICS = {'custom-fabrication-cost-australia': 'Planning & budgets',
+ 'how-to-brief-fabrication-studio': 'Planning & briefs',
+ 'what-makes-a-prop-camera-ready': 'Film & props',
+ 'scenic-finishing-3d-prints-camera-ready': 'Materials & finishing',
+ 'public-art-fabrication-council-government': 'Public art',
+ 'prototype-physical-products-3d-printing': 'Prototyping',
+ 'how-props-are-made-australian-film': 'Film & props',
+ 'from-cad-to-camera-film-props': 'Design & fabrication',
+ 'exhibition-fabrication-australia': 'Exhibitions',
+ 'cnc-vs-3d-printing-fabrication-method': 'Methods & materials',
+ 'building-prototypes-for-brands': 'Prototyping'}
+
 SHOP_ASSET_REPLACEMENTS = {
     "workshop-gloves-1.png": "workshop-gloves-1-optimised.webp",
     "hivis-ta-hoodie-1.png": "hivis-ta-hoodie-1-optimised.webp",
@@ -454,7 +466,8 @@ def normalize_research_archive(text: str) -> str:
         date = article["date"]
         title = article["title"]
         route = article["route"]
-        image = article["image"]
+        image = article["image"].removeprefix(SITE)
+        topic = html.escape(ARTICLE_TOPICS.get(article["slug"], "Workshop notes"))
         escaped_title = html.escape(title, quote=True)
         cards.append(
             '<div role="listitem" class="w-dyn-item"><div class="home_feature-2_item">'
@@ -466,7 +479,7 @@ def normalize_research_archive(text: str) -> str:
             '<div class="home_feature-2_meta-wrapper">'
             f'<div class="text-size-regular text-color-light-black text-style-allcaps text-letter-spacing-none">{date}</div>'
             '</div></div><div class="margin-bottom margin-xxsmall">'
-            f'<h2 class="text-size-medium blog text-color-80 text-letter-spacing-mobile-none">{escaped_title}</h2>'
+            f'<span class="ta-topic">{topic}</span><h2 class="text-size-medium blog text-color-80 text-letter-spacing-mobile-none">{escaped_title}</h2>'
             '</div></div></div></a></div></div>'
         )
 
@@ -499,7 +512,7 @@ def normalize_page(path: Path) -> bool:
     is_home = path == ROOT / "index.html"
 
     text = re.sub(
-        r'\s*<script\b(?=[^>]*\bsrc=["\']/assets/consent\.js["\'])[^>]*>\s*</script>',
+        r'\s*<script\b(?=[^>]*\bsrc=["\']/assets/consent\.js(?:\?[^"\']*)?["\'])[^>]*>\s*</script>',
         "",
         text,
         flags=re.I | re.S,
@@ -518,13 +531,13 @@ def normalize_page(path: Path) -> bool:
             text = text.replace("<head>", '<head><script src="/assets/consent.js"></script>', 1)
 
     text = re.sub(
-        r'\s*<link\b(?=[^>]*\bhref=["\']/assets/(?:site-fixes|logo-carousel)\.css(?:\?[^"\']*)?["\'])[^>]*>',
+        r'\s*<link\b(?=[^>]*\bhref=["\']/assets/(?:site-fixes|logo-carousel|media-controls)\.css(?:\?[^"\']*)?["\'])[^>]*>',
         "",
         text,
         flags=re.I | re.S,
     )
     text = re.sub(
-        r'\s*<script\b(?=[^>]*\bsrc=["\']/assets/(?:site-fixes|media|logo-carousel)\.js["\'])'
+        r'\s*<script\b(?=[^>]*\bsrc=["\']/assets/(?:site-fixes|media|logo-carousel)\.js(?:\?[^"\']*)?["\'])'
         r'[^>]*>\s*</script>',
         "",
         text,
@@ -638,10 +651,11 @@ def normalize_page(path: Path) -> bool:
             flags=re.I | re.S,
         )
 
-    text = insert_before_head(text, '<link rel="stylesheet" href="/assets/site-fixes.css?v=5">')
+    text = insert_before_head(text, '<link rel="stylesheet" href="/assets/site-fixes.css?v=6">')
     if is_home:
         text = insert_before_head(text, '<link rel="stylesheet" href="/assets/logo-carousel.css">')
     if had_media:
+        text = insert_before_head(text, '<link rel="stylesheet" href="/assets/media-controls.css?v=1">')
         text = insert_before_body_end(text, '<script src="/assets/media.js" defer></script>')
     text = insert_before_body_end(text, '<script src="/assets/site-fixes.js" defer></script>')
     if is_home:
@@ -670,6 +684,15 @@ def normalize_page(path: Path) -> bool:
         text = text.replace("splide@main", f"splide@{SPLIDE_COMMIT}")
     text = normalize_links(text)
     text = normalize_external_targets(text)
+    # Keep changed shared scripts/styles fresh without accumulating duplicate includes.
+    cache_versions = {
+        "/assets/consent.js": "2", "/assets/forms.js": "2", "/assets/media.js": "2",
+        "/shop/assets/shop.css": "10", "/shop/assets/shop.js": "3",
+        "/shop/assets/products.js": "2",
+    }
+    for asset, version in cache_versions.items():
+        text = re.sub(re.escape(asset) + r'(?:\?[^"\']*)?(?=["\'])', asset + "?v=" + version, text)
+
 
     if text != original:
         path.write_text(text, encoding="utf-8")

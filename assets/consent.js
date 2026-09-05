@@ -40,6 +40,13 @@
 
   if (savedChoice === GRANTED) updateConsent(GRANTED);
 
+  // Keep conversion tracking behind the same explicit choice as page analytics.
+  // Only this fixed, non-personal event is accepted; form values never enter analytics.
+  window.tradeArtsTrackEnquiry = function (kind) {
+    if (savedChoice !== GRANTED || !["project", "product"].includes(kind)) return;
+    window.gtag("event", "generate_lead", { enquiry_type: kind });
+  };
+
   function activateAnalytics() {
     if (analyticsActivated) return;
     analyticsActivated = true;
@@ -69,7 +76,7 @@
     const target = returnFocus?.isConnected
       ? returnFocus
       : document.querySelector(".consent-settings");
-    target?.focus();
+    target?.focus({ preventScroll: true });
     returnFocus = null;
   }
 

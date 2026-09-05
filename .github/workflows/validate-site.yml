@@ -20,6 +20,11 @@ jobs:
         run: python scripts/validate_site.py
       - name: Run regression tests
         run: python -m unittest discover -s tests -v
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Check media and enquiry behaviour
+        run: node --test tests/media-behavior.test.cjs tests/test_commerce_behaviour.js
       - name: Confirm generated fixes are current
         run: |
           python scripts/normalize_site.py

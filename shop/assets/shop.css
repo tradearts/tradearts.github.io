@@ -1806,6 +1806,273 @@ body {
 }
 
 /* Idle masonry logo */
+
+/* Product details and enquiry: the quieter pages of the shop catalogue. */
+.product-page,
+.shop-main.order-page {
+  padding-top: clamp(1.25rem, 3vw, 2.75rem);
+  padding-bottom: clamp(3rem, 6vw, 6rem);
+  color: #171717;
+}
+
+.product-page .breadcrumbs {
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+  font-size: 0.8rem;
+}
+
+.product-page .product-layout {
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: clamp(2rem, 5vw, 5rem);
+}
+
+.product-page .product-main-image {
+  display: flex;
+  justify-content: center;
+  height: clamp(22rem, 42vw, 35rem);
+  aspect-ratio: auto;
+}
+
+.product-page .product-main-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.product-page .gallery-caption {
+  margin: 0.65rem 0 1rem;
+  color: #5b5b5b;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.product-page .gallery-thumbs {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0;
+}
+
+.product-page .gallery-thumb {
+  width: 5.5rem;
+  aspect-ratio: auto;
+  border: 1px solid #d2d2d2;
+  font-size: 0.7rem;
+}
+
+.product-page .gallery-thumb img {
+  height: 4.5rem;
+  object-fit: contain;
+}
+
+.product-page .gallery-thumb span {
+  display: block;
+  padding: 0.4rem 0.2rem;
+  background: #f0f0ec;
+}
+
+.product-page .gallery-thumb[aria-pressed="true"] {
+  border-color: #171717;
+}
+
+.product-page .gallery-thumb[aria-pressed="true"] span {
+  color: #111;
+  background: var(--brand-orange);
+}
+
+.product-page .product-details {
+  top: 7.5rem;
+  padding-top: 0;
+}
+
+.product-page .product-details .eyebrow {
+  margin-bottom: 0.8rem;
+  font-size: 0.68rem;
+}
+
+.product-page .product-details h1 {
+  max-width: 18ch;
+  margin-bottom: 1rem;
+  font-size: clamp(2rem, 3.2vw, 3.2rem);
+  line-height: 1;
+}
+
+.product-page .product-price {
+  margin-bottom: 1.25rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.product-page .product-description {
+  margin-bottom: 1.25rem;
+  padding: 1rem 0;
+  border-color: #d2d2d2;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.product-page .product-description p {
+  margin: 0;
+}
+
+.product-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.25rem;
+  margin: 0.8rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.75rem;
+  font-weight: 650;
+}
+
+.product-options {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.product-page .product-note {
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.product-help {
+  margin-top: 1.5rem;
+  border-top: 1px solid #d2d2d2;
+  border-bottom: 1px solid #d2d2d2;
+  font-size: 0.9rem;
+}
+
+.product-help summary {
+  padding: 1rem 0;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.product-help p {
+  margin: 0 0 1rem;
+  line-height: 1.55;
+}
+
+.product-page .more-products {
+  margin-top: 3rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.shop-main.order-page {
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(2rem, 5vw, 5rem);
+}
+
+.order-page .order-intro {
+  top: 7.5rem;
+}
+
+.order-page .order-intro h1 {
+  max-width: 12ch;
+  margin-bottom: 1.25rem;
+  font-size: clamp(2.75rem, 4.4vw, 4.6rem);
+}
+
+.order-page .order-form-wrap {
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+  border-color: #d2d2d2;
+  background: #f3f3ee;
+}
+
+.order-page .order-form label > span {
+  font-size: 0.9rem;
+  font-weight: 650;
+}
+
+.order-page .order-privacy,
+.order-page .order-back {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.order-summary {
+  margin: 1.5rem 0;
+  padding: 1.25rem;
+  border-top: 3px solid var(--brand-orange);
+  background: #f3f3ee;
+}
+
+.order-summary [hidden] {
+  display: none !important;
+}
+
+.order-summary h2 {
+  margin: 0 0 1.25rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.order-summary__product {
+  display: grid;
+  grid-template-columns: 5rem minmax(0, 1fr);
+  gap: 1rem;
+  align-items: center;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.order-summary__product img {
+  width: 5rem;
+  height: 5rem;
+  background: #fff;
+  object-fit: contain;
+}
+
+.order-summary__selection {
+  margin: 1rem 0;
+  font-size: 0.9rem;
+}
+
+.order-summary__total {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  margin: 0;
+  padding-top: 1rem;
+  border-top: 1px solid #ccc;
+  font-size: 0.9rem;
+}
+
+.order-summary__note {
+  margin: 0.7rem 0 0;
+  color: #555;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+@media (max-width: 900px) {
+  .product-page .product-layout,
+  .shop-main.order-page {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .product-page .product-details,
+  .order-page .order-intro {
+    position: static;
+  }
+
+  .product-page .product-main-image {
+    height: clamp(16rem, 72vw, 30rem);
+  }
+
+  .product-page .product-details h1 {
+    max-width: 20ch;
+    font-size: clamp(2rem, 7.5vw, 3rem);
+  }
+}
+
 .idle-brick-builder {
   position: fixed;
   z-index: 2147483000;

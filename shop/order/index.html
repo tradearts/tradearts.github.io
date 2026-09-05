@@ -1,7 +1,8 @@
 <!doctype html>
 <html lang="en-AU">
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8"><script src="/assets/consent.js?v=2"></script>
+  <script type="text/plain" data-consent="analytics" data-consent-src="/assets/webflow/a03713ff8717-lb9e6lq19p-1.1.1.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Product enquiry | Trade Arts Shop</title>
   <meta name="description" content="Send Trade Arts a product enquiry with your preferred product, size and quantity.">
@@ -9,12 +10,12 @@
   <meta name="theme-color" content="#ffffff">
   <link rel="icon" href="/assets/webflow/7764e3d86c6c-6891a3a3a2ca8320c7c67c83_favecon.png" type="image/png">
   <link href="/assets/webflow/d1f270b36239-tradearts-aug-2025.webflow.shared.b5d3adc54.css" rel="stylesheet" type="text/css" crossorigin="anonymous">
-  <link rel="stylesheet" href="/shop/assets/shop.css?v=6">
+  <link rel="stylesheet" href="/shop/assets/shop.css?v=10">
 <link rel="canonical" href="https://www.tradearts.work/shop/order/">
 <meta property="og:url" content="https://www.tradearts.work/shop/order/">
 <meta property="og:image" content="https://www.tradearts.work/assets/webflow/f4b160e2d050-6891a3a3a2ca8320c7c67c8b_68509c3dcd98b1f9aca2cbcb_68351c06930016f8c178df83_trade-arts.png">
 <meta name="twitter:image" content="https://www.tradearts.work/assets/webflow/f4b160e2d050-6891a3a3a2ca8320c7c67c8b_68509c3dcd98b1f9aca2cbcb_68351c06930016f8c178df83_trade-arts.png">
-<link rel="stylesheet" href="/assets/site-fixes.css?v=5">
+<link rel="stylesheet" href="/assets/site-fixes.css?v=6">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -59,9 +60,20 @@
   <main id="main" class="shop-main order-page">
     <section class="order-intro">
       <p class="eyebrow">PRODUCT ENQUIRY</p>
-      <h1>Tell us what you’d like.</h1>
+      <h1>From the shop floor to you.</h1>
       <p>Choose the product, size and quantity. Trade Arts will reply to confirm availability, delivery or pickup, and payment.</p>
       <p>No payment is taken through this website.</p>
+      <aside class="order-summary" data-order-summary aria-labelledby="selection-heading">
+        <h2 id="selection-heading">Your selection</h2>
+        <p data-summary-empty>Select a product to see your enquiry details here.</p>
+        <div data-summary-content hidden>
+          <div class="order-summary__product"><img data-summary-image alt="" width="100" height="100"><a data-summary-title></a></div>
+          <p class="order-summary__selection" data-summary-selection aria-live="polite"></p>
+          <p class="order-summary__total"><span>Product subtotal</span><strong data-summary-total aria-live="polite"></strong></p>
+          <p class="order-summary__note">Delivery is confirmed separately. This is an enquiry, subject to availability.</p>
+        </div>
+      </aside>
+      <p class="order-back"><a href="/shop/">← Back to the collection</a></p>
     </section>
     <section class="order-form-wrap" data-form-wrapper>
       <form class="order-form" action="https://formsubmit.co/info@tradearts.work" method="POST" data-email-form data-order-form data-success-message="Thanks — your product enquiry has been sent to Trade Arts.">
@@ -82,7 +94,8 @@
           <label><span>Phone <small>(optional)</small></span><input type="tel" name="phone" autocomplete="tel"></label>
           <label><span>Suburb / postcode</span><input type="text" name="location" autocomplete="postal-code" required></label>
         </div>
-        <label><span>Notes <small>(optional)</small></span><textarea name="notes" rows="5" placeholder="Anything else we should know?"></textarea></label>
+        <label><span>Notes <small>(optional)</small></span><textarea name="notes" rows="5" placeholder="Sizing or care questions, delivery timing, or pickup preferences"></textarea></label>
+        <p class="order-privacy">We use your details to reply to this enquiry. <a href="/privacy/">Privacy details</a>.</p>
         <button class="primary-button" type="submit" data-wait="Sending…">Send product enquiry</button>
       </form>
       <div class="form-success" data-form-success role="status">Thanks — your product enquiry has been sent to Trade Arts.</div>
@@ -94,9 +107,9 @@
   <script src="/assets/webflow/4624940a0634-webflow.schunk.36b8fb49256177c8.js" type="text/javascript" crossorigin="anonymous"></script>
   <script src="/assets/webflow/500a47619069-webflow.schunk.2f35decc1c621833.js" type="text/javascript" crossorigin="anonymous"></script>
   <script src="/assets/webflow/8a688154726d-webflow.1bbd015e.821fa9bc88e7ec4a.js" type="text/javascript" crossorigin="anonymous"></script>
-  <script src="/shop/assets/products.js" defer></script>
-  <script src="/shop/assets/shop.js?v=2" defer></script>
-  <script src="/assets/forms.js" defer></script>
+  <script src="/shop/assets/products.js?v=2" defer></script>
+  <script src="/shop/assets/shop.js?v=3" defer></script>
+  <script src="/assets/forms.js?v=2" defer></script>
 <script src="/assets/site-fixes.js" defer></script>
 </body>
 </html>

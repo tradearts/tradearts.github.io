@@ -476,3 +476,151 @@
     grid-column: 1;
   }
 }
+
+/* September 2026: clearer studio, portfolio and enquiry pages. */
+.ta-eyebrow { margin: 0 0 1.5rem; font: 700 .75rem/1.4 "Courier New", monospace; letter-spacing: .06em; text-transform: uppercase; }
+.ta-lead { max-width: 44rem; font-size: clamp(1.125rem, 1.6vw, 1.5rem); line-height: 1.5; letter-spacing: -.02em; }
+.ta-actions { display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: center; margin-top: 2rem; }
+.ta-button { display: inline-flex; align-items: center; justify-content: space-between; gap: 2rem; min-height: 3.25rem; padding: .9rem 1.25rem; background: #171716; color: #fff; border: 1px solid #171716; font-size: 1rem; font-weight: 700; text-decoration: none; }
+.ta-button:hover { color: #171716; background: #f47629; }
+.ta-text-link { display: inline-flex; gap: 1rem; align-items: center; min-height: 2.75rem; color: #171716; font-size: 1rem; font-weight: 700; text-decoration: underline; text-underline-offset: .3em; text-decoration-thickness: 1px; }
+.ta-button:focus-visible, .ta-text-link:focus-visible, .ta-service-card:focus-visible, .ta-home-art:focus-visible { outline: 3px solid #e5570d; outline-offset: 5px; }
+.ta-home-hero { padding-top: 2rem; }
+.ta-home-grid { display: grid; grid-template-columns: 1fr 1.05fr; gap: 3rem; align-items: stretch; }
+.ta-home-copy { display: flex; flex-direction: column; justify-content: center; padding: 1rem 0 2rem; }
+.ta-home-copy h1 { margin: 0 0 2rem; font-size: clamp(4rem, 7vw, 7rem); line-height: .95; letter-spacing: -.065em; font-weight: 700; }
+.ta-home-lead { max-width: 34rem; margin: 0; font-size: 1.125rem; line-height: 1.5; }
+.ta-home-art { position: relative; display: block; height: 31rem; background: #050505; overflow: hidden; color: #fff; }
+.ta-home-art .image-5 { width: 100%; height: 100%; margin: 0; object-fit: contain; }
+.ta-art-caption { position: absolute; right: 1.25rem; bottom: 1rem; left: 1.25rem; display: flex; justify-content: space-between; gap: 1rem; padding-top: .8rem; border-top: 1px solid #666; font: 700 .7rem/1.3 "Courier New", monospace; text-transform: uppercase; }
+.ta-trust-row { display: grid; grid-template-columns: 15rem minmax(0, 1fr); gap: 3rem; align-items: center; padding: 2.5rem 0 3rem; }
+.ta-trust-row > p { margin: 0; font-size: .9rem; font-weight: 700; line-height: 1.4; }
+.ta-trust-row .logo-wrapper { min-width: 0; }
+.ta-index-header { padding: 3rem 0 3.5rem; }
+.ta-index-header h1 { margin: 0 0 1.5rem; font-size: clamp(3.25rem, 5.6vw, 6rem); font-weight: 700; line-height: 1; letter-spacing: -.055em; }
+.ta-index-intro { display: flex; gap: 2rem; align-items: flex-end; justify-content: space-between; }
+.ta-index-intro .ta-lead { margin: 0; }
+.ta-index-intro .ta-text-link { flex-shrink: 0; }
+.ta-index-label { padding: 0 0 2rem; border-bottom: 1px solid #bbb; }
+.ta-index-label h2 { margin: 0 0 .75rem; font-size: 2rem; }
+.ta-index-label p { margin: 0; font-size: 1rem; }
+.ta-work-index .works_wrapper { gap: 2.5rem; }
+.ta-work-index .work_feature-1_item-link { align-items: center; gap: 1.5rem; }
+.ta-work-index .work_feature-1_item-link h3, .ta-work-index .work_feature-1_item-link p { margin: 0; }
+.ta-work-index .work_feature-1_item-link p { font-size: 1rem; font-weight: 400; }
+.ta-service-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 3rem 2rem; }
+.ta-service-card { display: block; border-top: 1px solid #171716; color: #171716; text-decoration: none; }
+.ta-service-image { position: relative; aspect-ratio: 16/9; margin-top: 1rem; background: #dededb; overflow: hidden; }
+.ta-service-image img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s ease; }
+.ta-service-card:hover img { transform: scale(1.025); }
+.ta-service-image > span { position: absolute; left: 1rem; top: 1rem; padding: .5rem; background: #f47629; font: 700 .8rem "Courier New", monospace; }
+.ta-service-copy { padding: 1.5rem 0 0; }
+.ta-service-copy h2 { margin: 0 0 .75rem; font-size: clamp(1.6rem,2.5vw,2.5rem); line-height: 1.1; letter-spacing: -.04em; }
+.ta-service-copy p { max-width: 36rem; font-size: 1rem; line-height: 1.55; margin-bottom: .75rem; }
+.ta-bottom-cta { margin-top: 4rem; padding-top: 3rem; padding-bottom: 3rem; background: #dededb; }
+.ta-bottom-cta h2 { max-width: 44rem; margin: 0 0 1rem; font-size: clamp(2rem,3vw,3rem); line-height: 1.08; letter-spacing: -.04em; }
+.ta-bottom-cta p { max-width: 42rem; font-size: 1.125rem; line-height: 1.5; }
+.ta-bottom-cta .ta-button { margin-top: 1rem; }
+.ta-about-header { padding: 3rem 0 1rem; }
+.ta-about-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 5rem; align-items: center; }
+.ta-about-grid h1 { max-width: 40rem; margin: 0 0 2rem; font-size: clamp(3rem,5.5vw,5.8rem); line-height: 1; letter-spacing: -.06em; }
+.ta-about-grid p:not(.ta-eyebrow):not(.ta-lead) { max-width: 38rem; font-size: 1rem; line-height: 1.65; }
+.ta-about-photo { max-width: 31rem; width: 100%; margin: 0 auto; }
+.ta-about-photo img { width: 100%; max-height: 39rem; height: auto; object-fit: contain; }
+.ta-about-photo figcaption { padding-top: .75rem; font: .75rem/1.4 "Courier New", monospace; }
+.ta-about-page .info_faq-x_list { gap: 2rem; }
+.ta-about-page .info_faq-x_item { padding-bottom: 2rem; border-bottom: 1px solid #c5c5c2; }
+.ta-research-page .research-header .margin-xxlarge { margin-bottom: 2.5rem; }
+.ta-research-page .research-header h1 { margin: 0 0 1.25rem; }
+.ta-research-page .research_feature_featured-item-link { align-items: center; }
+.ta-research-page .home_feature-2_image-wrapper { aspect-ratio: 16/10; }
+.ta-topic { display: block; margin: .6rem 0 .9rem; font: 700 .72rem/1.35 "Courier New", monospace; text-transform: uppercase; letter-spacing: .04em; }
+.ta-article-page .blog_text-rich-text { max-width: 48rem; }
+.ta-article-page .blog_text-rich-text p, .ta-article-page .blog_text-rich-text li { font-size: 1rem; line-height: 1.7; }
+.ta-article-page .blog_text-rich-text h2 { margin-top: 2.5rem; font-size: 1.6rem; line-height: 1.2; letter-spacing: -.02em; }
+.ta-article-page .blog_text-rich-text h3 { font-size: 1.25rem; line-height: 1.3; }
+.ta-article-page .info_about_content-left.blog { justify-content: flex-start; min-height: 0; gap: 1.5rem; }
+.ta-article-page .info_about_content-left.blog h1 { font-size: clamp(2.2rem,3vw,3.3rem); line-height: 1.08; letter-spacing: -.04em; }
+.ta-contact-page .contact_contact_component > .margin-bottom.margin-xxlarge { margin-bottom: 2rem; }
+.ta-contact-page .contact_contact_component .margin-top.margin-xlarge { margin-top: 1.5rem; }
+.ta-contact-page .text-size-large.contact { max-width: 29rem; font-size: clamp(2rem,3vw,3.25rem); line-height: 1.08; }
+.ta-brief-guide { max-width: 45rem; margin: 0 0 2rem; }
+.ta-brief-guide h2 { margin: 0 0 .75rem; font-size: 2rem; }
+.ta-brief-guide p { font-size: 1rem; line-height: 1.6; }
+.ta-brief-guide a { color: inherit; text-decoration: underline; text-underline-offset: .2em; }
+.ta-contact-page .ta-form_wrapper { max-width: 52rem; padding: 2rem; border: 1px solid #bbb; background: #f7f7f5; }
+.ta-contact-page .ta-form_input, .ta-contact-page .ta-form_textarea { font-size: 1rem; min-height: 3rem; background: #fff; }
+.ta-contact-page .ta-form_label { margin-bottom: .5rem; }
+.ta-contact-page .ta-form_textarea { min-height: 10rem; }
+.ta-contact-page .ta-form_button { min-height: 3.25rem; }
+.form-context-note { padding: 1rem; margin: 0 0 1.5rem; border-left: 3px solid #f47629; background: #eee; font-size: 1rem; line-height: 1.5; }
+.ta-public-art-page .section-heading { padding-top: 3rem; padding-bottom: 2.5rem; }
+.ta-public-art-page .section-heading p { max-width: 45rem; font-size: 1.125rem; line-height: 1.6; }
+.consent-settings { left: 1rem; bottom: .75rem; min-height: 2.75rem; padding: .65rem .9rem; border: 1px solid #454542; border-radius: 0; background: #efefef; color: #171716; font: 700 .7rem/1.25 "Courier New", monospace; text-transform: uppercase; letter-spacing: .035em; }
+.consent-settings:hover { background: #f47629; }
+.consent-settings:focus-visible { outline: 3px solid #f47629; outline-offset: 3px; }
+.privacy-shell .navbar5_component { font-family: Arial, sans-serif; }
+.privacy-shell .privacy-page { padding-top: 3rem; }
+.privacy-shell .privacy-page h1 { font-size: clamp(3rem,6vw,6rem); margin-bottom: 2.5rem; }
+.privacy-shell .footer3_component { font-family: Arial, sans-serif; }
+@media (max-width: 991px) {
+ .ta-home-grid { gap: 2rem; }
+ .ta-home-copy h1 { font-size: clamp(3.6rem,7.7vw,5rem); }
+ .ta-home-art { height: 29rem; }
+ .ta-about-grid { gap: 2.5rem; }
+ .ta-trust-row { grid-template-columns: 11rem minmax(0,1fr); gap: 2rem; }
+ .ta-index-intro { display: block; }
+ .ta-index-intro .ta-text-link { margin-top: 1rem; }
+}
+@media (max-width: 767px) {
+ .ta-home-hero { padding-top: 1rem; }
+ .ta-home-grid, .ta-about-grid { grid-template-columns: 1fr; gap: 2rem; }
+ .ta-home-copy { padding: .5rem 0 0; }
+ .ta-home-copy h1 { font-size: clamp(3.5rem,14vw,5rem); margin-bottom: 1.5rem; }
+ .ta-home-lead { font-size: 1rem; }
+ .ta-eyebrow { margin-bottom: 1.25rem; }
+ .ta-actions { gap: 1rem; margin-top: 1.5rem; }
+ .ta-home-art { height: auto; aspect-ratio: 1; }
+ .ta-trust-row { grid-template-columns: 1fr; gap: 1.5rem; padding: 2rem 0; }
+ .ta-trust-row > p { max-width: 20rem; }
+ .ta-trust-row > p br { display: none; }
+ .ta-index-header { padding: 1.5rem 0 2.5rem; }
+ .ta-index-header h1 { font-size: clamp(2.6rem,11vw,4rem); }
+ .ta-service-grid { grid-template-columns: 1fr; gap: 2rem; }
+ .ta-service-copy { padding-top: 1.25rem; }
+ .ta-service-copy h2 { font-size: 1.9rem; }
+ .ta-about-header { padding-top: 1.5rem; }
+ .ta-about-grid h1 { font-size: clamp(2.8rem,12vw,4rem); }
+ .ta-about-photo { max-width: 28rem; }
+ .ta-bottom-cta { margin-top: 2.5rem; padding-top: 2rem; padding-bottom: 2rem; }
+ .ta-work-index .work_feature-1_item-link { grid-template-columns: minmax(0,1fr) auto; gap: .75rem; }
+ .ta-work-index .work_feature-1_item-link h3 { grid-column: 1; font-size: 1.5rem; }
+ .ta-work-index .work_feature-1_item-link p { grid-column: 1; font-size: .9rem; }
+ .ta-work-index .work-card-action { grid-column: 2; grid-row: 1 / span 2; }
+ .ta-article-page .info_about_content-left.blog { min-height: 0; padding-top: 0; }
+ .ta-article-page .blog_text-rich-text p, .ta-article-page .blog_text-rich-text li { font-size: 1rem; }
+ .ta-contact-page .ta-form_wrapper { padding: 1.25rem; }
+ .ta-contact-page .contact_contact_image-wrapper { margin-top: 2rem; }
+ .ta-public-art-page .section-heading { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+ .consent-settings { left: .5rem; bottom: .5rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+ .ta-service-image img { transition: none; }
+ .ta-service-card:hover img { transform: none; }
+}
+/* Keep the privacy control available after the footer without covering page actions. */
+.consent-settings { position: static; display: block; width: max-content; margin: 1rem 3% 1.5rem; }
+.ta-about-photo { max-width: 26rem; }
+.ta-about-photo img { aspect-ratio: auto; max-height: none; height: auto; }
+.ta-research-page .section_research_feature .padding-section-medium { padding-top: 3rem; }
+.ta-research-page .research-header h1 { font-size: clamp(3rem,5vw,5rem); line-height: 1.05; letter-spacing: -.05em; }
+.ta-research-page .research_feature_featured-item-link { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.5fr); gap: 2rem; align-items: center; }
+.ta-research-page .research_feature_featured-item-content { width: 100%; }
+.ta-research-page .research_feature_featured-item-content h2 { font-size: clamp(1.8rem,2.6vw,2.8rem); line-height: 1.12; }
+.ta-research-page .research_feature_image-wrapper { width: 100%; height: 25rem; aspect-ratio: auto; }
+.ta-research-page .research_feature_featured-image { width: 100%; height: 100%; object-fit: cover; }
+@media (max-width: 767px) {
+ .ta-research-page .section_research_feature .padding-section-medium { padding-top: 1.5rem; }
+ .ta-research-page .research_feature_featured-item-link { grid-template-columns: 1fr; gap: 1.5rem; }
+ .ta-research-page .research_feature_image-wrapper { grid-column: 1; grid-row: 1; height: auto; aspect-ratio: 16/10; }
+}

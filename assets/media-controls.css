@@ -1,0 +1,49 @@
+/* A small, persistent control keeps looping project previews optional. */
+.media-preview-card {
+  position: relative;
+}
+
+.media-preview-control {
+  position: absolute;
+  z-index: 3;
+  top: 1rem;
+  right: 1rem;
+  min-width: 7rem;
+  min-height: 44px;
+  padding: .625rem .875rem;
+  border: 1px solid rgba(255, 255, 255, .55);
+  border-radius: 4px;
+  background: #161514;
+  color: #fff;
+  font-family: inherit;
+  font-size: .75rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+}
+
+.media-preview-control:hover {
+  border-color: #f60;
+  background: #f60;
+  color: #161514;
+}
+
+.media-preview-control:focus-visible {
+  outline: 3px solid #f60;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 6px #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vimeo-player__placeholder {
+    transition: none;
+  }
+}
+
+@media (max-width: 479px) {
+  .media-preview-control {
+    top: .625rem;
+    right: .625rem;
+  }
+}
