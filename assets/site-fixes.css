@@ -660,9 +660,6 @@
   text-underline-offset: .22em;
 }
 
-.navbar5_component .button.is-link.nav:hover,
-.navbar5_component .button.is-link.nav:focus-visible,
-.navbar5_component .button.is-link.nav.w--open,
 .navbar5_component .navbar5_logo:hover,
 .navbar5_component .navbar5_logo-2:hover,
 .navbar5_component .navbar5_logo-link:hover,
@@ -677,6 +674,17 @@
   text-decoration-color: #f60;
   text-decoration-thickness: 2px;
   text-underline-offset: .22em;
+}
+
+/* Header links retain the white hover treatment without underlines. */
+.navbar5_component .button.is-link.nav {
+  text-decoration: none;
+}
+.navbar5_component .button.is-link.nav:hover,
+.navbar5_component .button.is-link.nav:focus-visible,
+.navbar5_component .button.is-link.nav.w--open {
+  color: #fff;
+  text-decoration: none;
 }
 
 /* Give the enquiry details enough room on compact desktop and tablet. */
