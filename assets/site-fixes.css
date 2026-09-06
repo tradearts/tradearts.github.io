@@ -264,7 +264,7 @@
   margin: 0 auto;
 }
 
-.privacy-page__eyebrow {
+.privacy-page .privacy-page__eyebrow {
   margin: 0 0 1.25rem;
   font-size: 0.75rem;
   font-weight: 700;
@@ -554,6 +554,7 @@
 .ta-article-page .blog_text-rich-text h2 { margin-top: 2.5rem; font-size: 1.6rem; line-height: 1.2; letter-spacing: -.02em; }
 .ta-article-page .blog_text-rich-text h3 { font-size: 1.25rem; line-height: 1.3; }
 .ta-article-page .info_about_content-left.blog { justify-content: flex-start; min-height: 0; gap: 1.5rem; }
+.ta-article-page .article-block > .margin-bottom.margin-xxhuge { margin-bottom: 0; }
 .ta-article-page .info_about_content-left.blog h1 { font-size: clamp(2.2rem,3vw,3.3rem); line-height: 1.08; letter-spacing: -.04em; }
 .ta-contact-page .contact_contact_component > .margin-bottom.margin-xxlarge { margin-bottom: 2rem; }
 .ta-contact-page .contact_contact_component .margin-top.margin-xlarge { margin-top: 1.5rem; }
@@ -572,7 +573,7 @@
 .ta-contact-page .ta-form_button:hover { background: #161514; color: #efefef; }
 .form-context-note { padding: 1rem; margin: 0 0 1.5rem; border-left: 3px solid var(--_primitives---opacity--orange, #f60); background: #eee; font-size: 1rem; line-height: 1.5; }
 .ta-public-art-page .section-heading { padding-top: 3rem; padding-bottom: 2.5rem; }
-.ta-public-art-page .section-heading h1 { margin: 0 0 1.5rem; font-size: clamp(3.25rem, 5.6vw, 6rem); font-weight: 700; line-height: 1; letter-spacing: -.055em; }
+.ta-public-art-page .section_research_feature h1 { margin: 0 0 1.5rem; font-size: clamp(3.25rem, 5.6vw, 6rem); font-weight: 700; line-height: 1; letter-spacing: -.055em; }
 .ta-public-art-page .section-heading p { max-width: 45rem; font-size: 1.125rem; line-height: 1.6; }
 .consent-settings { left: 1rem; bottom: .75rem; min-height: 2.75rem; padding: .65rem .9rem; border: 1px solid #dfdedd; background: #dfdedd; color: #161514; }
 .consent-settings:hover { background: #161514; border-color: #161514; color: #efefef; }
@@ -620,7 +621,7 @@
  .ta-contact-page .ta-form_wrapper { padding: 1.25rem; }
  .ta-contact-page .contact_contact_image-wrapper { margin-top: 2rem; }
  .ta-public-art-page .section-heading { padding-top: 1.5rem; padding-bottom: 1.5rem; }
- .ta-public-art-page .section-heading h1 { font-size: clamp(2.6rem, 11vw, 4rem); }
+ .ta-public-art-page .section_research_feature h1 { font-size: clamp(2.6rem, 11vw, 4rem); }
  .consent-settings { left: .5rem; bottom: .5rem; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -631,6 +632,8 @@
 .consent-settings { position: static; display: block; width: max-content; margin: 1rem 3% 1.5rem; }
 .ta-about-photo { max-width: 26rem; }
 .ta-about-photo img { aspect-ratio: auto; max-height: none; height: auto; }
+/* This embed contains only CSS; its clearfix pseudo-elements must not become grid items. */
+.works-section-01 .work-wrapper-1 > .u-contents.w-embed { display: none; }
 .ta-research-page .section_research_feature .padding-section-medium { padding-top: 3rem; }
 .ta-research-page .research-header h1 { font-size: clamp(3rem,5vw,5rem); line-height: 1.05; letter-spacing: -.05em; }
 .ta-research-page .research_feature_featured-item-link { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.5fr); gap: 2rem; align-items: center; }
@@ -639,7 +642,144 @@
 .ta-research-page .research_feature_image-wrapper { width: 100%; height: 25rem; aspect-ratio: auto; }
 .ta-research-page .research_feature_featured-image { width: 100%; height: 100%; object-fit: cover; }
 @media (max-width: 767px) {
+ .works-section-01 .work-wrapper-1 { row-gap: 2.5rem; }
+ .ta-work-index .main-wrapper > .section_works_cta:last-child { padding-bottom: 3rem; }
  .ta-research-page .section_research_feature .padding-section-medium { padding-top: 1.5rem; }
  .ta-research-page .research_feature_featured-item-link { grid-template-columns: 1fr; gap: 1.5rem; }
  .ta-research-page .research_feature_image-wrapper { grid-column: 1; grid-row: 1; height: auto; aspect-ratio: 16/10; }
 }
+
+/* Keep text links readable while orange remains the interaction accent. */
+.button.is-link:hover,
+.button.is-link:focus-visible,
+.button-text-arrow:hover,
+.button-text-arrow-small:hover {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: .22em;
+}
+
+.navbar5_component .button.is-link.nav:hover,
+.navbar5_component .button.is-link.nav:focus-visible,
+.navbar5_component .button.is-link.nav.w--open,
+.navbar5_component .navbar5_logo:hover,
+.navbar5_component .navbar5_logo-2:hover,
+.navbar5_component .navbar5_logo-link:hover,
+.footer3_link:hover,
+.footer3_link:focus-visible {
+  color: #161514;
+}
+
+.footer3_link:hover,
+.footer3_link:focus-visible {
+  text-decoration: underline;
+  text-decoration-color: #f60;
+  text-decoration-thickness: 2px;
+  text-underline-offset: .22em;
+}
+
+/* Give the enquiry details enough room on compact desktop and tablet. */
+@media (max-width: 1199px) {
+  .ta-contact-page .contact_contact_content {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 2rem;
+  }
+}
+
+/* The navigation collapses at 991px, so its dropdown must do the same. */
+@media (max-width: 991px) {
+  .ta-research-page .research-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .navbar5_menu .navbar5_menu-right,
+  .navbar5_menu .mobile-work-dropdown {
+    width: 100%;
+  }
+
+  .navbar5_menu .mobile-work-dropdown {
+    margin: 0 !important;
+  }
+
+  .navbar5_menu .mobile-work-dropdown > .is-work-toggle {
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 3.75rem !important;
+    margin: 0 !important;
+    padding: 0 3rem 0 0 !important;
+    overflow: visible !important;
+    text-align: left !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .navbar5_menu .is-work-toggle > div:not(.nav_dropdown-caret) {
+    line-height: 1.1 !important;
+  }
+
+  .navbar5_menu .mobile-work-dropdown .nav_dropdown-caret {
+    position: absolute !important;
+    top: 50% !important;
+    right: .25rem !important;
+    bottom: auto !important;
+    left: auto !important;
+    width: 1.75rem !important;
+    height: 1.75rem !important;
+    margin: 0 !important;
+    font-size: 1.75rem !important;
+    line-height: 1.75rem !important;
+    transform: translateY(-50%) rotate(0deg) !important;
+    transform-origin: center !important;
+    transition: transform 200ms ease !important;
+    pointer-events: none;
+  }
+
+  .navbar5_menu .is-work-toggle.w--open .nav_dropdown-caret {
+    transform: translateY(-50%) rotate(180deg) !important;
+  }
+
+  .navbar5_menu .mobile-work-dropdown > .nav_dropdown-list {
+    box-sizing: border-box !important;
+    position: static !important;
+    width: 100% !important;
+    min-width: 0;
+    margin: .5rem 0 0 !important;
+    padding: .75rem 1rem .9rem !important;
+    flex-direction: column !important;
+    gap: .15rem !important;
+    overflow: hidden !important;
+    border-radius: .75rem !important;
+  }
+
+  .navbar5_menu .mobile-work-dropdown > .nav_dropdown-list.w--open {
+    display: flex !important;
+  }
+
+  .navbar5_menu .mobile-work-dropdown > .nav_dropdown-list > .is-menu-item {
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: left;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 44px !important;
+    margin: 0 !important;
+    padding: .35rem 0 !important;
+    font-size: clamp(1.75rem, 4vw, 2.1rem) !important;
+    line-height: 1.25 !important;
+    white-space: normal !important;
+    border-radius: 0 !important;
+  }
+}
+
+/* Give the project title and description distinct hierarchy at every width. */
+.ta-public-art-page .works_cta_text { display: flex; flex-direction: column; align-items: flex-start; gap: .75rem; }
+.ta-public-art-page .works_cta_text > h2 { width: 100%; margin: 0; font-size: 1.5rem; line-height: 1.2; }
+.ta-public-art-page .works_cta_text > p { width: 100%; margin: 0; font-size: 1rem; font-weight: 400; line-height: 1.5; }

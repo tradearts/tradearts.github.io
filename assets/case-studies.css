@@ -108,12 +108,43 @@
 .service-project p { font-size: 1rem; line-height: 1.5; margin-bottom: .75rem; }
 .service-project span { display: inline-block; text-decoration: underline; text-underline-offset: .2em; font-size: .9375rem; }
 .service-project:hover h3 { text-decoration: underline; text-underline-offset: .15em; }
+@media (min-width: 768px) and (max-width: 991px) {
+  .ta-service-detail .info_about_content.services {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 2rem;
+  }
+  .ta-service-detail .info_about_content.services > * { min-width: 0; }
+  .ta-service-detail .hero-text-box { width: auto; max-width: 100%; }
+}
 @media (max-width: 767px) {
   .case-story, .case-enquiry__inner { grid-template-columns: 1fr; gap: 1.5rem; }
   .case-story { padding-block: 1.75rem; margin-block: .5rem 1rem; }
   .ta-project-detail .info_about_content-left.work > h1 { font-size: clamp(2.35rem, 10vw, 4.5rem); }
+  .ta-project-detail .works-subheading { padding-top: 1.5rem; }
   .service-examples__grid, .service-examples__grid--two { grid-template-columns: 1fr; gap: 2rem; }
   .service-project img { max-height: 24rem; }
   .case-enquiry, .service-examples { padding: 2rem 5%; }
   .ta-service-detail .padding-section-large.service { padding-top: 2rem; padding-bottom: 2rem; }
+  .ta-service-detail .info_about_content-left.services {
+    min-height: 0;
+    max-height: none;
+    justify-content: flex-start;
+    gap: 1.25rem;
+  }
+  .ta-service-detail .info_about_content-left.services > .margin-bottom { margin-bottom: 0; }
+  .ta-service-detail .hero-text-box p { margin-bottom: 0; }
 }
+
+/* Keep project photography visible while the optional 3D viewer loads. */
+.ta-project-detail .case-model-media { min-width: 0; display: block; }
+.ta-project-detail .case-model-media .info_about-media-wrapper { height: auto; max-height: none; aspect-ratio: auto; }
+.ta-project-detail .case-model-media .info_about-media-wrapper > img { display: block; width: 100%; height: auto; object-fit: contain; }
+.case-model { width: 100%; margin-top: 1rem; }
+.case-model summary { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 44px; padding: .85rem 1rem; border-radius: 12px; background: #dfdedd; color: #161514; cursor: pointer; font-size: .75rem; font-weight: 700; text-transform: uppercase; list-style: none; }
+.case-model summary::-webkit-details-marker { display: none; }
+.case-model summary::after { content: '+'; font-size: 1.25rem; line-height: 1; }
+.case-model[open] summary::after { content: '−'; }
+.case-model summary:focus-visible { outline: 2px solid #161514; outline-offset: 3px; }
+.case-model iframe { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; margin-top: 1rem; border: 0; border-radius: 12px; }
+.case-model p { margin: .75rem 0 0; font-size: .875rem; }
+.case-model p a { text-decoration: underline; text-underline-offset: .2em; }

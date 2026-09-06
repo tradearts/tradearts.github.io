@@ -72,9 +72,9 @@
 .goods-grid { display: grid; gap: 1rem; }
 .goods-grid--tees { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .goods-grid--hoodies { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-.goods-card { min-width: 0; }
-.goods-card__link { display: block; }
-.goods-card__image { position: relative; aspect-ratio: 1; background: #fff; overflow: hidden; border-radius: .75rem; }
+.goods-card { display: flex; min-width: 0; }
+.goods-card__link { display: flex; flex: 1; min-width: 0; flex-direction: column; }
+.goods-card__image { position: relative; flex: none; aspect-ratio: 1; background: #fff; overflow: hidden; border-radius: .75rem; }
 .goods-grid--tees .goods-card__image { aspect-ratio: 1.13; }
 .goods-image { position: absolute; inset: 0; width: 100%; height: 100%; padding: 1.5rem 1.5rem 4.5rem; object-fit: contain; transition: opacity 300ms, transform 450ms; }
 .goods-grid--tees .goods-image { padding: 1rem 2rem 4.5rem; }
@@ -86,7 +86,7 @@
 .goods-card__link:hover .has-alternate > .goods-image:not(.goods-image--alternate), .goods-card__link:focus-visible .has-alternate > .goods-image:not(.goods-image--alternate) { opacity: 0; }
 .goods-card__link:hover .goods-image--alternate, .goods-card__link:focus-visible .goods-image--alternate { opacity: 1; }
 .goods-card__link:hover .goods-image { transform: scale(1.025); }
-.goods-card__info { display: flex; justify-content: space-between; align-items: flex-start; gap: .75rem; padding: 1rem 0 1.25rem; border-bottom: 1px solid var(--edition-line); }
+.goods-card__info { display: flex; flex: 1; justify-content: space-between; align-items: flex-start; gap: .75rem; padding: 1rem 0 1.25rem; border-bottom: 1px solid var(--edition-line); }
 .goods-card__info h3 { font-size: 1.0625rem; line-height: 1.2; font-weight: 700; letter-spacing: -.025em; }
 .goods-card__info p { margin-top: .45rem; font-size: .875rem; color: #555; }
 .goods-card__price { font-size: 1.25rem; font-weight: 700; line-height: 1.1; letter-spacing: -.035em; white-space: nowrap; }
@@ -166,8 +166,9 @@
   .goods-card__number { top: .5rem; left: .5rem; font-size: .75rem; }
   .goods-card__view { bottom: .5rem; left: .5rem; right: .5rem; font-size: .75rem; padding: .55rem .6rem; }
   .goods-card__view > span { font-size: 1.1rem; }
-  .goods-card__info { display: block; padding: .8rem 0; }
-  .goods-card__info h3, .goods-grid--tees .goods-card__info h3 { font-size: 1rem; }
+  .goods-card__info { flex-direction: column; align-items: stretch; gap: 0; padding: .8rem 0; }
+  .goods-card__info > div { flex: 1; }
+  .goods-card__info h3, .goods-grid--tees .goods-card__info h3 { min-height: 2.4em; font-size: 1rem; }
   .goods-card__info p { font-size: .8125rem; margin-top: .3rem; }
   .goods-card__price, .goods-grid--tees .goods-card__price { display: block; font-size: 1.1rem; margin-top: .65rem; }
   .goods-card__price small { display: inline; padding-left: .35rem; }

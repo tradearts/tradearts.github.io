@@ -439,18 +439,12 @@ def sort_archive_articles(articles: list[dict[str, str]]) -> list[dict[str, str]
     )
 
 
-def normalize_research_archive(text: str) -> str:
-    marker = '<div fs-list-load="pagination" fs-list-element="list" role="list" class="research_feature_list w-dyn-items">'
-    start = text.find(marker)
-    if start < 0:
-        return text
-
+def read_research_articles() -> list[dict[str, str]]:
+    """Use each article's current title, image and displayed publication date."""
     articles = []
     for path in sorted((ROOT / "blog").glob("*/index.html")):
         source = path.read_text(encoding="utf-8")
         route = "/" + path.parent.relative_to(ROOT).as_posix() + "/"
-        if route == "/blog/custom-fabrication-cost-australia/":
-            continue
         title_match = re.search(r"<h1\b[^>]*>(.*?)</h1>", source, re.I | re.S)
         image_match = re.search(
             r'<meta\b(?=[^>]*property=["\']og:image["\'])[^>]*content=["\']([^"\']+)',
@@ -475,8 +469,58 @@ def normalize_research_archive(text: str) -> str:
             }
         )
 
+    return sort_archive_articles(articles)
+
+
+def normalize_article_recommendations(text: str, current_route: str) -> str:
+    """Keep three recent reading suggestions, excluding the page being read."""
+    marker = re.search(
+        r'<div\b(?=[^>]*\bclass=["\'](?:[^"\']*\s)?home_feature-2_list(?:\s[^"\']*)?["\'])[^>]*>',
+        text,
+        re.I | re.S,
+    )
+    if marker is None:
+        return text
+    depth = 1
+    for token in re.finditer(r"<div\b|</div>", text[marker.end():], re.I):
+        depth += 1 if token.group(0).lower().startswith("<div") else -1
+        if depth == 0:
+            list_end = marker.end() + token.start()
+            break
+    else:
+        return text
+
+    articles = [article for article in read_research_articles() if article["route"] != current_route][:3]
     cards = []
-    for article in sort_archive_articles(articles):
+    for article in articles:
+        title = html.escape(article["title"], quote=True)
+        route = html.escape(article["route"], quote=True)
+        image = html.escape(article["image"].removeprefix(SITE), quote=True)
+        date = html.escape(article["date"])
+        cards.append(
+            '<div role="listitem" class="w-dyn-item"><div class="home_feature-2_item">'
+            f'<a href="{route}" class="home_feature-2_item-link w-inline-block">'
+            '<div class="home_feature-2_image-wrapper">'
+            f'<img alt="{title}" loading="lazy" src="{image}" class="home_feature-2_image">'
+            '</div><div class="home_feature-2_item-content"><div class="home_feature-2_item-content-top">'
+            '<div class="margin-bottom margin-xsmall _9px"><div class="home_feature-2_meta-wrapper">'
+            f'<div class="text-size-regular text-color-light-black text-style-allcaps text-letter-spacing-none">{date}</div>'
+            '</div></div><div class="margin-bottom margin-xxsmall">'
+            f'<h3 class="text-size-medium blog text-color-80 text-letter-spacing-mobile-none">{title}</h3>'
+            '</div></div></div></a></div></div>'
+        )
+    return text[:marker.end()] + "".join(cards) + text[list_end:]
+
+
+def normalize_research_archive(text: str) -> str:
+    marker = '<div fs-list-load="pagination" fs-list-element="list" role="list" class="research_feature_list w-dyn-items">'
+    start = text.find(marker)
+    if start < 0:
+        return text
+    # The cost guide already has a larger featured card above this archive.
+    articles = [article for article in read_research_articles() if article["slug"] != "custom-fabrication-cost-australia"]
+    cards = []
+    for article in articles:
         date = article["date"]
         title = article["title"]
         route = article["route"]
@@ -598,6 +642,8 @@ def normalize_page(path: Path) -> bool:
         text = normalize_homepage(text)
     if path == ROOT / "research" / "index.html":
         text = normalize_research_archive(text)
+    if path.parent.parent == ROOT / "blog":
+        text = normalize_article_recommendations(text, "/" + path.parent.relative_to(ROOT).as_posix() + "/")
     if path == ROOT / "services" / "3d-scanning" / "index.html":
         old_workflow = (
             '<ul role="list"><li><strong>3D Printing &amp; CNC</strong> – resin for fine detail, FDM for scale, CNC for strength and precision</li>'
@@ -665,7 +711,7 @@ def normalize_page(path: Path) -> bool:
             flags=re.I | re.S,
         )
 
-    text = insert_before_head(text, '<link rel="stylesheet" href="/assets/site-fixes.css?v=9">')
+    text = insert_before_head(text, '<link rel="stylesheet" href="/assets/site-fixes.css?v=11">')
     if is_home:
         text = insert_before_head(text, '<link rel="stylesheet" href="/assets/logo-carousel.css">')
     if had_media:
@@ -702,8 +748,8 @@ def normalize_page(path: Path) -> bool:
     # Keep changed shared scripts/styles fresh without accumulating duplicate includes.
     cache_versions = {
         "/assets/consent.js": "2", "/assets/forms.js": "2", "/assets/media.js": "2",
-        "/shop/assets/shop.css": "11", "/shop/assets/shop.js": "3",
-        "/assets/case-studies.css": "2", "/shop/assets/catalogue.css": "2",
+        "/shop/assets/shop.css": "13", "/shop/assets/shop.js": "3",
+        "/assets/case-studies.css": "4", "/shop/assets/catalogue.css": "4",
         "/shop/assets/products.js": "2",
     }
     for asset, version in cache_versions.items():

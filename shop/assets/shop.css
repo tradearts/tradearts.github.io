@@ -1931,8 +1931,16 @@ body {
   margin: 0.8rem 0 0;
   padding: 0;
   list-style: none;
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 650;
+  line-height: 1.5;
+}
+
+.product-facts > li {
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  letter-spacing: inherit;
 }
 
 .product-options {
@@ -1954,9 +1962,40 @@ body {
 }
 
 .product-help summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
   padding: 1rem 0;
   cursor: pointer;
   font-weight: 700;
+  list-style: none;
+}
+
+.product-help summary::-webkit-details-marker {
+  display: none;
+}
+
+.product-help summary::after {
+  content: "";
+  flex: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-right: 0.25rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 160ms ease;
+}
+
+.product-help[open] summary::after {
+  transform: rotate(225deg);
+}
+
+.product-help summary:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 4px;
+  border-radius: 0.75rem;
 }
 
 .product-help p {
