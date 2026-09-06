@@ -660,9 +660,6 @@
   text-underline-offset: .22em;
 }
 
-.navbar5_component .navbar5_logo:hover,
-.navbar5_component .navbar5_logo-2:hover,
-.navbar5_component .navbar5_logo-link:hover,
 .footer3_link:hover,
 .footer3_link:focus-visible {
   color: #161514;
@@ -791,3 +788,9 @@
 .ta-public-art-page .works_cta_text { display: flex; flex-direction: column; align-items: flex-start; gap: .75rem; }
 .ta-public-art-page .works_cta_text > h2 { width: 100%; margin: 0; font-size: 1.5rem; line-height: 1.2; }
 .ta-public-art-page .works_cta_text > p { width: 100%; margin: 0; font-size: 1rem; font-weight: 400; line-height: 1.5; }
+
+/* The full header logo follows the menu's white hover treatment. */
+.navbar5_component .div-block-10 > .link-block:is(:hover, :focus-visible) .navbar5_logo-2,
+.navbar5_component .navbar5_logo-link:is(:hover, :focus-visible) .navbar5_logo {
+  color: #fff;
+}
