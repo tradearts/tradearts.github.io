@@ -1,251 +1,366 @@
 .flybuys-3d-viewer {
+  --flybuys-ink: #171717;
+  --flybuys-muted: rgba(23, 23, 23, 0.52);
   position: relative;
   width: 100%;
-  border-radius: 10px;
+  aspect-ratio: 16 / 10;
+  min-height: 540px;
   overflow: hidden;
+  border-radius: 24px;
   background: #efefef;
+  color: var(--flybuys-ink);
+  isolation: isolate;
 }
 
-.flybuys-3d-viewer canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
+.flybuys-3d-placeholder,
+.flybuys-3d-poster-overlay,
+.flybuys-3d-load-button {
+  display: none !important;
 }
 
-.flybuys-3d-placeholder {
-  position: relative;
-  display: none;
-  aspect-ratio: 16 / 9;
-  width: 100%;
-  min-height: 260px;
-  background: #111;
-  overflow: hidden;
+.info_about-media-wrapper.flybuys-3d-wrapper {
+  height: auto;
+  max-height: none;
+  aspect-ratio: auto;
+  overflow: visible;
 }
 
-.flybuys-3d-placeholder img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.flybuys-3d-wrapper .info_about-rich-text-embed {
+  height: auto;
 }
 
-.flybuys-3d-poster-overlay {
+.flybuys-3d-stage,
+.flybuys-3d-stage canvas {
   position: absolute;
   inset: 0;
-  display: grid;
-  place-items: end center;
-  padding: 16px;
-  pointer-events: none;
-}
-
-.flybuys-3d-load-button {
-  pointer-events: auto;
-  border: 1px solid rgba(255, 255, 255, 0.26);
-  background: rgba(0, 0, 0, 0.55);
-  color: #fff;
-  border-radius: 999px;
-  padding: 10px 16px;
-  font: 600 15px/1.2 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  cursor: pointer;
-  transition: transform 150ms ease, background-color 150ms ease;
-}
-
-.flybuys-3d-load-button:hover,
-.flybuys-3d-load-button:focus-visible {
-  transform: translateY(-1px);
-  background: rgba(255, 255, 255, 0.12);
-  outline: 2px solid #fff;
-  outline-offset: 2px;
+  width: 100%;
+  height: 100%;
 }
 
 .flybuys-3d-stage {
-  position: relative;
-  display: block;
-  aspect-ratio: 16 / 9;
-  width: 100%;
   background: #efefef;
 }
 
 .flybuys-3d-stage canvas {
-  width: 100%;
-  height: 100%;
+  display: block;
+  touch-action: none;
 }
 
-.flybuys-3d-stage__loading,
-.flybuys-3d-stage__hint {
+.flybuys-3d-stage__loading {
   position: absolute;
   inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: rgba(22, 21, 20, 0.68);
-  font: 500 14px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  color: var(--flybuys-muted);
+  background: #efefef;
+  font: 500 13px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
+  letter-spacing: 0.01em;
   pointer-events: none;
+  transition: opacity 280ms ease, visibility 280ms ease;
 }
 
 .flybuys-3d-stage[data-state="ready"] .flybuys-3d-stage__loading {
-  display: none;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.flybuys-3d-meta {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  left: 24px;
+  z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  pointer-events: none;
+}
+
+.flybuys-3d-meta__identity {
+  display: grid;
+  gap: 3px;
+}
+
+.flybuys-3d-eyebrow,
+.flybuys-3d-part-count {
+  color: var(--flybuys-muted);
+  font: 500 12px/1.35 system-ui, -apple-system, "Segoe UI", sans-serif;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
+}
+
+.flybuys-3d-meta strong {
+  font: 650 clamp(22px, 2.2vw, 34px)/1.05 system-ui, -apple-system, "Segoe UI", sans-serif;
+  letter-spacing: -0.035em;
+}
+
+.flybuys-3d-part-count {
+  padding-top: 3px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.flybuys-3d-views {
+  position: absolute;
+  top: 50%;
+  right: 22px;
+  z-index: 3;
+  display: grid;
+  padding: 5px;
+  border: 1px solid rgba(23, 23, 23, 0.065);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 9px 26px rgba(16, 18, 20, 0.07);
+  backdrop-filter: blur(18px);
+  transform: translateY(-50%);
+}
+
+.flybuys-3d-view-button {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: rgba(23, 23, 23, 0.5);
+  font: 600 10px/1 system-ui, -apple-system, "Segoe UI", sans-serif;
+  cursor: pointer;
+}
+
+.flybuys-3d-view-button:hover,
+.flybuys-3d-view-button:focus-visible,
+.flybuys-3d-view-button.is-active {
+  color: #fff;
+  background: #20282d;
+}
+
+.flybuys-3d-view-button:disabled {
+  color: rgba(23, 23, 23, 0.22);
+  background: transparent;
+  cursor: default;
+}
+
+.flybuys-3d-view-button:focus-visible,
+.flybuys-3d-reset:focus-visible,
+.flybuys-3d-explode:focus-visible {
+  outline: 2px solid #171717;
+  outline-offset: 3px;
 }
 
 .flybuys-3d-controls {
   position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 2;
-  display: none;
+  right: 50%;
+  bottom: 20px;
+  z-index: 3;
+  display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   grid-template-areas:
-    "heading reset"
-    "scale reset";
-  gap: 7px 14px;
-  align-items: center;
-  padding: 11px 14px 12px;
-  border-top: 1px solid rgba(22, 21, 20, 0.1);
-  background: rgba(239, 239, 239, 0.96);
-  box-shadow: 0 -12px 28px rgba(22, 21, 20, 0.04);
-  color: #161514;
+    "heading percentage"
+    "range reset"
+    "ends reset";
+  width: min(460px, calc(100% - 40px));
+  padding: 15px 16px 13px 18px;
+  border: 1px solid rgba(23, 23, 23, 0.065);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 16px 38px rgba(16, 18, 20, 0.09);
+  backdrop-filter: blur(20px);
+  transform: translateX(50%);
 }
 
 .flybuys-3d-controls__label {
   grid-area: heading;
   display: flex;
   align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-  font: 600 16px/1.2 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  gap: 9px;
+  min-width: 0;
+  margin-bottom: 10px;
 }
 
-.flybuys-3d-status,
-.flybuys-3d-controls__status {
-  position: absolute;
-  width: 1px;
-  height: 1px;
+.flybuys-3d-controls__label label {
+  font: 650 14px/1.25 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.flybuys-3d-mode {
   overflow: hidden;
-  clip-path: inset(50%);
+  color: var(--flybuys-muted);
+  font: 450 12px/1.25 system-ui, -apple-system, "Segoe UI", sans-serif;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.flybuys-3d-controls__hint {
-  display: block;
-  color: rgba(22, 21, 20, 0.55);
-  font-weight: 400;
-  font-size: 11px;
-  line-height: 1.2;
-}
-
-.flybuys-3d-scale {
-  grid-area: scale;
-  display: grid;
-  grid-template-columns: auto minmax(90px, 1fr) auto;
-  gap: 10px;
-  align-items: center;
-}
-
-.flybuys-3d-scale__end {
-  color: rgba(22, 21, 20, 0.58);
-  font: 400 11px/1.2 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+.flybuys-3d-controls__status {
+  grid-area: percentage;
+  align-self: start;
+  justify-self: end;
+  padding: 2px 7px;
+  border-radius: 7px;
+  background: rgba(23, 23, 23, 0.045);
+  color: rgba(23, 23, 23, 0.62);
+  font: 600 11px/1.35 system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
 .flybuys-3d-explode {
-  grid-area: scale;
-  -webkit-appearance: none;
-  appearance: none;
+  grid-area: range;
+  align-self: center;
   width: 100%;
-  height: 2px;
+  height: 3px;
   margin: 0;
   border: 0;
-  border-radius: 999px;
-  background: rgba(22, 21, 20, 0.16);
+  border-radius: 99px;
+  appearance: none;
+  -webkit-appearance: none;
+  background: rgba(23, 23, 23, 0.13);
   cursor: pointer;
 }
 
 .flybuys-3d-explode::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 19px;
-  height: 19px;
-  border: 1px solid rgba(22, 21, 20, 0.14);
+  width: 21px;
+  height: 21px;
+  border: 1px solid rgba(23, 23, 23, 0.14);
   border-radius: 50%;
+  appearance: none;
+  -webkit-appearance: none;
   background: #fff;
-  box-shadow: 0 1px 3px rgba(22, 21, 20, 0.12);
+  box-shadow: 0 2px 7px rgba(16, 18, 20, 0.13);
 }
 
 .flybuys-3d-explode::-moz-range-thumb {
-  width: 19px;
-  height: 19px;
-  border: 1px solid rgba(22, 21, 20, 0.14);
+  width: 21px;
+  height: 21px;
+  border: 1px solid rgba(23, 23, 23, 0.14);
   border-radius: 50%;
   background: #fff;
-  box-shadow: 0 1px 3px rgba(22, 21, 20, 0.12);
+  box-shadow: 0 2px 7px rgba(16, 18, 20, 0.13);
 }
 
-.flybuys-3d-explode:focus-visible {
-  outline: 2px solid #161514;
-  outline-offset: 6px;
+.flybuys-3d-controls__ends {
+  grid-area: ends;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  color: rgba(23, 23, 23, 0.42);
+  font: 450 10px/1.2 system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
 .flybuys-3d-reset {
   grid-area: reset;
+  align-self: center;
   display: grid;
-  width: 38px;
-  height: 38px;
+  width: 37px;
+  height: 37px;
+  margin-left: 14px;
   place-items: center;
   padding: 0 0 2px;
-  border: 1px solid rgba(22, 21, 20, 0.14);
-  background: rgba(255, 255, 255, 0.82);
-  color: #161514;
+  border: 1px solid rgba(23, 23, 23, 0.11);
   border-radius: 50%;
-  font: 400 22px/1 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: rgba(255, 255, 255, 0.96);
+  color: #171717;
+  font: 400 20px/1 system-ui, -apple-system, "Segoe UI", sans-serif;
   cursor: pointer;
 }
 
-.flybuys-3d-reset:hover,
-.flybuys-3d-reset:focus-visible {
-  background: #fff;
-  outline: 2px solid #161514;
-  outline-offset: 2px;
+.flybuys-3d-reset:hover {
+  background: #f2f3f3;
 }
 
 .flybuys-3d-error {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  left: 20px;
+  z-index: 5;
   display: none;
-  margin-top: 12px;
-  color: #ffd4d4;
-  background: rgba(92, 0, 0, 0.35);
-  border: 1px solid rgba(255, 170, 170, 0.35);
-  border-radius: 8px;
-  padding: 10px 12px;
-  font: 13px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #fff;
+  color: #641c1c;
+  font: 500 13px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
 .flybuys-3d-error.is-visible {
   display: block;
 }
 
+.flybuys-3d-viewer[data-state="loading"] .flybuys-3d-controls,
+.flybuys-3d-viewer[data-state="loading"] .flybuys-3d-views {
+  visibility: hidden;
+  opacity: 0;
+}
+
 @media (max-width: 767px) {
+  .flybuys-3d-viewer {
+    aspect-ratio: 4 / 5;
+    min-height: 520px;
+    border-radius: 18px;
+  }
+
+  .flybuys-3d-meta {
+    top: 16px;
+    right: 16px;
+    left: 16px;
+  }
+
+  .flybuys-3d-meta strong {
+    font-size: 23px;
+  }
+
+  .flybuys-3d-eyebrow {
+    font-size: 10px;
+  }
+
+  .flybuys-3d-part-count {
+    max-width: 95px;
+    padding-top: 2px;
+    font-size: 10px;
+    text-align: right;
+  }
+
+  .flybuys-3d-views {
+    top: 61px;
+    right: 14px;
+    display: flex;
+    transform: none;
+  }
+
+  .flybuys-3d-view-button {
+    width: 31px;
+    height: 31px;
+    font-size: 9px;
+  }
+
   .flybuys-3d-controls {
-    gap: 7px 10px;
-    padding: 9px 11px 11px;
+    bottom: 12px;
+    width: calc(100% - 24px);
+    padding: 13px 14px 11px;
+    border-radius: 16px;
   }
 
   .flybuys-3d-controls__label {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 2px;
-    font-size: 15px;
-  }
-
-  .flybuys-3d-controls__hint {
-    white-space: nowrap;
-  }
-
-  .flybuys-3d-scale {
-    grid-template-columns: auto minmax(60px, 1fr) auto;
-    gap: 7px;
+    margin-bottom: 9px;
   }
 
   .flybuys-3d-reset {
     width: 35px;
     height: 35px;
-    font-size: 20px;
+    margin-left: 11px;
+  }
+}
+
+@media (max-width: 390px) {
+  .flybuys-3d-viewer {
+    min-height: 500px;
+  }
+
+  .flybuys-3d-mode {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flybuys-3d-stage__loading {
+    transition: none;
   }
 }

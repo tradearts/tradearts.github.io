@@ -6,446 +6,472 @@
 
   const root = document.getElementById("flybuys-3d-viewer");
   if (!root) return;
+  root.closest(".info_about-media-wrapper")?.classList.add("flybuys-3d-wrapper");
+
+  root.innerHTML = `
+    <div class="flybuys-3d-stage" aria-live="polite" aria-busy="true">
+      <canvas role="application" tabindex="0" aria-label="Interactive Flybuys robot model. Drag to rotate, scroll or pinch to zoom. Use the slider to arrange the robot into a parts inventory."></canvas>
+      <div class="flybuys-3d-stage__loading">Loading 3D model…</div>
+    </div>
+    <div class="flybuys-3d-meta" aria-hidden="true">
+      <div class="flybuys-3d-meta__identity">
+        <span class="flybuys-3d-eyebrow">Interactive model</span>
+        <strong>Flybuys robot</strong>
+      </div>
+      <span class="flybuys-3d-part-count">Preparing digital model</span>
+    </div>
+    <div class="flybuys-3d-views" aria-label="Camera views">
+      <button class="flybuys-3d-view-button is-active" type="button" data-flybuys-view="front" aria-label="Front view" title="Front view">F</button>
+      <button class="flybuys-3d-view-button" type="button" data-flybuys-view="side" aria-label="Side view" title="Side view">S</button>
+      <button class="flybuys-3d-view-button" type="button" data-flybuys-view="back" aria-label="Back view" title="Back view">B</button>
+    </div>
+    <div class="flybuys-3d-controls">
+      <div class="flybuys-3d-controls__label">
+        <label for="flybuys-explode">Explode model</label>
+        <span class="flybuys-3d-mode">Assembled</span>
+      </div>
+      <span class="flybuys-3d-controls__status" id="flybuys-explode-value">0%</span>
+      <input id="flybuys-explode" type="range" min="0" max="100" step="1" value="0" class="flybuys-3d-explode" aria-label="Explode model" aria-describedby="flybuys-explode-value">
+      <div class="flybuys-3d-controls__ends" aria-hidden="true"><span>Assembled</span><span>Every part</span></div>
+      <button class="flybuys-3d-reset" type="button" aria-label="Reset model and camera" title="Reset model and camera">↺</button>
+    </div>
+    <div class="flybuys-3d-error" role="status"></div>
+  `;
 
   const stage = root.querySelector(".flybuys-3d-stage");
   const canvas = stage?.querySelector("canvas");
-  const placeholder = root.querySelector(".flybuys-3d-placeholder");
-  const loadButton = root.querySelector(".flybuys-3d-load-button");
-  const controlsPanel = root.querySelector(".flybuys-3d-controls");
   const slider = root.querySelector(".flybuys-3d-explode");
-  const statusText = root.querySelector(".flybuys-3d-controls__status");
+  const valueText = root.querySelector(".flybuys-3d-controls__status");
   const resetButton = root.querySelector(".flybuys-3d-reset");
-  const statusBox = root.querySelector(".flybuys-3d-status");
+  const progress = root.querySelector(".flybuys-3d-stage__loading");
+  const partCount = root.querySelector(".flybuys-3d-part-count");
+  const modeText = root.querySelector(".flybuys-3d-mode");
   const errorBox = root.querySelector(".flybuys-3d-error");
-  const controlLabel = root.querySelector('label[for="flybuys-explode"]');
-  const controlsHint = root.querySelector(".flybuys-3d-controls__hint");
+  const viewButtons = [...root.querySelectorAll("[data-flybuys-view]")];
 
-  if (!stage || !canvas || !placeholder || !loadButton || !controlsPanel || !slider || !statusText || !resetButton || !statusBox || !errorBox || !controlLabel || !controlsHint) return;
+  if (!stage || !canvas || !slider || !valueText || !resetButton || !progress || !partCount || !modeText || !errorBox) return;
 
-  controlLabel.textContent = "Exploded view";
-  controlsHint.textContent = "Assembled — Exploded";
-  resetButton.textContent = "↺";
-  resetButton.setAttribute("aria-label", "Reset 3D view");
-  resetButton.setAttribute("title", "Reset 3D view");
-
-  const reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const smallViewport = window.matchMedia("(max-width: 767px)");
-
-  let runtimePromise = null;
-  let runtimeReady = false;
-  let sceneReady = false;
-  let isRuntimeLoading = false;
-  let isControllerRunning = false;
-  let rafId = 0;
-  let visibilityStop = false;
-  let viewportStop = false;
-  let startRequested = false;
-
   const state = {
     target: 0,
     current: 0,
     parts: [],
-    explodeScale: 0.6,
+    inventory: { width: 1, height: 1, center: null },
+    homeCamera: null,
+    homeTarget: null,
+    inventoryCamera: null,
+    inventoryTarget: null,
+    guidingCamera: false,
+    activeView: "front",
   };
 
-  function clampPercent(value) {
-    const num = Number(value);
-    if (Number.isNaN(num)) return 0;
-    return Math.max(0, Math.min(100, num));
+  function clamp01(value) {
+    return Math.max(0, Math.min(1, Number(value) || 0));
   }
 
-  function setBusy(value) {
-    stage.setAttribute("aria-busy", String(Boolean(value)));
+  function ease(value) {
+    const t = clamp01(value);
+    return t * t * (3 - 2 * t);
   }
 
-  function showError(message) {
-    errorBox.textContent = message;
+  function setProgress(text) {
+    progress.textContent = text;
+  }
+
+  function setMode(value) {
+    const percent = Math.round(clamp01(value) * 100);
+    valueText.textContent = `${percent}%`;
+    modeText.textContent = percent < 8 ? "Assembled" : percent > 92 ? "Parts inventory" : "Separating";
+    viewButtons.forEach((button) => {
+      button.disabled = percent > 8;
+    });
+  }
+
+  function showError() {
+    stage.removeAttribute("aria-busy");
+    stage.setAttribute("data-state", "error");
+    errorBox.textContent = "The interactive model could not load. Please refresh the page to try again.";
     errorBox.classList.add("is-visible");
-    stage.style.display = "block";
-    controlsPanel.style.display = "none";
-    placeholder.style.display = "none";
-    loadButton.style.display = "none";
-    loadButton.disabled = false;
-    loadButton.textContent = "Load 3D model";
-    statusBox.textContent = "Static preview";
-    statusText.textContent = "0%";
-    stage.removeAttribute("data-state");
-    setBusy(false);
+    setProgress("3D model unavailable");
   }
 
-  function showLoaded() {
-    statusBox.textContent = "Interactive 3D loaded";
-    placeholder.style.display = "none";
-    stage.style.display = "block";
-    controlsPanel.style.display = "grid";
-    loadButton.style.display = "none";
-    errorBox.classList.remove("is-visible");
-    stage.setAttribute("data-state", "ready");
-  }
+  async function start() {
+    stage.setAttribute("aria-busy", "true");
+    root.setAttribute("data-state", "loading");
 
-  function pauseLoop() {
-    if (rafId !== 0) {
-      cancelAnimationFrame(rafId);
-      rafId = 0;
+    try {
+      const [THREE, orbitModule, loaderModule] = await Promise.all([
+        import(THREE_RUNTIME),
+        import(ORBIT_PATH),
+        import(GLTF_PATH),
+      ]);
+      buildViewer(THREE, orbitModule.OrbitControls, loaderModule.GLTFLoader);
+    } catch (error) {
+      console.error(error);
+      showError();
     }
-    isControllerRunning = false;
-    setBusy(false);
   }
 
-  function canRender() {
-    return sceneReady && !viewportStop && !visibilityStop;
-  }
-
-  function startLoop(context) {
-    if (!canRender()) return;
-
-    const speed = reduceMotionQuery.matches ? 1 : 0.2;
-    const camera = context.camera;
-    const renderer = context.renderer;
-    const controls = context.controls;
-    const scene = context.scene;
-    const parts = state.parts;
-    if (isControllerRunning) return;
-
-    function tick() {
-      if (!canRender()) {
-        isControllerRunning = false;
-        rafId = 0;
-        return;
-      }
-
-      rafId = requestAnimationFrame(tick);
-      isControllerRunning = true;
-
-      state.current += (state.target - state.current) * speed;
-      if (Math.abs(state.target - state.current) < 0.001) {
-        state.current = state.target;
-      }
-
-      if (Math.abs(state.current - Number(statusText.textContent.replace("%", "")) / 100) > 0.001) {
-        statusText.textContent = `${Math.round(state.current * 100)}%`;
-      }
-
-      setBusy(state.target !== state.current);
-
-      for (const part of parts) {
-        part.mesh.position.lerpVectors(part.homeLocal, part.explodedLocal, state.current);
-      }
-
-      controls.update();
-      renderer.render(scene, camera);
-    }
-
-    rafId = requestAnimationFrame(tick);
-    isControllerRunning = true;
-  }
-
-  function updateLayout(context) {
-    const width = Math.max(1, stage.clientWidth);
-    const height = Math.max(1, stage.clientHeight);
-
-    const camera = context.camera;
-    const renderer = context.renderer;
-
-    camera.aspect = width / height;
-    camera.updateProjectionMatrix();
-    renderer.setSize(width, height, false);
-  }
-
-  function buildViewer({ THREE, OrbitControls, GLTFLoader }) {
+  function buildViewer(THREE, OrbitControls, GLTFLoader) {
     const renderer = new THREE.WebGLRenderer({
       canvas,
       antialias: !smallViewport.matches,
       alpha: false,
       powerPreference: smallViewport.matches ? "low-power" : "high-performance",
     });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, smallViewport.matches ? 1.4 : 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, smallViewport.matches ? 1.35 : 1.8));
     renderer.setClearColor(0xefefef, 1);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.35;
+    renderer.toneMappingExposure = 1.15;
+    renderer.shadowMap.enabled = !smallViewport.matches;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(42, 16 / 9, 0.01, 240);
+    const camera = new THREE.PerspectiveCamera(38, 16 / 9, 0.01, 500);
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
-    controls.dampingFactor = 0.1;
+    controls.dampingFactor = 0.075;
     controls.enablePan = false;
+    controls.screenSpacePanning = true;
 
-    const ambient = new THREE.HemisphereLight(0xffffff, 0x273449, 1.5);
-    const key = new THREE.DirectionalLight(0xffffff, 2.4);
-    const fill = new THREE.DirectionalLight(0x9ec8ff, 1.1);
-    const rim = new THREE.DirectionalLight(0xffd8bd, 1.25);
-    key.position.set(1, 2, 1.6);
-    fill.position.set(-0.9, 0.7, -1.4);
-    rim.position.set(-1.4, 1.6, 1);
-    scene.add(ambient, key, fill, rim);
+    scene.add(new THREE.HemisphereLight(0xffffff, 0xb4bac2, 2.15));
+
+    const key = new THREE.DirectionalLight(0xffffff, 3.2);
+    key.position.set(3, 5, 5);
+    key.castShadow = !smallViewport.matches;
+    key.shadow.mapSize.set(1024, 1024);
+    scene.add(key);
+
+    const fill = new THREE.DirectionalLight(0xb9d4ff, 1.25);
+    fill.position.set(-4, 2, 3);
+    scene.add(fill);
+
+    const rim = new THREE.DirectionalLight(0xffe4ce, 1.45);
+    rim.position.set(2, 4, -4);
+    scene.add(rim);
 
     const modelRoot = new THREE.Group();
     scene.add(modelRoot);
 
-    function centreAndPrepareModel(model) {
-      const modelBounds = new THREE.Box3().setFromObject(model);
-      const modelCenter = modelBounds.getCenter(new THREE.Vector3());
-      const modelSize = modelBounds.getSize(new THREE.Vector3());
-      const modelRadius = Math.max(0.001, Math.max(modelSize.x, modelSize.y, modelSize.z) * 0.5);
+    const platformRoot = new THREE.Group();
+    const platform = new THREE.Mesh(
+      new THREE.CylinderGeometry(1, 1, 0.035, 96),
+      new THREE.MeshStandardMaterial({ color: 0xe7e8e9, roughness: 0.92, metalness: 0, transparent: true })
+    );
+    platform.receiveShadow = true;
+    platformRoot.add(platform);
 
-      model.position.sub(modelCenter);
+    const contact = new THREE.Mesh(
+      new THREE.CircleGeometry(1, 96),
+      new THREE.MeshBasicMaterial({ color: 0x7e848b, transparent: true, opacity: 0.095, depthWrite: false })
+    );
+    contact.rotation.x = -Math.PI / 2;
+    contact.scale.set(0.76, 0.76, 0.76);
+    contact.position.y = 0.021;
+    platformRoot.add(contact);
+    scene.add(platformRoot);
+
+    let modelRadius = 1;
+    let rafId = 0;
+    let sceneReady = false;
+    let viewportPaused = false;
+    let documentPaused = document.hidden;
+
+    function render() {
+      renderer.render(scene, camera);
+    }
+
+    function layoutParts() {
+      if (!state.parts.length) return;
+
+      modelRoot.updateWorldMatrix(true, true);
+      const gap = modelRadius * (smallViewport.matches ? 0.055 : 0.042);
+      const minCell = modelRadius * 0.035;
+      const boxes = state.parts.map((part, index) => {
+        const box = new THREE.Box3().setFromObject(part.mesh);
+        const center = box.getCenter(new THREE.Vector3());
+        const size = box.getSize(new THREE.Vector3());
+        const origin = part.mesh.getWorldPosition(new THREE.Vector3());
+        return {
+          part,
+          index,
+          center,
+          originOffset: center.clone().sub(origin),
+          width: Math.max(size.x, minCell),
+          height: Math.max(size.y, minCell),
+        };
+      });
+
+      const totalArea = boxes.reduce((sum, item) => sum + (item.width + gap) * (item.height + gap), 0);
+      const aspect = Math.max(0.72, Math.min(1.9, stage.clientWidth / Math.max(1, stage.clientHeight)));
+      const targetWidth = Math.sqrt(totalArea * aspect) * 1.22;
+      const sorted = boxes.slice().sort((a, b) => b.height - a.height || b.width - a.width || a.index - b.index);
+
+      let cursorX = 0;
+      let cursorY = 0;
+      let rowHeight = 0;
+      let packedWidth = 0;
+
+      for (const item of sorted) {
+        if (cursorX > 0 && cursorX + item.width > targetWidth) {
+          cursorX = 0;
+          cursorY += rowHeight + gap;
+          rowHeight = 0;
+        }
+        item.x = cursorX + item.width * 0.5;
+        item.y = -(cursorY + item.height * 0.5);
+        cursorX += item.width + gap;
+        rowHeight = Math.max(rowHeight, item.height);
+        packedWidth = Math.max(packedWidth, cursorX - gap);
+      }
+
+      const packedHeight = cursorY + rowHeight;
+      const centerX = packedWidth * 0.5;
+      const centerY = -packedHeight * 0.5;
+      const planeZ = 0;
+      const desiredOrigin = new THREE.Vector3();
+
+      for (const item of boxes) {
+        desiredOrigin.set(
+          item.x - centerX - item.originOffset.x,
+          item.y - centerY - item.originOffset.y,
+          planeZ - item.originOffset.z
+        );
+        const parent = item.part.mesh.parent || modelRoot;
+        item.part.explodedLocal.copy(parent.worldToLocal(desiredOrigin.clone()));
+      }
+
+      state.inventory.width = packedWidth;
+      state.inventory.height = packedHeight;
+      state.inventory.center = new THREE.Vector3(0, 0, 0);
+      updateInventoryCamera();
+    }
+
+    function updateInventoryCamera() {
+      const aspect = Math.max(0.1, camera.aspect);
+      const halfFov = THREE.MathUtils.degToRad(camera.fov * 0.5);
+      const verticalDistance = state.inventory.height / (2 * Math.tan(halfFov));
+      const horizontalDistance = state.inventory.width / (2 * Math.tan(halfFov) * aspect);
+      const distance = Math.max(verticalDistance, horizontalDistance) * (smallViewport.matches ? 1.16 : 1.1);
+      state.inventoryTarget = new THREE.Vector3(0, 0, 0);
+      state.inventoryCamera = new THREE.Vector3(0, 0, Math.max(distance, modelRadius * 2.4));
+    }
+
+    function prepareModel(model) {
+      const initialBounds = new THREE.Box3().setFromObject(model);
+      const initialCenter = initialBounds.getCenter(new THREE.Vector3());
+      model.position.sub(initialCenter);
       modelRoot.updateWorldMatrix(true, true);
 
-      const targetDistance = modelRadius * 0.95;
-      const centredBounds = new THREE.Box3().setFromObject(modelRoot);
-      const modelWorldCenter = centredBounds.getCenter(new THREE.Vector3());
-      const meshWorldCenter = new THREE.Vector3();
-      const worldPos = new THREE.Vector3();
-      const worldTarget = new THREE.Vector3();
-      const direction = new THREE.Vector3();
+      const bounds = new THREE.Box3().setFromObject(modelRoot);
+      const size = bounds.getSize(new THREE.Vector3());
+      const center = bounds.getCenter(new THREE.Vector3());
+      modelRadius = Math.max(size.x, size.y, size.z) * 0.5;
 
-      state.parts = [];
-      state.explodeScale = targetDistance;
-
-      model.traverse((mesh) => {
-        if (!mesh.isMesh) return;
-
-        const bounds = new THREE.Box3().setFromObject(mesh);
-        bounds.getCenter(meshWorldCenter);
-
-        const parent = mesh.parent || modelRoot;
-        const homeWorld = mesh.getWorldPosition(worldPos);
-        const normalised = direction
-          .subVectors(meshWorldCenter, modelWorldCenter)
-          .normalize();
-
-        if (!Number.isFinite(normalised.lengthSq()) || normalised.lengthSq() === 0) {
-          normalised.set(0, 1, 0);
-        }
-
-        parent.worldToLocal(worldTarget.copy(homeWorld).addScaledVector(normalised, targetDistance));
-
-        state.parts.push({
-          mesh,
-          homeLocal: mesh.position.clone(),
-          explodedLocal: worldTarget.clone(),
-        });
+      const meshes = [];
+      model.traverse((object) => {
+        if (!object.isMesh) return;
+        object.castShadow = !smallViewport.matches;
+        object.receiveShadow = true;
+        meshes.push(object);
       });
 
-      const distance = (modelRadius / Math.tan(THREE.MathUtils.degToRad(camera.fov * 0.5))) * 1.7;
-      const viewTarget = modelWorldCenter.clone();
-      viewTarget.y -= modelRadius * 0.18;
-      controls.target.copy(viewTarget);
-      controls.minDistance = distance * 0.45;
-      controls.maxDistance = distance * 5;
+      state.parts = meshes.map((mesh) => ({
+        mesh,
+        homeLocal: mesh.position.clone(),
+        explodedLocal: mesh.position.clone(),
+      }));
 
-      camera.position.set(modelWorldCenter.x, modelWorldCenter.y, modelWorldCenter.z + distance);
-      camera.near = Math.max(0.001, modelRadius * 0.02);
-      camera.far = Math.max(10, distance * 20);
+      partCount.textContent = `${state.parts.length}-part digital model`;
+
+      const distance = (modelRadius / Math.tan(THREE.MathUtils.degToRad(camera.fov * 0.5))) * (smallViewport.matches ? 1.95 : 2);
+      const target = center.clone();
+      target.y -= modelRadius * 0.08;
+      state.homeTarget = target.clone();
+      state.homeCamera = new THREE.Vector3(center.x + modelRadius * 0.12, center.y + modelRadius * 0.18, center.z + distance);
+
+      camera.position.copy(state.homeCamera);
+      controls.target.copy(state.homeTarget);
+      controls.minDistance = distance * 0.42;
+      controls.maxDistance = Math.max(distance * 5, modelRadius * 12);
+      camera.near = Math.max(0.001, modelRadius * 0.01);
+      camera.far = Math.max(50, distance * 25);
       camera.updateProjectionMatrix();
-      controls.update();
+
+      const platformY = bounds.min.y - modelRadius * 0.045;
+      platformRoot.position.set(center.x, platformY, center.z);
+      platformRoot.scale.set(modelRadius * 1.12, modelRadius * 0.14, modelRadius * 0.88);
+
+      layoutParts();
       controls.saveState();
-
-      return modelRadius;
     }
 
-    const context = {
-      scene,
-      camera,
-      renderer,
-      controls,
-      resizeObserver: null,
-      intersectionObserver: null,
-      modelRadius: 1,
-    };
-
-    function loadModel() {
-      statusBox.textContent = "Loading model…";
-      stage.setAttribute("data-state", "loading");
-      sceneReady = false;
-      setBusy(true);
-
-      const loader = new GLTFLoader();
-      loader.load(MODEL_PATH, (gltf) => {
-        const model = gltf.scene;
-        modelRoot.clear();
-        modelRoot.add(model);
-        modelRoot.updateMatrixWorld(true, true);
-
-        const radius = centreAndPrepareModel(model);
-        context.modelRadius = radius;
-
-        state.target = 0;
-        state.current = 0;
-        slider.value = "0";
-        statusText.textContent = "0%";
-
-        updateLayout(context);
-        showLoaded();
-        sceneReady = true;
-        setBusy(false);
-        controls.update();
-        startLoop(context);
-      }, undefined, (error) => {
-        console.error(error);
-        sceneReady = false;
-        setBusy(false);
-        showError("Unable to load the 3D model right now. Please refresh the page to try again.");
-      });
+    function guideCamera(value) {
+      if (!state.homeCamera || !state.inventoryCamera) return;
+      const t = ease(value);
+      camera.position.lerpVectors(state.homeCamera, state.inventoryCamera, t);
+      controls.target.lerpVectors(state.homeTarget, state.inventoryTarget, t);
+      controls.enableRotate = value < 0.9;
+      controls.enablePan = value > 0.78;
     }
 
-    function connectControls() {
-      let lastSet = 0;
+    function updateScene() {
+      const speed = reduceMotion.matches ? 1 : 0.115;
+      state.current += (state.target - state.current) * speed;
+      if (Math.abs(state.target - state.current) < 0.0008) {
+        state.current = state.target;
+        state.guidingCamera = false;
+      }
 
-      slider.addEventListener("input", (event) => {
-        const value = clampPercent(event.currentTarget.value);
-        state.target = value / 100;
-        statusText.textContent = `${value}%`;
-        stage.setAttribute("data-state", "ready");
+      const t = ease(state.current);
+      for (const part of state.parts) {
+        part.mesh.position.lerpVectors(part.homeLocal, part.explodedLocal, t);
+      }
 
-        const now = performance.now();
-        if (now - lastSet > 16) {
-          startLoop(context);
-          lastSet = now;
-        }
-      });
-
-      slider.addEventListener("change", () => {
-        stage.setAttribute("data-state", "ready");
-        statusText.textContent = `${Math.round(state.current * 100)}%`;
-      });
-
-      resetButton.addEventListener("click", () => {
-        statusText.textContent = "0%";
-        slider.value = "0";
-        state.target = 0;
-        controls.reset();
-        modelRoot.rotation.set(0, 0, 0);
-        state.current = 0;
-        stage.setAttribute("data-state", "ready");
-        startLoop(context);
-      });
-
-      canvas.addEventListener("keydown", (event) => {
-        const step = event.shiftKey ? 0.2 : 0.1;
-        if (event.key === "ArrowLeft") modelRoot.rotation.y -= step;
-        else if (event.key === "ArrowRight") modelRoot.rotation.y += step;
-        else if (event.key === "ArrowUp") modelRoot.rotation.x -= step;
-        else if (event.key === "ArrowDown") modelRoot.rotation.x += step;
-        else return;
-
-        event.preventDefault();
-        startLoop(context);
-      });
-
-      const onResize = () => {
-        updateLayout(context);
-      };
-
-      window.addEventListener("resize", onResize);
-      context.windowResizeCleanup = onResize;
-
-      context.resizeObserver = new ResizeObserver(onResize);
-      context.resizeObserver.observe(stage);
+      platformRoot.visible = t < 0.985;
+      platform.material.opacity = Math.max(0, 1 - t * 1.15);
+      contact.material.opacity = Math.max(0, 0.095 * (1 - t * 1.3));
+      if (state.guidingCamera) guideCamera(state.current);
+      setMode(state.current);
+      controls.update();
+      render();
     }
 
-    function bindVisibilityPause() {
-      const handleVisibility = () => {
-        visibilityStop = document.hidden;
-        if (visibilityStop) {
-          pauseLoop();
-        } else if (canRender()) {
-          startLoop(context);
-        }
-      };
-
-      const rootObserver = new IntersectionObserver((entries) => {
-        for (const entry of entries) {
-          viewportStop = !entry.isIntersecting;
-          if (viewportStop) {
-            pauseLoop();
-          } else if (canRender()) {
-            startLoop(context);
-          }
-        }
-      }, {
-        rootMargin: "200px 0px",
-      });
-
-      document.addEventListener("visibilitychange", handleVisibility);
-      context.visibilityCleanup = handleVisibility;
-      context.intersectionObserver = rootObserver;
-      rootObserver.observe(root);
+    function tick() {
+      rafId = 0;
+      if (!sceneReady || viewportPaused || documentPaused) return;
+      updateScene();
+      rafId = requestAnimationFrame(tick);
     }
 
-    connectControls();
-    bindVisibilityPause();
-    loadModel();
-  }
-
-  async function loadRuntime() {
-    if (runtimeReady) return runtimeReady;
-    if (runtimePromise) return runtimePromise;
-    if (isRuntimeLoading) return runtimePromise;
-
-    isRuntimeLoading = true;
-    runtimePromise = Promise.all([
-      import(THREE_RUNTIME),
-      import(ORBIT_PATH),
-      import(GLTF_PATH),
-    ]).then(([THREE, orbitControls, gltfLoader]) => {
-      runtimeReady = {
-        THREE,
-        OrbitControls: orbitControls.OrbitControls,
-        GLTFLoader: gltfLoader.GLTFLoader,
-      };
-      return runtimeReady;
-    }).finally(() => {
-      isRuntimeLoading = false;
-    });
-
-    return runtimePromise;
-  }
-
-  async function startViewer() {
-    if (sceneReady || isRuntimeLoading || startRequested) return;
-
-    startRequested = true;
-    loadButton.disabled = true;
-    loadButton.textContent = "Loading 3D…";
-    setBusy(true);
-
-    try {
-      const runtime = await loadRuntime();
-      setBusy(false);
-      runtimeReady = runtime;
-      buildViewer(runtime);
-      loadButton.disabled = false;
-      statusBox.textContent = "Loading model…";
-    } catch (error) {
-      console.error(error);
-      startRequested = false;
-      setBusy(false);
-      loadButton.disabled = false;
-      loadButton.textContent = "Load 3D model";
-      showError("The interactive model failed to load. Please refresh the page to try again.");
+    function startLoop() {
+      if (!rafId && sceneReady && !viewportPaused && !documentPaused) rafId = requestAnimationFrame(tick);
     }
-  }
 
-  placeholder.style.display = "none";
-  loadButton.style.display = "none";
-  stage.style.display = "block";
-  stage.setAttribute("data-state", "loading");
-  statusBox.textContent = "Loading model…";
-  statusText.textContent = "0%";
-
-  const autoLoadObserver = new IntersectionObserver((entries) => {
-    for (const entry of entries) {
-      if (entry.isIntersecting) {
-        autoLoadObserver.disconnect();
-        startViewer();
-        break;
+    function resize() {
+      const width = Math.max(1, stage.clientWidth);
+      const height = Math.max(1, stage.clientHeight);
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, smallViewport.matches ? 1.35 : 1.8));
+      renderer.setSize(width, height, false);
+      if (sceneReady) {
+        layoutParts();
+        if (state.current > 0.9) guideCamera(state.current);
+        render();
       }
     }
-  }, {
-    rootMargin: "400px 0px",
-  });
-  autoLoadObserver.observe(root);
+
+    function setView(view) {
+      if (!state.homeCamera || state.current > 0.08) return;
+      const distance = state.homeCamera.distanceTo(state.homeTarget);
+      const positions = {
+        front: new THREE.Vector3(0, modelRadius * 0.16, distance),
+        side: new THREE.Vector3(distance, modelRadius * 0.16, 0),
+        back: new THREE.Vector3(0, modelRadius * 0.16, -distance),
+      };
+      state.activeView = view;
+      camera.position.copy(positions[view] || positions.front);
+      controls.target.copy(state.homeTarget);
+      controls.update();
+      viewButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.flybuysView === view));
+      render();
+    }
+
+    slider.addEventListener("input", (event) => {
+      state.target = clamp01(Number(event.currentTarget.value) / 100);
+      state.guidingCamera = true;
+      setMode(state.target);
+      startLoop();
+    });
+
+    resetButton.addEventListener("click", () => {
+      slider.value = "0";
+      state.target = 0;
+      state.current = 0;
+      state.guidingCamera = false;
+      for (const part of state.parts) part.mesh.position.copy(part.homeLocal);
+      camera.position.copy(state.homeCamera);
+      controls.target.copy(state.homeTarget);
+      controls.enableRotate = true;
+      controls.enablePan = false;
+      controls.update();
+      setMode(0);
+      setView("front");
+      startLoop();
+    });
+
+    viewButtons.forEach((button) => button.addEventListener("click", () => setView(button.dataset.flybuysView)));
+
+    canvas.addEventListener("keydown", (event) => {
+      if (event.key === "Home") {
+        resetButton.click();
+        event.preventDefault();
+      } else if (event.key === "End") {
+        slider.value = "100";
+        slider.dispatchEvent(new Event("input", { bubbles: true }));
+        event.preventDefault();
+      }
+    });
+
+    const resizeObserver = new ResizeObserver(resize);
+    resizeObserver.observe(stage);
+    window.addEventListener("resize", resize, { passive: true });
+
+    const visibilityObserver = new IntersectionObserver((entries) => {
+      viewportPaused = !entries.some((entry) => entry.isIntersecting);
+      if (viewportPaused && rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = 0;
+      } else {
+        startLoop();
+      }
+    }, { rootMargin: "160px 0px" });
+    visibilityObserver.observe(root);
+
+    document.addEventListener("visibilitychange", () => {
+      documentPaused = document.hidden;
+      if (documentPaused && rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = 0;
+      } else {
+        startLoop();
+      }
+    });
+
+    resize();
+    setProgress("Loading 3D model…");
+
+    new GLTFLoader().load(
+      MODEL_PATH,
+      (gltf) => {
+        modelRoot.add(gltf.scene);
+        modelRoot.updateMatrixWorld(true);
+        prepareModel(gltf.scene);
+        sceneReady = true;
+        root.setAttribute("data-state", "ready");
+        stage.setAttribute("data-state", "ready");
+        stage.removeAttribute("aria-busy");
+        setMode(0);
+        resize();
+        controls.update();
+        render();
+        startLoop();
+      },
+      (event) => {
+        if (event.lengthComputable && event.total > 0) {
+          setProgress(`Loading 3D model · ${Math.min(99, Math.round((event.loaded / event.total) * 100))}%`);
+        }
+      },
+      (error) => {
+        console.error(error);
+        showError();
+      }
+    );
+  }
+
+  setMode(0);
+  start();
 })();
