@@ -17,8 +17,16 @@
   const resetButton = root.querySelector(".flybuys-3d-reset");
   const statusBox = root.querySelector(".flybuys-3d-status");
   const errorBox = root.querySelector(".flybuys-3d-error");
+  const controlLabel = root.querySelector('label[for="flybuys-explode"]');
+  const controlsHint = root.querySelector(".flybuys-3d-controls__hint");
 
-  if (!stage || !canvas || !placeholder || !loadButton || !controlsPanel || !slider || !statusText || !resetButton || !statusBox || !errorBox) return;
+  if (!stage || !canvas || !placeholder || !loadButton || !controlsPanel || !slider || !statusText || !resetButton || !statusBox || !errorBox || !controlLabel || !controlsHint) return;
+
+  controlLabel.textContent = "Exploded view";
+  controlsHint.textContent = "Assembled — Exploded";
+  resetButton.textContent = "↺";
+  resetButton.setAttribute("aria-label", "Reset 3D view");
+  resetButton.setAttribute("title", "Reset 3D view");
 
   const reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
   const smallViewport = window.matchMedia("(max-width: 767px)");
@@ -31,6 +39,7 @@
   let rafId = 0;
   let visibilityStop = false;
   let viewportStop = false;
+  let startRequested = false;
 
   const state = {
     target: 0,
@@ -52,10 +61,10 @@
   function showError(message) {
     errorBox.textContent = message;
     errorBox.classList.add("is-visible");
-    stage.style.display = "none";
+    stage.style.display = "block";
     controlsPanel.style.display = "none";
-    placeholder.style.display = "block";
-    loadButton.style.display = "inline-flex";
+    placeholder.style.display = "none";
+    loadButton.style.display = "none";
     loadButton.disabled = false;
     loadButton.textContent = "Load 3D model";
     statusBox.textContent = "Static preview";
@@ -278,7 +287,7 @@
         console.error(error);
         sceneReady = false;
         setBusy(false);
-        showError("Unable to load the 3D model. The poster image remains available.");
+        showError("Unable to load the 3D model right now. Please refresh the page to try again.");
       });
     }
 
@@ -396,9 +405,9 @@
   }
 
   async function startViewer() {
-    if (sceneReady) return;
-    if (isRuntimeLoading) return;
+    if (sceneReady || isRuntimeLoading || startRequested) return;
 
+    startRequested = true;
     loadButton.disabled = true;
     loadButton.textContent = "Loading 3D…";
     setBusy(true);
@@ -412,34 +421,31 @@
       statusBox.textContent = "Loading model…";
     } catch (error) {
       console.error(error);
+      startRequested = false;
       setBusy(false);
       loadButton.disabled = false;
       loadButton.textContent = "Load 3D model";
-      showError("3D runtime failed to load. Tap Load 3D to retry.");
+      showError("The interactive model failed to load. Please refresh the page to try again.");
     }
   }
 
-  function onKeyLoad(event) {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      startViewer();
-    }
-  }
-
-  loadButton.addEventListener("click", startViewer);
-  loadButton.addEventListener("keydown", onKeyLoad);
-
-  statusBox.textContent = "Tap Load 3D to start";
+  placeholder.style.display = "none";
+  loadButton.style.display = "none";
+  stage.style.display = "block";
+  stage.setAttribute("data-state", "loading");
+  statusBox.textContent = "Loading model…";
   statusText.textContent = "0%";
 
-  const rootObserver = new IntersectionObserver((entries) => {
+  const autoLoadObserver = new IntersectionObserver((entries) => {
     for (const entry of entries) {
-      if (entry.isIntersecting && loadButton.style.display !== "none") {
-        statusBox.textContent = "Tap Load 3D to start";
+      if (entry.isIntersecting) {
+        autoLoadObserver.disconnect();
+        startViewer();
+        break;
       }
     }
   }, {
-    rootMargin: "250px 0px",
+    rootMargin: "400px 0px",
   });
-  rootObserver.observe(root);
+  autoLoadObserver.observe(root);
 })();

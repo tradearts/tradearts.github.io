@@ -14,6 +14,7 @@
 
 .flybuys-3d-placeholder {
   position: relative;
+  display: none;
   aspect-ratio: 16 / 9;
   width: 100%;
   min-height: 260px;
@@ -58,7 +59,7 @@
 
 .flybuys-3d-stage {
   position: relative;
-  display: none;
+  display: block;
   aspect-ratio: 16 / 9;
   width: 100%;
   background: #efefef;
@@ -114,15 +115,6 @@
   font: 600 16px/1.2 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
-.flybuys-3d-controls__label label {
-  font-size: 0;
-}
-
-.flybuys-3d-controls__label label::after {
-  content: "Exploded view";
-  font-size: 16px;
-}
-
 .flybuys-3d-status,
 .flybuys-3d-controls__status {
   position: absolute;
@@ -139,12 +131,6 @@
   font-weight: 400;
   font-size: 11px;
   line-height: 1.2;
-  font-size: 0;
-}
-
-.flybuys-3d-controls__hint::after {
-  content: "Assembled  —  Exploded";
-  font-size: 11px;
 }
 
 .flybuys-3d-scale {
@@ -209,13 +195,8 @@
   background: rgba(255, 255, 255, 0.82);
   color: #161514;
   border-radius: 50%;
-  font: 400 0/1 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font: 400 22px/1 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   cursor: pointer;
-}
-
-.flybuys-3d-reset::before {
-  content: "↺";
-  font-size: 22px;
 }
 
 .flybuys-3d-reset:hover,
@@ -253,10 +234,6 @@
     font-size: 15px;
   }
 
-  .flybuys-3d-controls__label label::after {
-    font-size: 15px;
-  }
-
   .flybuys-3d-controls__hint {
     white-space: nowrap;
   }
@@ -269,10 +246,6 @@
   .flybuys-3d-reset {
     width: 35px;
     height: 35px;
-    font-size: 0;
-  }
-
-  .flybuys-3d-reset::before {
     font-size: 20px;
   }
 }
