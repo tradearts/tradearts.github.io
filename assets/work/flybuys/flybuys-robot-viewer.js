@@ -151,7 +151,7 @@
       powerPreference: smallViewport.matches ? "low-power" : "high-performance",
     });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, smallViewport.matches ? 1.4 : 2));
-    renderer.setClearColor(0x111111, 1);
+    renderer.setClearColor(0xefefef, 1);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.35;
