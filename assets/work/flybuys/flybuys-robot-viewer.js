@@ -6,6 +6,7 @@
 
   const root = document.getElementById("flybuys-3d-viewer");
   if (!root) return;
+  document.body.classList.add("flybuys-3d-page");
   root.closest(".info_about-media-wrapper")?.classList.add("flybuys-3d-wrapper");
 
   root.innerHTML = `
@@ -25,6 +26,7 @@
       <button class="flybuys-3d-view-button" type="button" data-flybuys-view="side" aria-label="Side view" title="Side view">S</button>
       <button class="flybuys-3d-view-button" type="button" data-flybuys-view="back" aria-label="Back view" title="Back view">B</button>
     </div>
+    <div class="flybuys-3d-help" aria-hidden="true">Drag to rotate · Scroll to zoom</div>
     <div class="flybuys-3d-controls">
       <div class="flybuys-3d-controls__label">
         <label for="flybuys-explode">Explode model</label>
@@ -82,6 +84,7 @@
   function setMode(value) {
     const percent = Math.round(clamp01(value) * 100);
     valueText.textContent = `${percent}%`;
+    slider.style.setProperty("--explode-progress", `${percent}%`);
     modeText.textContent = percent < 8 ? "Assembled" : percent > 92 ? "Parts inventory" : "Separating";
     viewButtons.forEach((button) => {
       button.disabled = percent > 8;
@@ -175,6 +178,7 @@
 
     let modelRadius = 1;
     let rafId = 0;
+    let framesAfterChange = 0;
     let sceneReady = false;
     let viewportPaused = false;
     let documentPaused = document.hidden;
@@ -340,10 +344,18 @@
     }
 
     function tick() {
-      rafId = 0;
-      if (!sceneReady || viewportPaused || documentPaused) return;
+      if (!sceneReady || viewportPaused || documentPaused) {
+        rafId = 0;
+        return;
+      }
       updateScene();
-      rafId = requestAnimationFrame(tick);
+      const isAnimating = Math.abs(state.target - state.current) >= 0.0008 || state.guidingCamera;
+      if (isAnimating || framesAfterChange > 0) {
+        framesAfterChange = Math.max(0, framesAfterChange - 1);
+        rafId = requestAnimationFrame(tick);
+      } else {
+        rafId = 0;
+      }
     }
 
     function startLoop() {
@@ -404,6 +416,10 @@
     });
 
     viewButtons.forEach((button) => button.addEventListener("click", () => setView(button.dataset.flybuysView)));
+    controls.addEventListener("change", () => {
+      framesAfterChange = 8;
+      startLoop();
+    });
 
     canvas.addEventListener("keydown", (event) => {
       if (event.key === "Home") {
