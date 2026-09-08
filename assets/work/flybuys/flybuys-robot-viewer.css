@@ -126,11 +126,6 @@
   font: 450 11px/1.3 system-ui, -apple-system, "Segoe UI", sans-serif;
   letter-spacing: 0.01em;
   pointer-events: none;
-  transition: opacity 180ms ease;
-}
-
-.flybuys-3d-viewer.is-separated .flybuys-3d-help {
-  opacity: 0;
 }
 
 .flybuys-3d-view-button {
