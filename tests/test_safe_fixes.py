@@ -163,6 +163,32 @@ class SafeFixTests(unittest.TestCase):
         self.assertIn("Privacy settings", source)
         self.assertIn("project type, location, target date and indicative budget", source)
 
+    def test_flybuys_viewer_uses_curated_salvaged_objects(self) -> None:
+        source = (ROOT / "assets/work/flybuys/flybuys-robot-viewer.js").read_text(encoding="utf-8")
+        self.assertNotIn("GLTFLoader", source)
+        self.assertNotIn("flybuys-robot.glb", source)
+        for item in [
+            "Left rubber appliance foot",
+            "Right rubber appliance foot",
+            "Blue hard-shell suitcase leg",
+            "Portable fan knee",
+            "Black speaker leg",
+            "Computer chassis hip",
+            "Blue suitcase body",
+            "Cream microwave chest",
+            "Stainless control deck",
+            "Countertop oven head",
+            "Coffee machine shoulder",
+            "Stainless hot-water urn arm",
+            "Left work glove",
+            "Chrome control-panel shoulder",
+            "Blender arm",
+            "Right work glove",
+            "Television aerial",
+            "Black appliance canister",
+        ]:
+            self.assertIn(item, source)
+
 
 if __name__ == "__main__":
     unittest.main()
