@@ -135,6 +135,19 @@
   .ta-service-detail .hero-text-box p { margin-bottom: 0; }
 }
 
+/* Real process photographs and extracted source panels, never cover-cropped. */
+.case-process-stage { grid-column: 1 / -1; width: 100%; min-width: 0; }
+.case-process-stage > .case-subheading { margin-top: 0; scroll-margin-top: 8rem; }
+.case-photo-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 1.5rem; }
+.case-process-stage--compact .case-photo-pair { max-width: 58rem; }
+.case-photo-pair img { height: auto; max-height: none; aspect-ratio: auto; object-fit: contain; }
+.ta-service-detail .service_content_image.is-technical-drawing { display: block; width: 100%; height: auto; max-height: none; aspect-ratio: auto; object-fit: contain; }
+.ta-service-detail .info_about_image-wrapper.is-technical-drawing-frame { height: auto; max-height: none; aspect-ratio: auto; }
+@media (max-width: 767px) {
+  .case-photo-pair { grid-template-columns: 1fr; gap: 1rem; }
+  .case-process-stage .case-subheading { font-size: 1.3rem; }
+}
+
 /* Keep project photography visible while the optional 3D viewer loads. */
 .ta-project-detail .case-model-media { min-width: 0; display: block; }
 .ta-project-detail .case-model-media .info_about-media-wrapper { height: auto; max-height: none; aspect-ratio: auto; }

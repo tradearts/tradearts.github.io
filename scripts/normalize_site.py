@@ -749,7 +749,7 @@ def normalize_page(path: Path) -> bool:
     cache_versions = {
         "/assets/consent.js": "2", "/assets/forms.js": "2", "/assets/media.js": "2",
         "/shop/assets/shop.css": "13", "/shop/assets/shop.js": "3",
-        "/assets/case-studies.css": "4", "/shop/assets/catalogue.css": "4",
+        "/assets/case-studies.css": "5", "/shop/assets/catalogue.css": "4",
         "/shop/assets/products.js": "2",
     }
     for asset, version in cache_versions.items():
