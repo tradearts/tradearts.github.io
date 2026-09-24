@@ -6,9 +6,15 @@ from __future__ import annotations
 import html
 import json
 import re
+import xml.etree.ElementTree as ET
 from datetime import datetime
 from pathlib import Path
 from urllib.parse import urlsplit, urlunsplit
+
+if __package__:
+    from .search_metadata import build_graph, normalize_article_credit, schema_script
+else:
+    from search_metadata import build_graph, normalize_article_credit, schema_script
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -70,7 +76,7 @@ SCHEMA = {
             "name": "Trade Arts",
             "url": SITE + "/",
             "description": (
-                "Australian design and fabrication studio delivering custom builds "
+                "Design and fabrication studio in Mullumbimby, Northern NSW, near the Gold Coast, delivering custom builds "
                 "for film, television, exhibitions, public art and cultural projects."
             ),
             "email": "info@tradearts.work",
@@ -301,6 +307,18 @@ def remove_exported_schema(text: str) -> str:
         flags=re.I | re.S,
     )
     return text
+
+
+def normalize_service_answers(text: str) -> str:
+    # Visible, source-backed answers. Not a hidden FAQ or an AI ranking promise.
+    section = '''<section class="ta-service-answers padding-global" aria-labelledby="service-questions"><div class="container-large"><h2 id="service-questions">Before we start</h2><div class="ta-service-answers__grid">
+<div><h3>What can Trade Arts make?</h3><p>We design and fabricate props, set pieces, exhibition elements, replicas and prototypes, and develop public-art concepts. A project can involve a complete build or one specialist part of it. Explore our <a href="/works/">film and TV work</a>, <a href="/exhibitions/">exhibition projects</a> and <a href="/public-art/">public-art development</a>.</p></div>
+<div><h3>Where is the workshop?</h3><p>Trade Arts is based in Mullumbimby, Northern NSW, near the Gold Coast, and works on projects across Australia. Tell us the project location and any delivery or installation requirements when you <a href="/contact/">get in touch</a>.</p></div>
+<div><h3>Do I need a finished design?</h3><p>No. We can work from supplied CAD files, sketches or reference images, or develop the design and 3D model with you. Start with the purpose, approximate dimensions, intended use, finish and deadline. Our <a href="/blog/how-to-brief-fabrication-studio/">fabrication brief guide</a> explains what to include.</p></div>
+<div><h3>Should my project use CNC or 3D printing?</h3><p>The choice depends on the form, material, scale, quantity and finish. We can combine 3D printing, CNC fabrication and scenic finishing within a build. Read our <a href="/blog/cnc-vs-3d-printing-fabrication-method/">CNC and 3D printing comparison</a>, or send a reference so we can discuss the fabrication approach.</p></div>
+</div></div></section>'''
+    text = re.sub(r'<section\b[^>]*class="ta-service-answers[^>]*>.*?</section>', '', text, flags=re.S)
+    return text.replace('<section class="ta-bottom-cta padding-global">', section + '<section class="ta-bottom-cta padding-global">', 1)
 
 
 def normalize_media(text: str) -> tuple[str, bool]:
@@ -635,13 +653,11 @@ def normalize_page(path: Path) -> bool:
     text = normalize_social_metadata(text, canonical)
 
     if is_home:
-        schema = '<script type="application/ld+json">\n{}\n</script>'.format(
-            json.dumps(SCHEMA, ensure_ascii=False, indent=2)
-        )
-        text = insert_before_head(text, schema)
         text = normalize_homepage(text)
     if path == ROOT / "research" / "index.html":
         text = normalize_research_archive(text)
+    if path == ROOT / "services" / "index.html":
+        text = normalize_service_answers(text)
     if path.parent.parent == ROOT / "blog":
         text = normalize_article_recommendations(text, "/" + path.parent.relative_to(ROOT).as_posix() + "/")
     if path == ROOT / "services" / "3d-scanning" / "index.html":
@@ -711,7 +727,7 @@ def normalize_page(path: Path) -> bool:
             flags=re.I | re.S,
         )
 
-    text = insert_before_head(text, '<link rel="stylesheet" href="/assets/site-fixes.css?v=13">')
+    text = insert_before_head(text, '<link rel="stylesheet" href="/assets/site-fixes.css?v=14">')
     if is_home:
         text = insert_before_head(text, '<link rel="stylesheet" href="/assets/logo-carousel.css">')
     if had_media:
@@ -742,9 +758,14 @@ def normalize_page(path: Path) -> bool:
             )
     if path.parent.parent == ROOT / "blog":
         text = normalize_article_headings(text)
+        text = normalize_article_credit(text)
         text = text.replace("splide@main", f"splide@{SPLIDE_COMMIT}")
     text = normalize_links(text)
     text = normalize_external_targets(text)
+    if canonical:
+        graph = build_graph(text, canonical, SCHEMA)
+        if graph:
+            text = insert_before_head(text, schema_script(graph))
     # Keep changed shared scripts/styles fresh without accumulating duplicate includes.
     cache_versions = {
         "/assets/consent.js": "2", "/assets/forms.js": "2", "/assets/media.js": "2",
@@ -765,15 +786,26 @@ def normalize_page(path: Path) -> bool:
 def update_sitemap() -> bool:
     path = ROOT / "sitemap.xml"
     original = path.read_text(encoding="utf-8")
-    if SITE + "/privacy/" in original:
+    ns = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
+    previous = ET.fromstring(original)
+    dates = {
+        node.findtext("sm:loc", namespaces=ns): node.findtext("sm:lastmod", namespaces=ns)
+        for node in previous.findall("sm:url", ns)
+    }
+    entries = []
+    for page in sorted(ROOT.rglob("*.html")):
+        if ".git" in page.parts or page.name == "404.html":
+            continue
+        source = page.read_text(encoding="utf-8")
+        if re.search(r'<meta\b(?=[^>]*\bname=["\']robots["\'])(?=[^>]*\bcontent=["\'][^"\']*noindex)', source, re.I):
+            continue
+        url = page_url(page)
+        # Keep a verified lastmod; never make every page 'fresh' on each build.
+        lastmod = f"    <lastmod>{dates[url]}</lastmod>\n" if dates.get(url) else ""
+        entries.append(f"  <url>\n    <loc>{url}</loc>\n{lastmod}  </url>\n")
+    updated = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(entries) + "</urlset>\n"
+    if updated == original:
         return False
-    entry = (
-        "  <url>\n"
-        f"    <loc>{SITE}/privacy/</loc>\n"
-        "    <lastmod>2026-08-21</lastmod>\n"
-        "  </url>\n"
-    )
-    updated = original.replace("</urlset>", entry + "</urlset>")
     path.write_text(updated, encoding="utf-8")
     return True
 
@@ -840,7 +872,7 @@ def main() -> None:
     if shop_styles_changed:
         print("Updated optimised shop image references.")
     if sitemap_changed:
-        print("Added /privacy/ to sitemap.xml.")
+        print("Updated sitemap.xml from indexable pages; retained recorded modification dates.")
 
 
 if __name__ == "__main__":

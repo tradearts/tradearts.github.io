@@ -166,15 +166,51 @@ def validate_page(path: Path, errors: list[str], indexed_urls: set[str]) -> None
         if needle in source:
             errors.append(f"{relative}: contains {label}")
 
-    for match in re.finditer(
+    schema_blocks = list(re.finditer(
         r'<script\b(?=[^>]*application/ld\+json)[^>]*>(.*?)</script>',
         source,
         flags=re.I | re.S,
-    ):
+    ))
+    if not noindex and len(schema_blocks) != 1:
+        errors.append(f"{relative}: expected exactly one static page-specific search graph")
+    for match in schema_blocks:
         try:
-            json.loads(match.group(1))
+            payload = json.loads(match.group(1))
         except json.JSONDecodeError as exc:
             errors.append(f"{relative}: invalid JSON-LD ({exc})")
+            continue
+        if noindex:
+            errors.append(f"{relative}: noindex page must not publish an indexable search graph")
+            continue
+        graph = payload.get("@graph", [])
+        nodes = {node.get("@id"): node for node in graph}
+        wanted = expected_url(path)
+        page = nodes.get(wanted + "#webpage", {})
+        if len(nodes) != len(graph) or None in nodes:
+            errors.append(f"{relative}: search graph has missing or duplicate entity IDs")
+        if page.get("url") != wanted or not page.get("name") or not page.get("description"):
+            errors.append(f"{relative}: search graph is missing this page's URL, name or description")
+        description = next((m.get("content") for m in parser.metas if m.get("name") == "description"), None)
+        if page.get("description") != description:
+            errors.append(f"{relative}: structured description differs from page metadata")
+        for suffix in ("#organization", "#website"):
+            if SITE + "/" + suffix not in nodes:
+                errors.append(f"{relative}: missing shared {suffix} identity")
+        for node in graph:
+            if node.get("@type") == "BreadcrumbList":
+                for item in node.get("itemListElement", []):
+                    url = item.get("item", "")
+                    target = local_target(url.removeprefix(SITE))
+                    if not target or not target.is_file():
+                        errors.append(f"{relative}: breadcrumb points to a missing page: {url}")
+            if node.get("@type") == "Service" and node.get("provider", {}).get("@id") != SITE + "/#organization":
+                errors.append(f"{relative}: service is not connected to Trade Arts")
+            if node.get("@type") == "BlogPosting":
+                published = node.get("datePublished")
+                if published and f'datetime="{published}"' not in source:
+                    errors.append(f"{relative}: article date is not supported by a visible time element")
+                if 'class="ta-article-credit"' not in source:
+                    errors.append(f"{relative}: article has no visible publisher credit")
 
 
 def validate_sitemap(indexed_urls: set[str], errors: list[str]) -> int:

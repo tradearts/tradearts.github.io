@@ -1,3 +1,21 @@
+.ta-article-credit {
+  margin: 1.25rem 0 0;
+  font-size: .9375rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: normal;
+}
+.ta-article-credit a, .ta-service-answers a { text-decoration: underline; text-underline-offset: .2em; }
+.ta-service-answers { padding-top: 4rem; padding-bottom: 1rem; }
+.ta-service-answers h2 { scroll-margin-top: 7rem; margin-bottom: 2rem; font-size: clamp(2rem, 3vw, 3rem); line-height: 1.1; letter-spacing: -.04em; }
+.ta-service-answers__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.5rem 4rem; }
+.ta-service-answers h3 { margin: 0 0 .75rem; font-size: 1.25rem; line-height: 1.3; }
+.ta-service-answers p { max-width: 40rem; margin: 0; font-size: 1rem; line-height: 1.65; }
+@media (max-width: 767px) {
+  .ta-service-answers { padding-top: 2.5rem; }
+  .ta-service-answers__grid { grid-template-columns: minmax(0, 1fr); gap: 1.75rem; }
+}
+
 .skip-link {
   position: fixed;
   z-index: 99999;

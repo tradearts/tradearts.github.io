@@ -2,6 +2,25 @@
 
 Static source for [www.tradearts.work](https://www.tradearts.work/), hosted with GitHub Pages.
 
+## Search and AI discovery
+
+Important copy and JSON-LD are delivered in the static HTML, not injected by
+JavaScript. The normaliser connects each indexable page to the same Trade Arts
+organization and website, adds real navigation breadcrumbs, describes individual
+services, and marks up Research articles using their visible title, description,
+publisher and original publication date. Keep those fields factual and in sync.
+Do not add fabricated reviews, credentials, build completions or new publication
+dates for an old article. Concept projects must remain labelled as concepts.
+
+`robots.txt` allows search crawlers, including OAI-SearchBot. AI-search access and
+model-training controls are separate decisions; don't change one as a side
+effect of the other. No special AI text file or schema guarantees citations.
+
+The sitemap is regenerated from indexable pages. Update a page's recorded
+`lastmod` only for a meaningful content/structured-data change; the normaliser
+preserves it rather than advancing every date at build time. New entries have
+no invented date. The validator checks coverage and page-graph consistency.
+
 ## Publishing an updated Webflow export
 
 1. Replace the exported HTML and assets while preserving `CNAME`, `assets/forms.js`, the shop files, and the files in `scripts/`.
