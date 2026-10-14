@@ -1,5 +1,6 @@
 (function () {
   var additionalLogos = [
+    ["/assets/client-logos/telstra.svg", "Telstra logo", "carousel-telstra"],
     ["/assets/client-logos/apple-tv-plus-dark-transparent.png", "Apple TV+ logo", "carousel-apple-tv"],
     ["/assets/client-logos/lego-transparent.png", "LEGO logo", "carousel-lego"],
     ["/assets/client-logos/universal-music-dark-transparent.png", "Universal Music Group logo", "carousel-universal-music"],

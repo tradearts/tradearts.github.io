@@ -729,13 +729,13 @@ def normalize_page(path: Path) -> bool:
 
     text = insert_before_head(text, '<link rel="stylesheet" href="/assets/site-fixes.css?v=15">')
     if is_home:
-        text = insert_before_head(text, '<link rel="stylesheet" href="/assets/logo-carousel.css">')
+        text = insert_before_head(text, '<link rel="stylesheet" href="/assets/logo-carousel.css?v=2">')
     if had_media:
         text = insert_before_head(text, '<link rel="stylesheet" href="/assets/media-controls.css?v=2">')
         text = insert_before_body_end(text, '<script src="/assets/media.js" defer></script>')
     text = insert_before_body_end(text, '<script src="/assets/site-fixes.js" defer></script>')
     if is_home:
-        text = insert_before_body_end(text, '<script src="/assets/logo-carousel.js" defer></script>')
+        text = insert_before_body_end(text, '<script src="/assets/logo-carousel.js?v=2" defer></script>')
 
     text = normalize_iframe_titles(text)
     text = normalize_work_image_alts(text, path)

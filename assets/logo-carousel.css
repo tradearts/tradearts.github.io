@@ -61,6 +61,11 @@
   width: 100px;
 }
 
+.logo.carousel-telstra {
+  width: 56px;
+  height: 64px;
+}
+
 .logo.carousel-lego {
   width: 70px;
 }
@@ -115,6 +120,11 @@
 
   .logo-carousel__group .logo.carousel-apple-tv {
     width: 55px;
+  }
+
+  .logo-carousel__group .logo.carousel-telstra {
+    width: 32px;
+    height: 36.5714px;
   }
 
   .logo-carousel__group .logo.carousel-lego {
