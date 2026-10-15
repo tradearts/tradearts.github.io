@@ -21,7 +21,33 @@ The sitemap is regenerated from indexable pages. Update a page's recorded
 preserves it rather than advancing every date at build time. New entries have
 no invented date. The validator checks coverage and page-graph consistency.
 
-## Publishing an updated Webflow export
+## Normal maintenance and publication
+
+This is the GitHub-hosted site, not a live Webflow site. Edit the existing source,
+run the normaliser, validator and regression tests, inspect desktop/mobile views,
+then commit and push to `main` under the owner's current publication authority.
+Verify the GitHub Actions and Pages deployment and the changed live files before
+calling a release live. Preserve unrelated local work.
+
+Use `.ta-project-card` and its `__media`, `__title`, `__client` and `__meta`
+classes for project links on the homepage, archives and service pages. Keep
+the shared 3:2 frame and quiet client/category hierarchy; preserve deliberate
+`contain` framing for models rather than cropping their parts. Project stories
+reuse `.case-story` in `assets/case-studies.css`, with Superfun Console as the
+visual reference. Do not add one-off page shells or invent copy to fill columns.
+
+Existing automatic Sketchfab heroes use `assets/model-preview.js` and the
+official vendored readiness helper. Keep a genuine existing project image until
+`viewerready`, with retry/open-original fallbacks. This does not replace model
+geometry or change the separate Flybuys viewer. Vimeo controls must reflect
+confirmed playback and retain their poster when a provider is unavailable.
+
+Checks: `python scripts/normalize_site.py`, `python scripts/validate_site.py`,
+`python -m unittest discover -s tests -v`, and
+`node --test tests/media-behavior.test.cjs tests/test_commerce_behaviour.js`.
+The normaliser must leave a second pass unchanged.
+
+## Legacy export import (only when explicitly required)
 
 1. Replace the exported HTML and assets while preserving `CNAME`, `assets/forms.js`, the shop files, and the files in `scripts/`.
 2. Run `python scripts/normalize_site.py` from the repository root. This applies the shared accessibility, media, canonical URL, social metadata and structured-data fixes that Webflow does not retain.

@@ -727,11 +727,11 @@ def normalize_page(path: Path) -> bool:
             flags=re.I | re.S,
         )
 
-    text = insert_before_head(text, '<link rel="stylesheet" href="/assets/site-fixes.css?v=15">')
+    text = insert_before_head(text, '<link rel="stylesheet" href="/assets/site-fixes.css?v=16">')
     if is_home:
         text = insert_before_head(text, '<link rel="stylesheet" href="/assets/logo-carousel.css?v=2">')
     if had_media:
-        text = insert_before_head(text, '<link rel="stylesheet" href="/assets/media-controls.css?v=2">')
+        text = insert_before_head(text, '<link rel="stylesheet" href="/assets/media-controls.css?v=3">')
         text = insert_before_body_end(text, '<script src="/assets/media.js" defer></script>')
     text = insert_before_body_end(text, '<script src="/assets/site-fixes.js" defer></script>')
     if is_home:
@@ -768,9 +768,9 @@ def normalize_page(path: Path) -> bool:
             text = insert_before_head(text, schema_script(graph))
     # Keep changed shared scripts/styles fresh without accumulating duplicate includes.
     cache_versions = {
-        "/assets/consent.js": "2", "/assets/forms.js": "2", "/assets/media.js": "2",
+        "/assets/consent.js": "2", "/assets/forms.js": "2", "/assets/media.js": "3",
         "/shop/assets/shop.css": "13", "/shop/assets/shop.js": "3",
-        "/assets/case-studies.css": "7", "/shop/assets/catalogue.css": "4",
+        "/assets/case-studies.css": "8", "/shop/assets/catalogue.css": "4",
         "/shop/assets/products.js": "2",
     }
     for asset, version in cache_versions.items():

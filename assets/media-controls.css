@@ -36,6 +36,17 @@
   box-shadow: 0 0 0 6px #fff;
 }
 
+/* Never replace the real poster with a black/loading or rejected provider frame. */
+.vimeo-player:not([data-vimeo-loaded="true"]) .vimeo-player__iframe { opacity: 0; pointer-events: none; }
+.vimeo-player[data-vimeo-failed="true"] .vimeo-player__placeholder { opacity: 1; }
+.media-preview-status {
+  position: absolute; z-index: 4; bottom: .75rem; left: .75rem; right: .75rem;
+  padding: .75rem 1rem; border-radius: 8px; color: #161514; background: #efefef;
+  font-size: .875rem; line-height: 1.5; text-align: left;
+}
+.media-preview-status[hidden] { display: none; }
+.media-preview-status a { color: inherit; text-decoration: underline; text-underline-offset: .2em; }
+
 @media (prefers-reduced-motion: reduce) {
   .vimeo-player__placeholder {
     transition: none;

@@ -36,6 +36,7 @@
   border-top: 1px solid currentColor;
 }
 .case-story > div { min-width: 0; }
+.case-story > .case-story__full { grid-column: 1 / -1; }
 .case-story h2 {
   font-size: 1.5rem;
   line-height: 1.15;
@@ -118,7 +119,16 @@
 .service-project h3 { font-size: 1.4rem; line-height: 1.15; margin: 1rem 0 .5rem; letter-spacing: -.025em; }
 .service-project p { font-size: 1rem; line-height: 1.5; margin-bottom: .75rem; }
 .service-project span { display: inline-block; text-decoration: underline; text-underline-offset: .2em; font-size: .9375rem; }
-.service-project:hover h3 { text-decoration: underline; text-underline-offset: .15em; }
+.ta-project-detail .ta-project-meta { font-size: .8125rem; line-height: 1.5; letter-spacing: .025em; text-transform: uppercase; }
+.ta-service-detail .info_about_content-left.services > .margin-bottom h1 {
+  font-size: clamp(2.35rem, 4.5vw, 4rem);
+  line-height: 1.08;
+  letter-spacing: -.035em;
+  max-width: 18ch;
+}
+.ta-service-detail .info_about_content-left.services { min-height: 0; max-height: none; justify-content: flex-start; gap: 1.5rem; }
+.ta-service-detail .hero-text-box { width: auto; max-width: 56ch; }
+.ta-service-detail .hero-text-box p { font-size: 1.0625rem; line-height: 1.6; }
 @media (min-width: 768px) and (max-width: 991px) {
   .ta-service-detail .info_about_content.services {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -172,3 +182,26 @@
 .case-model iframe { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; margin-top: 1rem; border: 0; border-radius: 12px; }
 .case-model p { margin: .75rem 0 0; font-size: .875rem; }
 .case-model p a { text-decoration: underline; text-underline-offset: .2em; }
+
+/* A real project photograph remains visible until Sketchfab confirms readiness. */
+.ta-project-detail .info_about-media-wrapper.model-preview {
+  display: block; position: relative; height: auto; max-height: none;
+  aspect-ratio: auto; overflow: hidden; border-radius: 12px; background: #efefef;
+}
+.model-preview__stage { position: relative; width: 100%; aspect-ratio: 16 / 10; overflow: hidden; border-radius: 12px; }
+.ta-project-detail .model-preview__stage > .model-preview__poster {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: auto; height: auto; max-width: 100%; max-height: 100%; border-radius: 12px;
+}
+.ta-project-detail .model-preview__stage > .model-preview__iframe {
+  position: absolute; inset: 0; width: 100%; height: 100%; border: 0; margin: 0;
+}
+.model-preview__iframe { opacity: 0; pointer-events: none; }
+.model-preview[data-model-state="ready"] .model-preview__iframe { opacity: 1; pointer-events: auto; }
+.model-preview[data-model-state="ready"] .model-preview__poster { visibility: hidden; }
+.model-preview__status { margin: 0; padding: .85rem 1rem .4rem; font-size: .875rem; line-height: 1.5; color: #45443f; }
+.model-preview__actions { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1.25rem; padding: 0 1rem .85rem; font-size: .8125rem; }
+.model-preview__actions a { text-decoration: underline; text-underline-offset: .2em; }
+.model-preview__retry { font: inherit; border: 1px solid #161514; border-radius: 8px; min-height: 44px; padding: .5rem .75rem; background: transparent; color: #161514; cursor: pointer; }
+.model-preview__retry[hidden] { display: none; }
+.model-preview__actions :focus-visible { outline: 2px solid #161514; outline-offset: 3px; }

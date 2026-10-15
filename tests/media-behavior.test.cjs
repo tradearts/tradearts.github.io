@@ -22,6 +22,7 @@ class Element {
   setAttribute(key, value) { this.attributes[key] = value; }
   appendChild(child) { this.children.push(child); child.parentElement = this; }
   prepend(child) { this.children.unshift(child); child.parentElement = this; }
+  remove() { this.parentElement.children = this.parentElement.children.filter(child => child !== this); }
   insertAdjacentElement(_, child) { this.parentElement.appendChild(child); }
   querySelector() { return null; }
   querySelectorAll() { return []; }
@@ -59,11 +60,14 @@ function harness({ reduce = false, linked = false, observer = true } = {}) {
     }
   };
   let intersection;
+  const timers = new Map(); let timerId = 0;
   const window = {
     innerWidth: 1000, innerHeight: 700,
     matchMedia() { return motion; },
     addEventListener(name, callback) { listeners[name] = callback; },
     requestAnimationFrame(fn) { fn(); }
+    ,setTimeout(fn) { timers.set(++timerId, fn); return timerId; }
+    ,clearTimeout(id) { timers.delete(id); }
   };
   if (observer) window.IntersectionObserver = class {
     constructor(callback) { intersection = callback; }
@@ -73,6 +77,7 @@ function harness({ reduce = false, linked = false, observer = true } = {}) {
   return {
     player, container, frames, document, motion, listeners,
     button: linked ? container.children[1] : player.children[0],
+    timeout() { const pending = [...timers.values()]; timers.clear(); pending.forEach(fn => fn()); },
     visible(value) { intersection([{ target: player, isIntersecting: value, intersectionRatio: value ? 1 : 0 }]); },
     event(data, origin = 'https://player.vimeo.com', eventSource = frames[0].contentWindow) {
       listeners.message({ data: JSON.stringify(data), origin, source: eventSource });
@@ -166,6 +171,35 @@ test('fallback browsers check actual visibility rather than playing every galler
   assert.equal(h.command(), 'pause');
 });
 
+test('pending video has a truthful cancel-loading label, never Pause before play', () => {
+  const h = harness(); h.visible(true);
+  assert.equal(h.button.textContent, 'Cancel loading');
+  h.ready(); assert.equal(h.button.textContent, 'Cancel loading');
+  h.event({ event: 'play' }); assert.equal(h.button.textContent, 'Pause video');
+});
+test('blocked provider times out to a poster and explicit retry without an autoplay loop', () => {
+  const h = harness(); h.visible(true); h.timeout();
+  assert.equal(h.player.dataset.vimeoFailed, 'true');
+  assert.equal(h.player.dataset.vimeoLoaded, 'false');
+  assert.equal(h.button.textContent, 'Retry video');
+  h.visible(false); h.visible(true); assert.equal(h.frames.length, 1);
+  h.button.events.click(); assert.equal(h.frames.length, 2);
+  h.event({event:'ready'}, 'https://player.vimeo.com', h.frames[1].contentWindow);
+  h.event({event:'play'}, 'https://player.vimeo.com', h.frames[1].contentWindow);
+  assert.equal(h.player.dataset.vimeoFailed, 'false');
+  assert.equal(h.button.textContent, 'Pause video');
+});
+test('provider errors preserve the poster and ignore late play events', () => {
+  const h = harness(); h.visible(true); h.ready(); h.event({event:'error'});
+  h.event({event:'play'}); assert.equal(h.button.textContent, 'Retry video');
+  assert.equal(h.player.dataset.vimeoLoaded, 'false');
+});
+test('offscreen pending video does not become a false timeout failure', () => {
+  const h = harness(); h.visible(true); h.visible(false); h.timeout();
+  assert.equal(h.player.dataset.vimeoFailed, 'false');
+  assert.equal(h.button.textContent, 'Play video');
+});
+
 function nativeHarness(reduce = false, observer = true) {
   const events = {}, listeners = {};
   const video = {
@@ -201,4 +235,46 @@ test('native project loops respect reduced motion, explicit play and hidden tabs
 test('native project loops keep manual playback without an intersection observer', () => {
   const h = nativeHarness(false, false); assert.equal(h.video.plays, 0);
   h.video.play(); assert.equal(h.video.paused, false);
+});
+
+function modelHarness({ reduce = false, helper = true } = {}) {
+  const calls = [], timers = new Map(); let timerId = 0;
+  const frame = new Element(); frame.dataset.modelUrl = 'https://sketchfab.com/models/original-geometry/embed?autospin=-1&transparent=1';
+  let iframe = new Element('iframe');
+  function prepare(e) { e.cloneNode = () => prepare(new Element('iframe')); e.replaceWith = fresh => { iframe = fresh; }; return e; }
+  prepare(iframe);
+  const status = new Element('p'), retry = new Element('button');
+  frame.querySelector = selector => selector === 'iframe' ? iframe : selector === '.model-preview__status' ? status : retry;
+  const window = { matchMedia: () => ({ matches: reduce }),
+    setTimeout(fn) { timers.set(++timerId, fn); return timerId; }, clearTimeout(id) { timers.delete(id); } };
+  if (helper) window.Sketchfab = function (version, target) { this.init = (uid, options) => calls.push({ version, target, uid, options }); };
+  vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../assets/model-preview.js'), 'utf8'), {
+    document: { querySelectorAll: () => [frame] }, window, URL
+  });
+  return { frame, status, retry, calls,
+    timeout() { const callbacks = [...timers.values()]; timers.clear(); callbacks.forEach(fn => fn()); },
+    ready(index = calls.length - 1) {
+      const callbacks = {};
+      calls[index].options.success({addEventListener(event, fn) { callbacks[event] = fn; }, start() {}, stop() {}});
+      callbacks.viewerready?.();
+    }
+  };
+}
+test('model starts automatically using original ID and reveals only on viewerready', () => {
+  const h = modelHarness(); assert.equal(h.calls[0].uid, 'original-geometry');
+  assert.equal(h.calls[0].options.autostart, 1);
+  assert.equal(h.frame.dataset.modelState, 'loading');
+  h.ready(); assert.equal(h.frame.dataset.modelState, 'ready');
+  h.timeout(); assert.equal(h.frame.dataset.modelState, 'ready');
+});
+test('failed model retains fallback and offers retry; stale callbacks cannot reveal new frame', () => {
+  const h = modelHarness(); h.timeout();
+  assert.equal(h.frame.dataset.modelState, 'failed'); assert.equal(h.retry.hidden, false);
+  h.retry.events.click(); assert.equal(h.calls.length, 2);
+  h.calls[0].options.error(); assert.equal(h.frame.dataset.modelState, 'loading');
+  h.ready(1); assert.equal(h.frame.dataset.modelState, 'ready'); assert.equal(h.retry.hidden, true);
+});
+test('missing helper is a recoverable fallback and reduced motion disables automatic spin', () => {
+  const missing = modelHarness({helper:false}); assert.equal(missing.frame.dataset.modelState, 'failed');
+  const reduced = modelHarness({reduce:true}); assert.equal(reduced.calls[0].options.autospin, 0);
 });

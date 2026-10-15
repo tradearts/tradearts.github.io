@@ -37,15 +37,34 @@
   }
 
   function wantsPlayback(state) {
-    return state.visible && !document.hidden && !state.userPaused &&
+    return !state.failed && state.visible && !document.hidden && !state.userPaused &&
       (!reducedMotion.matches || state.explicitPlay);
   }
 
   function updateControl(state) {
-    var action = state.playing || state.pending ? "Pause" : "Play";
-    state.button.textContent = action + " video";
+    var action = state.failed ? "Retry" : state.playing ? "Pause" : state.pending ? "Cancel loading" : "Play";
+    state.button.textContent = action === "Cancel loading" ? action : action + " video";
     state.button.setAttribute("aria-label", action + " " + state.title + " video preview");
     state.player.dataset.vimeoPlaying = String(state.playing);
+    state.player.dataset.vimeoFailed = String(state.failed);
+    state.player.setAttribute("aria-busy", String(state.pending));
+    state.notice.hidden = !state.failed;
+  }
+
+  function clearLoadingTimer(state) {
+    window.clearTimeout(state.timer);
+    state.timer = null;
+  }
+
+  function fail(state) {
+    clearLoadingTimer(state);
+    state.failed = true;
+    state.pending = false;
+    state.playing = false;
+    state.requested = null;
+    state.player.dataset.vimeoLoaded = "false";
+    post(state, "pause");
+    updateControl(state);
   }
 
   function post(state, method, value) {
@@ -82,6 +101,8 @@
     if (!state.iframe) return;
     state.pending = play && !state.playing;
     if (!play) state.playing = false;
+    if (state.pending && !state.timer) state.timer = window.setTimeout(function () { fail(state); }, 20000);
+    if (!state.pending) clearLoadingTimer(state);
     updateControl(state);
     if (state.ready && state.requested !== play) {
       state.requested = play;
@@ -101,23 +122,45 @@
     button.className = "media-preview-control";
     if (!player.id) player.id = "project-video-" + (index + 1);
     button.setAttribute("aria-controls", player.id);
+    var notice = document.createElement("div");
+    notice.className = "media-preview-status";
+    notice.setAttribute("role", "status");
+    notice.hidden = true;
+    var message = document.createElement("span");
+    message.textContent = "Video preview unavailable here. ";
+    notice.appendChild(message);
+    var link = document.createElement("a");
+    link.href = "https://vimeo.com/" + encodeURIComponent(player.getAttribute("data-vimeo-video-id"));
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = "Open on Vimeo ↗";
+    notice.appendChild(link);
 
     // Homepage previews are links: keep their controls outside the anchor.
     if (card && card.parentElement) {
       card.parentElement.classList.add("media-preview-card");
       card.insertAdjacentElement("afterend", button);
+      button.insertAdjacentElement("afterend", notice);
     } else {
       player.appendChild(button);
+      player.appendChild(notice);
     }
 
     var state = {
       player: player, videoId: player.getAttribute("data-vimeo-video-id"),
       title: title, button: button, iframe: null, ready: false, visible: false,
-      playing: false, pending: false, requested: null, userPaused: false, explicitPlay: false
+      playing: false, pending: false, requested: null, userPaused: false, explicitPlay: false,
+      failed: false, timer: null, notice: notice
     };
     states.set(player, state);
     updateControl(state);
     button.addEventListener("click", function () {
+      if (state.failed) {
+        if (state.iframe) state.iframe.remove();
+        state.iframe = null;
+        state.ready = false;
+        state.failed = false;
+      }
       if (state.playing || state.pending) {
         state.userPaused = true;
       } else {
@@ -148,13 +191,19 @@
         state.requested = null;
         sync(state);
       } else if (data.event === "play") {
+        // A late provider event must not erase a failure or visitor cancellation.
+        if (state.failed) { post(state, "pause"); return; }
+        clearLoadingTimer(state);
         state.pending = false;
         state.player.dataset.vimeoLoaded = "true";
         state.playing = wantsPlayback(state);
         // Handle a delayed play event after scrolling away or selecting pause.
         if (!state.playing) post(state, "pause");
         updateControl(state);
-      } else if (data.event === "pause" || data.event === "error") {
+      } else if (data.event === "error") {
+        fail(state);
+      } else if (data.event === "pause") {
+        clearLoadingTimer(state);
         state.pending = false;
         state.playing = false;
         state.requested = null;

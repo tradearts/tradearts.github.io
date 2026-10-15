@@ -32,7 +32,8 @@ class HomepageFeaturedWorkTests(unittest.TestCase):
         self.section = section.group(0)
 
     def test_featured_cards_link_to_real_project_pages(self) -> None:
-        cards = re.findall(r'<li class="ta-feature-card"><a href="([^"]+)"', self.section)
+        cards = [attribute(tag, 'href') for tag in re.findall(r'<a\b[^>]*>', self.section)
+                 if 'ta-feature-card__link' in (attribute(tag, 'class') or '').split()]
         self.assertGreaterEqual(len(cards), 4)
         self.assertEqual(len(cards), len(set(cards)), "a project is featured twice")
         for href in cards:
