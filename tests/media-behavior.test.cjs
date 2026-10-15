@@ -165,3 +165,40 @@ test('fallback browsers check actual visibility rather than playing every galler
   h.listeners.scroll();
   assert.equal(h.command(), 'pause');
 });
+
+function nativeHarness(reduce = false, observer = true) {
+  const events = {}, listeners = {};
+  const video = {
+    paused: true, plays: 0,
+    addEventListener(name, fn) { events[name] = fn; },
+    play() { this.plays++; if (this.paused) { this.paused = false; events.play(); } return Promise.resolve(); },
+    pause() { if (!this.paused) { this.paused = true; events.pause(); } }
+  };
+  const motion = { matches: reduce, addEventListener(_, fn) { this.change = fn; } };
+  const document = { hidden: false, querySelectorAll() { return [video]; }, addEventListener(name, fn) { listeners[name] = fn; } };
+  let intersection;
+  const window = { matchMedia() { return motion; } };
+  if (observer) window.IntersectionObserver = class { constructor(fn) { intersection = fn; } observe() {} };
+  vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../assets/project-motion.js'), 'utf8'), { document, window, IntersectionObserver: window.IntersectionObserver, Map });
+  return { video, motion, document, listeners, visible(yes) { intersection([{ target: video, isIntersecting: yes, intersectionRatio: yes ? 1 : 0 }]); } };
+}
+test('native project loops play only in view and retain a visitor pause', () => {
+  const h = nativeHarness(); assert.equal(h.video.plays, 0);
+  h.visible(true); assert.equal(h.video.paused, false); assert.equal(h.video.muted, true);
+  h.visible(false); assert.equal(h.video.paused, true);
+  h.visible(true); assert.equal(h.video.paused, false);
+  h.video.pause(); h.visible(false); h.visible(true); assert.equal(h.video.paused, true);
+  h.video.play(); assert.equal(h.video.paused, false);
+});
+test('native project loops respect reduced motion, explicit play and hidden tabs', () => {
+  const h = nativeHarness(true); h.visible(true); assert.equal(h.video.plays, 0);
+  h.video.play(); assert.equal(h.video.paused, false);
+  h.document.hidden = true; h.listeners.visibilitychange(); assert.equal(h.video.paused, true);
+  h.document.hidden = false; h.listeners.visibilitychange(); assert.equal(h.video.paused, false);
+  h.motion.change(); assert.equal(h.video.paused, true);
+  h.visible(false); h.visible(true); assert.equal(h.video.paused, true);
+});
+test('native project loops keep manual playback without an intersection observer', () => {
+  const h = nativeHarness(false, false); assert.equal(h.video.plays, 0);
+  h.video.play(); assert.equal(h.video.paused, false);
+});

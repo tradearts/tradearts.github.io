@@ -47,6 +47,17 @@
 .case-story ul { padding-left: 1.2rem; margin: 0; }
 .case-figure { margin: 0; width: 100%; min-width: 0; }
 .case-figure img { display: block; width: 100%; height: auto; border-radius: var(--_ui-styles---radius--medium, 12px); }
+/* One media treatment for every project, including native videos and embeds. */
+.ta-project-detail #main img,
+.ta-project-detail #main video,
+.ta-project-detail #main iframe { border-radius: var(--_ui-styles---radius--medium, 12px); }
+.case-figure video { display: block; width: 100%; height: auto; background: #efefef; }
+.ta-project-detail .info_about-media-wrapper.case-media-still { height: auto; max-height: none; aspect-ratio: auto; }
+.ta-project-detail .case-media-still > img { display: block; width: 100%; height: auto; object-fit: contain; }
+.ta-project-detail .case-gallery { align-items: start; }
+.case-gallery .case-feature { grid-column: 1 / -1; }
+.case-caption a, .case-figure figcaption a, .case-story a { text-decoration: underline; text-underline-offset: .2em; }
+.case-model-thumbnail { object-fit: contain !important; background: #efefef; }
 .case-figure figcaption, .case-caption {
   display: block;
   max-width: 70ch;
