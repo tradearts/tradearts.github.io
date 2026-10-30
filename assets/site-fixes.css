@@ -1,3 +1,12 @@
+/* Outfit for headings, per the locked Figma direction. Self-hosted, latin
+   subset, two weights. Body copy keeps the system stack. */
+@font-face { font-family: "Outfit"; src: url("/assets/fonts/outfit-latin-700-normal.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Outfit"; src: url("/assets/fonts/outfit-latin-600-normal.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
+:root { --_typography---font-styles--heading: "Outfit", Arial, "Helvetica Neue", Helvetica, sans-serif; }
+.text-size-large, .footer3_component .text-size-large, .ta-related-research h2 { font-family: var(--_typography---font-styles--heading); }
+.text-size-large { letter-spacing: -.012em; }
+.heading-style-h1 { letter-spacing: -.025em; }
+
 .ta-article-credit {
   margin: 1.25rem 0 0;
   font-size: .9375rem;
@@ -7,7 +16,7 @@
 }
 .ta-article-credit a, .ta-service-answers a { text-decoration: underline; text-underline-offset: .2em; }
 .ta-service-answers { padding-top: 4rem; padding-bottom: 1rem; }
-.ta-service-answers h2 { scroll-margin-top: 7rem; margin-bottom: 2rem; font-size: clamp(2rem, 3vw, 3rem); line-height: 1.1; letter-spacing: -.04em; }
+.ta-service-answers h2 { scroll-margin-top: 7rem; margin-bottom: 2rem; font-size: clamp(2rem, 3vw, 3rem); line-height: 1.1; letter-spacing: -.018em; }
 .ta-service-answers__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.5rem 4rem; }
 .ta-service-answers h3 { margin: 0 0 .75rem; font-size: 1.25rem; line-height: 1.3; }
 .ta-service-answers p { max-width: 40rem; margin: 0; font-size: 1rem; line-height: 1.65; }
@@ -120,16 +129,33 @@
 @media (max-width: 767px) {
   .consent-banner {
     display: block;
+    right: .5rem;
+    bottom: .5rem;
+    left: .5rem;
+    padding: .85rem .9rem;
+  }
+
+  .consent-banner h2 {
+    margin-bottom: .2rem;
+    font-size: 1rem;
+  }
+
+  .consent-banner p {
+    font-size: .8rem;
+    line-height: 1.4;
   }
 
   .consent-banner__actions {
     display: grid;
-    grid-template-columns: 1fr;
-    margin-top: 1rem;
+    grid-template-columns: 1fr 1fr;
+    gap: .5rem;
+    margin-top: .7rem;
   }
 
   .consent-banner button {
     width: 100%;
+    min-height: 44px;
+    padding: .55rem .5rem;
   }
 }
 
@@ -193,7 +219,7 @@
 .info_about_content-left.work > h1 {
   font-size: clamp(2.75rem, 3.8vw, 3.25rem);
   line-height: 1.06;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.014em;
 }
 
 .section_home_feature-1 .padding-section-large.hero .home_feature-1_item-link {
@@ -298,7 +324,7 @@
   margin: 0 0 clamp(3rem, 6vw, 5rem);
   font-size: clamp(3.5rem, 8vw, 7rem);
   line-height: 0.95;
-  letter-spacing: -0.055em;
+  letter-spacing: -0.025em;
 }
 
 .privacy-page h2 {
@@ -395,7 +421,7 @@
   font-size: clamp(1.6rem, 3vw, 2.5rem);
   font-weight: 700;
   line-height: 1.08;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.016em;
 }
 
 .privacy-footer__email {
@@ -519,7 +545,7 @@
 .ta-home-hero .ta-actions > .button { flex: 0 0 auto; max-width: none; white-space: nowrap; }
 .ta-home-grid { display: grid; grid-template-columns: 1fr 1.05fr; gap: 3rem; align-items: stretch; }
 .ta-home-copy { display: flex; flex-direction: column; justify-content: center; padding: 1rem 0 2rem; }
-.ta-home-copy h1 { margin: 0 0 2rem; font-size: clamp(4rem, 7vw, 7rem); line-height: .95; letter-spacing: -.065em; font-weight: 700; }
+.ta-home-copy h1 { margin: 0 0 2rem; font-size: clamp(4rem, 7vw, 7rem); line-height: .95; letter-spacing: -.03em; font-weight: 700; }
 .ta-home-lead { max-width: 34rem; margin: 0; font-size: 1.125rem; line-height: 1.5; }
 .ta-home-art { position: relative; display: block; height: 31rem; border-radius: var(--_ui-styles---radius--medium, 12px); background: #050505; overflow: hidden; color: #fff; }
 .ta-home-art .image-5 { width: 100%; height: 100%; margin: 0; object-fit: contain; }
@@ -528,7 +554,7 @@
 .ta-trust-row > p { margin: 0; font-size: .9rem; font-weight: 700; line-height: 1.4; }
 .ta-trust-row .logo-wrapper { min-width: 0; }
 .ta-index-header { padding: 3rem 0 3.5rem; }
-.ta-index-header h1 { margin: 0 0 1.5rem; font-size: clamp(3.25rem, 5.6vw, 6rem); font-weight: 700; line-height: 1; letter-spacing: -.055em; }
+.ta-index-header h1 { margin: 0 0 1.5rem; font-size: clamp(3.25rem, 5.6vw, 6rem); font-weight: 700; line-height: 1; letter-spacing: -.025em; }
 .ta-index-intro { display: flex; gap: 2rem; align-items: flex-end; justify-content: space-between; }
 .ta-index-intro .ta-lead { margin: 0; }
 .ta-index-intro .ta-cta { flex-shrink: 0; }
@@ -546,16 +572,16 @@
 .ta-service-card:hover img { transform: scale(1.025); }
 .ta-service-image > span { position: absolute; left: 1rem; top: 1rem; padding: .5rem; background: var(--_primitives---opacity--orange, #f60); font: 700 .8rem "Courier New", monospace; }
 .ta-service-copy { padding: 1.5rem 0 0; }
-.ta-service-copy h2 { margin: 0 0 .75rem; font-size: clamp(1.6rem,2.5vw,2.5rem); line-height: 1.1; letter-spacing: -.04em; }
+.ta-service-copy h2 { margin: 0 0 .75rem; font-size: clamp(1.6rem,2.5vw,2.5rem); line-height: 1.1; letter-spacing: -.018em; }
 .ta-service-copy p { max-width: 36rem; font-size: 1rem; line-height: 1.55; margin-bottom: .75rem; }
 .ta-service-copy .button.is-link { justify-content: flex-start; width: fit-content; max-height: none; line-height: 1.25; }
 .ta-bottom-cta { margin-top: 4rem; padding-top: 3rem; padding-bottom: 3rem; background: var(--_primitives---opacity--grey, #dfdedd); }
-.ta-bottom-cta h2 { max-width: 44rem; margin: 0 0 1rem; font-size: clamp(2rem,3vw,3rem); line-height: 1.08; letter-spacing: -.04em; }
+.ta-bottom-cta h2 { max-width: 44rem; margin: 0 0 1rem; font-size: clamp(2rem,3vw,3rem); line-height: 1.08; letter-spacing: -.018em; }
 .ta-bottom-cta p { max-width: 42rem; font-size: 1.125rem; line-height: 1.5; }
 .ta-bottom-cta .ta-cta { margin-top: 1rem; }
 .ta-about-header { padding: 3rem 0 1rem; }
 .ta-about-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 5rem; align-items: center; }
-.ta-about-grid h1 { max-width: 40rem; margin: 0 0 2rem; font-size: clamp(3rem,5.5vw,5.8rem); line-height: 1; letter-spacing: -.06em; }
+.ta-about-grid h1 { max-width: 40rem; margin: 0 0 2rem; font-size: clamp(3rem,5.5vw,5.8rem); line-height: 1; letter-spacing: -.028em; }
 .ta-about-grid p:not(.ta-eyebrow):not(.ta-lead) { max-width: 38rem; font-size: 1rem; line-height: 1.65; }
 .ta-about-photo { max-width: 31rem; width: 100%; margin: 0 auto; }
 .ta-about-photo img { width: 100%; max-height: 39rem; height: auto; object-fit: contain; }
@@ -573,7 +599,7 @@
 .ta-article-page .blog_text-rich-text h3 { font-size: 1.25rem; line-height: 1.3; }
 .ta-article-page .info_about_content-left.blog { justify-content: flex-start; min-height: 0; gap: 1.5rem; }
 .ta-article-page .article-block > .margin-bottom.margin-xxhuge { margin-bottom: 0; }
-.ta-article-page .info_about_content-left.blog h1 { font-size: clamp(2.2rem,3vw,3.3rem); line-height: 1.08; letter-spacing: -.04em; }
+.ta-article-page .info_about_content-left.blog h1 { font-size: clamp(2.2rem,3vw,3.3rem); line-height: 1.08; letter-spacing: -.018em; }
 .ta-contact-page .contact_contact_component > .margin-bottom.margin-xxlarge { margin-bottom: 2rem; }
 .ta-contact-page .contact_contact_component .margin-top.margin-xlarge { margin-top: 1.5rem; }
 .ta-contact-page .text-size-large.contact { max-width: 29rem; font-size: clamp(2rem,3vw,3.25rem); line-height: 1.08; }
@@ -591,7 +617,7 @@
 .ta-contact-page .ta-form_button:hover { background: #161514; color: #efefef; }
 .form-context-note { padding: 1rem; margin: 0 0 1.5rem; border-left: 3px solid var(--_primitives---opacity--orange, #f60); background: #eee; font-size: 1rem; line-height: 1.5; }
 .ta-public-art-page .section-heading { padding-top: 3rem; padding-bottom: 2.5rem; }
-.ta-public-art-page .section_research_feature h1 { margin: 0 0 1.5rem; font-size: clamp(3.25rem, 5.6vw, 6rem); font-weight: 700; line-height: 1; letter-spacing: -.055em; }
+.ta-public-art-page .section_research_feature h1 { margin: 0 0 1.5rem; font-size: clamp(3.25rem, 5.6vw, 6rem); font-weight: 700; line-height: 1; letter-spacing: -.025em; }
 .ta-public-art-page .section-heading p { max-width: 45rem; font-size: 1.125rem; line-height: 1.6; }
 .consent-settings { left: 1rem; bottom: .75rem; min-height: 2.75rem; padding: .65rem .9rem; border: 1px solid #dfdedd; background: #dfdedd; color: #161514; }
 .consent-settings:hover { background: #161514; border-color: #161514; color: #efefef; }
@@ -653,7 +679,7 @@
 /* This embed contains only CSS; its clearfix pseudo-elements must not become grid items. */
 .works-section-01 .work-wrapper-1 > .u-contents.w-embed { display: none; }
 .ta-research-page .section_research_feature .padding-section-medium { padding-top: 3rem; }
-.ta-research-page .research-header h1 { font-size: clamp(3rem,5vw,5rem); line-height: 1.05; letter-spacing: -.05em; }
+.ta-research-page .research-header h1 { font-size: clamp(3rem,5vw,5rem); line-height: 1.05; letter-spacing: -.022em; }
 .ta-research-page .research_feature_featured-item-link { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.5fr); gap: 2rem; align-items: center; }
 .ta-research-page .research_feature_featured-item-content { width: 100%; }
 .ta-research-page .research_feature_featured-item-content h2 { font-size: clamp(1.8rem,2.6vw,2.8rem); line-height: 1.12; }
@@ -882,7 +908,7 @@
   font-size: 1.375rem;
   font-weight: 700;
   line-height: 1.25;
-  letter-spacing: -.025em;
+  letter-spacing: -.012em;
   text-decoration: none;
   color: #161514;
   margin: 0;
@@ -956,3 +982,22 @@
   .ta-feature-card__link:hover .ta-feature-card__media img,
   .ta-feature-card__link:focus-visible .ta-feature-card__media img { transform: none; }
 }
+
+/* Related research links on service pages and key case studies */
+.ta-related-research { padding: 3.5rem 0 1rem; }
+.ta-related-research h2 { margin: 0 0 1.25rem; font-size: clamp(1.5rem, 2.2vw, 2rem); line-height: 1.15; letter-spacing: -.014em; }
+.ta-related-research ul { margin: 0; padding: 0; list-style: none; border-top: 1px solid #161514; }
+.ta-related-research li { border-bottom: 1px solid #c5c5c2; }
+.ta-related-research a { display: grid; grid-template-columns: 12rem minmax(0, 1fr) auto; gap: 1.5rem; align-items: baseline; padding: 1.1rem 0; color: inherit; text-decoration: none; }
+.ta-related-research a:hover .ta-related-research__title, .ta-related-research a:focus-visible .ta-related-research__title { text-decoration: underline; text-underline-offset: .2em; }
+.ta-related-research .ta-topic { font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: #5d5b58; }
+.ta-related-research__title { font-size: 1.125rem; font-weight: 600; line-height: 1.35; }
+@media (max-width: 767px) {
+  .ta-related-research { padding-top: 2.5rem; }
+  .ta-related-research a { grid-template-columns: minmax(0, 1fr) auto; gap: .35rem 1rem; }
+  .ta-related-research .ta-topic { grid-column: 1 / -1; }
+}
+
+/* Images carry intrinsic width/height for layout stability; zero-specificity
+   so any existing class sizing (covers, fixed heights) still wins. */
+:where(img[width][height]) { height: auto; }

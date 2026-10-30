@@ -19,12 +19,15 @@ else:
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE = "https://www.tradearts.work"
-DEFAULT_SOCIAL_IMAGE = (
+LOGO_IMAGE = (
     SITE
     + "/assets/webflow/"
     + "f4b160e2d050-6891a3a3a2ca8320c7c67c8b_"
     + "68509c3dcd98b1f9aca2cbcb_68351c06930016f8c178df83_trade-arts.png"
 )
+# A genuine workshop photograph, cropped to 1200x630, for pages without their
+# own share image. The logo stays the Organization logo.
+DEFAULT_SOCIAL_IMAGE = SITE + "/assets/social/trade-arts-workshop-1200x630.jpg"
 
 SPLIDE_COMMIT = "00901b9ce10eaecfd8279350da06e5a5a246c1ac"
 
@@ -71,17 +74,35 @@ SCHEMA = {
     "@context": "https://schema.org",
     "@graph": [
         {
-            "@type": "Organization",
+            # LocalBusiness lets search and AI answers tie the studio to its
+            # published workshop address; every field below is visible on the
+            # Contact or About pages.
+            "@type": ["Organization", "LocalBusiness"],
             "@id": SITE + "/#organization",
             "name": "Trade Arts",
+            "legalName": "Trade Arts Pty Ltd",
             "url": SITE + "/",
+            "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "Unit 1/24 Towers Drive",
+                "addressLocality": "Mullumbimby",
+                "addressRegion": "NSW",
+                "postalCode": "2482",
+                "addressCountry": "AU",
+            },
+            "founder": {"@type": "Person", "name": "Bryce Noakes"},
+            "knowsAbout": [
+                "Prop fabrication", "Set decoration", "Exhibition fabrication",
+                "Public art fabrication", "3D scanning", "3D printing",
+                "CNC fabrication", "Scenic finishing", "3D modelling",
+            ],
             "description": (
                 "Design and fabrication studio in Mullumbimby, Northern NSW, near the Gold Coast, delivering custom builds "
                 "for film, television, exhibitions, public art and cultural projects."
             ),
             "email": "info@tradearts.work",
             "telephone": "+61431802800",
-            "logo": DEFAULT_SOCIAL_IMAGE,
+            "logo": LOGO_IMAGE,
             "image": DEFAULT_SOCIAL_IMAGE,
             "areaServed": ["Gold Coast", "Northern New South Wales", "Australia"],
             "sameAs": [
@@ -266,6 +287,8 @@ def normalize_social_metadata(text: str, canonical: str | None) -> str:
             image = get_attr(tag, "content") or image
     if image.startswith("/"):
         image = SITE + image
+    if image == LOGO_IMAGE:
+        image = DEFAULT_SOCIAL_IMAGE
 
     text = re.sub(
         r'<meta\b(?=[^>]*(?:\bproperty\s*=\s*["\']og:(?:url|image)["\']|'
@@ -395,6 +418,52 @@ def normalize_work_image_alts(text: str, path: Path) -> str:
         counter += 1
         label = f"{project} fabrication detail {counter}"
         return set_attr(tag, "alt", label)
+
+    return re.sub(r"<img\b[^>]*>", replace, text, flags=re.I | re.S)
+
+
+_IMAGE_SIZES: dict[str, tuple[int, int] | None] = {}
+# home_feature-2_image cards are regenerated on every run (also in CI, which
+# has no Pillow), so they keep their fixed-ratio CSS frame instead.
+SIZE_SKIP_CLASSES = ("logo", "navbar", "nav_", "footer", "icon", "client", "brand", "home_feature-2_image")
+
+
+def _image_size(src: str) -> tuple[int, int] | None:
+    if src not in _IMAGE_SIZES:
+        size = None
+        local = ROOT / src.split("?")[0].lstrip("/")
+        if src.startswith("/") and local.is_file() and local.suffix.lower() in {".webp", ".jpg", ".jpeg", ".png", ".gif", ".avif"}:
+            try:
+                from PIL import Image
+                with Image.open(local) as image:
+                    size = image.size
+            except Exception:
+                size = None
+        _IMAGE_SIZES[src] = size
+    return _IMAGE_SIZES[src]
+
+
+def normalize_image_dimensions(text: str) -> str:
+    """Give content images their intrinsic width/height so the browser can
+    reserve space before they load. Logos, icons and nav/footer images keep
+    their CSS-driven sizing. Skipped quietly when Pillow isn't installed."""
+    try:
+        import PIL  # noqa: F401
+    except ImportError:
+        return text
+
+    def replace(match: re.Match[str]) -> str:
+        tag = match.group(0)
+        if get_attr(tag, "width") or get_attr(tag, "height"):
+            return tag
+        classes = (get_attr(tag, "class") or "").lower()
+        if any(word in classes for word in SIZE_SKIP_CLASSES):
+            return tag
+        size = _image_size(get_attr(tag, "src") or "")
+        if not size:
+            return tag
+        tag = set_attr(tag, "width", str(size[0]))
+        return set_attr(tag, "height", str(size[1]))
 
     return re.sub(r"<img\b[^>]*>", replace, text, flags=re.I | re.S)
 
@@ -530,6 +599,56 @@ def normalize_article_recommendations(text: str, current_route: str) -> str:
     return text[:marker.end()] + "".join(cards) + text[list_end:]
 
 
+RELATED_RESEARCH = {
+    "/services/3d-scanning/": ["from-cad-to-camera-film-props", "prototype-physical-products-3d-printing", "how-to-brief-fabrication-studio"],
+    "/services/advanced-3d-printing/": ["cnc-vs-3d-printing-fabrication-method", "scenic-finishing-3d-prints-camera-ready", "prototype-physical-products-3d-printing"],
+    "/services/cad-design-drafting-services-trade-arts/": ["from-cad-to-camera-film-props", "how-to-brief-fabrication-studio", "building-prototypes-for-brands"],
+    "/services/cnc-precision-fabrication/": ["cnc-vs-3d-printing-fabrication-method", "custom-fabrication-cost-australia", "building-prototypes-for-brands"],
+    "/services/exhibition-public-art/": ["public-art-fabrication-council-government", "exhibition-fabrication-australia", "how-to-brief-fabrication-studio"],
+    "/services/scenic-finishes-paintwork/": ["scenic-finishing-3d-prints-camera-ready", "what-makes-a-prop-camera-ready", "how-props-are-made-australian-film"],
+    "/public-art/revitalise-coffs-harbour/": ["public-art-fabrication-council-government", "how-to-brief-fabrication-studio"],
+    "/exhibition/australian-museum-spiders/": ["exhibition-fabrication-australia", "how-to-brief-fabrication-studio"],
+    "/exhibition/bunya-cone-replica/": ["exhibition-fabrication-australia", "from-cad-to-camera-film-props"],
+    "/exhibition/reserve-bank-museum-nz/": ["exhibition-fabrication-australia", "custom-fabrication-cost-australia"],
+    "/work/runner-1/": ["how-props-are-made-australian-film", "what-makes-a-prop-camera-ready"],
+    "/commercial-project/superfun-console/": ["scenic-finishing-3d-prints-camera-ready", "building-prototypes-for-brands"],
+}
+RELATED_MARKERS = ('<section class="section_info_faq-1 services">', '<section class="case-enquiry"', '<section aria-label="Discuss a related project" class="case-enquiry"')
+
+
+def normalize_related_research(text: str, route: str) -> str:
+    """Link each service and key case study to the research articles that
+    explain the same work, using each article's current title and topic."""
+    text = re.sub(r'<section class="ta-related-research"[^>]*>.*?</section>', "", text, flags=re.S)
+    slugs = RELATED_RESEARCH.get(route)
+    if not slugs:
+        return text
+    articles = {article["slug"]: article for article in read_research_articles()}
+    items = []
+    for slug in slugs:
+        article = articles.get(slug)
+        if not article:
+            continue
+        topic = html.escape(ARTICLE_TOPICS.get(slug, "Workshop notes"))
+        items.append(
+            f'<li><a href="{html.escape(article["route"], quote=True)}">'
+            f'<span class="ta-topic">{topic}</span>'
+            f'<span class="ta-related-research__title">{html.escape(article["title"])}</span>'
+            '<span aria-hidden="true">→</span></a></li>'
+        )
+    if not items:
+        return text
+    section = (
+        '<section class="ta-related-research" aria-labelledby="related-research"><div class="padding-global">'
+        '<div class="container-large"><h2 id="related-research">From the workshop notes</h2>'
+        f'<ul role="list">{"".join(items)}</ul></div></div></section>'
+    )
+    for marker in RELATED_MARKERS:
+        if marker in text:
+            return text.replace(marker, section + marker, 1)
+    return text
+
+
 def normalize_research_archive(text: str) -> str:
     marker = '<div fs-list-load="pagination" fs-list-element="list" role="list" class="research_feature_list w-dyn-items">'
     start = text.find(marker)
@@ -658,6 +777,8 @@ def normalize_page(path: Path) -> bool:
         text = normalize_research_archive(text)
     if path == ROOT / "services" / "index.html":
         text = normalize_service_answers(text)
+    if canonical:
+        text = normalize_related_research(text, urlsplit(canonical).path)
     if path.parent.parent == ROOT / "blog":
         text = normalize_article_recommendations(text, "/" + path.parent.relative_to(ROOT).as_posix() + "/")
     if path == ROOT / "services" / "3d-scanning" / "index.html":
@@ -727,7 +848,17 @@ def normalize_page(path: Path) -> bool:
             flags=re.I | re.S,
         )
 
-    text = insert_before_head(text, '<link rel="stylesheet" href="/assets/site-fixes.css?v=16">')
+    # Footer: say where the workshop is and make email and phone tappable.
+    text = text.replace(
+        "Serving the Gold Coast and Australia — Film, Exhibitions and Public Art. info@tradearts.work · 0431 802 800</div>",
+        'Workshop in Mullumbimby, Northern NSW, serving the Gold Coast and Australia — Film, Exhibitions and Public Art. '
+        '<a href="mailto:info@tradearts.work" class="footer3_credit-link">info@tradearts.work</a> · '
+        '<a href="tel:+61431802800" class="footer3_credit-link">0431 802 800</a></div>',
+    )
+
+    text = re.sub(r'\s*<link\b(?=[^>]*\bhref=["\']/assets/fonts/outfit-latin-700-normal\.woff2["\'])[^>]*>', "", text, flags=re.I)
+    text = insert_before_head(text, '<link rel="preload" href="/assets/fonts/outfit-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>')
+    text = insert_before_head(text, '<link rel="stylesheet" href="/assets/site-fixes.css?v=17">')
     if is_home:
         text = insert_before_head(text, '<link rel="stylesheet" href="/assets/logo-carousel.css?v=2">')
     if had_media:
@@ -738,6 +869,7 @@ def normalize_page(path: Path) -> bool:
         text = insert_before_body_end(text, '<script src="/assets/logo-carousel.js?v=2" defer></script>')
 
     text = normalize_iframe_titles(text)
+    text = normalize_image_dimensions(text)
     text = normalize_work_image_alts(text, path)
     if ROOT / "shop" in path.parents:
         text = re.sub(
@@ -760,6 +892,8 @@ def normalize_page(path: Path) -> bool:
         text = normalize_article_headings(text)
         text = normalize_article_credit(text)
         text = text.replace("splide@main", f"splide@{SPLIDE_COMMIT}")
+        # Self-host the pinned carousel build instead of loading it from a CDN.
+        text = text.replace(f"https://cdn.jsdelivr.net/gh/daniil-yatsenko/splide@{SPLIDE_COMMIT}/", "/assets/vendor/splide/")
     text = normalize_links(text)
     text = normalize_external_targets(text)
     if canonical:
@@ -770,7 +904,7 @@ def normalize_page(path: Path) -> bool:
     cache_versions = {
         "/assets/consent.js": "2", "/assets/forms.js": "2", "/assets/media.js": "3",
         "/shop/assets/shop.css": "13", "/shop/assets/shop.js": "3",
-        "/assets/case-studies.css": "8", "/shop/assets/catalogue.css": "4",
+        "/assets/case-studies.css": "9", "/shop/assets/catalogue.css": "4",
         "/shop/assets/products.js": "2",
     }
     for asset, version in cache_versions.items():

@@ -22,7 +22,7 @@
   margin: 2rem 0 .65rem;
   font-size: 1.45rem;
   line-height: 1.2;
-  letter-spacing: -.025em;
+  letter-spacing: -.012em;
 }
 .case-story {
   grid-column: 1 / -1;
@@ -41,7 +41,7 @@
   font-size: 1.5rem;
   line-height: 1.15;
   margin: 0 0 .8rem;
-  letter-spacing: -.025em;
+  letter-spacing: -.012em;
 }
 .case-story p, .case-story li { font-size: 1.0625rem; line-height: 1.65; }
 .case-story p { margin: 0 0 .75rem; max-width: 60ch; }
@@ -81,7 +81,7 @@
   border-top: 2px solid currentColor;
   padding-top: 2rem;
 }
-.case-enquiry h2 { font-size: clamp(1.8rem, 3vw, 3rem); line-height: 1.05; margin: 0 0 1rem; letter-spacing: -.04em; }
+.case-enquiry h2 { font-size: clamp(1.8rem, 3vw, 3rem); line-height: 1.05; margin: 0 0 1rem; letter-spacing: -.018em; }
 .case-enquiry p { font-size: 1rem; line-height: 1.6; max-width: 56ch; }
 .case-enquiry__links { display: flex; flex-wrap: wrap; align-content: start; gap: .65rem 1.25rem; }
 .case-enquiry__links p { flex-basis: 100%; margin: 0; font-weight: 700; }
@@ -110,20 +110,20 @@
 .ta-service-detail .services_text-rich-text { font-size: 1.0625rem; line-height: 1.6; }
 .service-examples { background: var(--_primitives---opacity--dark-grey, #efefef); color: var(--_primitives---opacity--black, #161514); padding: 3rem 3%; }
 .service-examples__inner { max-width: 90rem; margin-inline: auto; }
-.service-examples h2 { font-size: clamp(2rem, 3.5vw, 3.5rem); line-height: 1.1; margin: 0 0 1rem; letter-spacing: -.04em; }
+.service-examples h2 { font-size: clamp(2rem, 3.5vw, 3.5rem); line-height: 1.1; margin: 0 0 1rem; letter-spacing: -.018em; }
 .service-examples__intro { max-width: 60ch; font-size: 1.0625rem; line-height: 1.6; margin-bottom: 2rem; }
 .service-examples__grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 1.5rem; }
 .service-examples__grid--two { grid-template-columns: repeat(2,minmax(0,1fr)); }
 .service-project { display: block; min-width: 0; border-top: 1px solid currentColor; padding-top: 1rem; }
 .service-project img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--_ui-styles---radius--medium, 12px); background: var(--_primitives---opacity--grey, #dfdedd); }
-.service-project h3 { font-size: 1.4rem; line-height: 1.15; margin: 1rem 0 .5rem; letter-spacing: -.025em; }
+.service-project h3 { font-size: 1.4rem; line-height: 1.15; margin: 1rem 0 .5rem; letter-spacing: -.012em; }
 .service-project p { font-size: 1rem; line-height: 1.5; margin-bottom: .75rem; }
 .service-project span { display: inline-block; text-decoration: underline; text-underline-offset: .2em; font-size: .9375rem; }
 .ta-project-detail .ta-project-meta { font-size: .8125rem; line-height: 1.5; letter-spacing: .025em; text-transform: uppercase; }
 .ta-service-detail .info_about_content-left.services > .margin-bottom h1 {
   font-size: clamp(2.35rem, 4.5vw, 4rem);
   line-height: 1.08;
-  letter-spacing: -.035em;
+  letter-spacing: -.016em;
   max-width: 18ch;
 }
 .ta-service-detail .info_about_content-left.services { min-height: 0; max-height: none; justify-content: flex-start; gap: 1.5rem; }

@@ -65,7 +65,9 @@ class SafeFixTests(unittest.TestCase):
         for path in (ROOT / "blog").glob("*/index.html"):
             source = path.read_text(encoding="utf-8")
             self.assertNotIn("splide@main", source)
-            self.assertIn(f"splide@{commit}", source)
+            self.assertNotIn("cdn.jsdelivr.net/gh/daniil-yatsenko/splide", source)
+            self.assertIn("/assets/vendor/splide/splide.min.js", source)
+        self.assertIn(commit, (ROOT / "assets/vendor/splide/SOURCE.txt").read_text(encoding="utf-8"))
 
     def test_shop_pages_do_not_claim_ineffective_cache_headers(self) -> None:
         for path in (ROOT / "shop").rglob("*.html"):
