@@ -423,7 +423,9 @@ def normalize_work_image_alts(text: str, path: Path) -> str:
 
 
 _IMAGE_SIZES: dict[str, tuple[int, int] | None] = {}
-SIZE_SKIP_CLASSES = ("logo", "navbar", "nav_", "footer", "icon", "client", "brand")
+# home_feature-2_image cards are regenerated on every run (also in CI, which
+# has no Pillow), so they keep their fixed-ratio CSS frame instead.
+SIZE_SKIP_CLASSES = ("logo", "navbar", "nav_", "footer", "icon", "client", "brand", "home_feature-2_image")
 
 
 def _image_size(src: str) -> tuple[int, int] | None:
