@@ -147,6 +147,10 @@
       // vertical panel in the y-z plane with its 60 mm lead hole; shape u = y, v = z, extruded along +x
       var cb = M.params.cable;
       o = plyShape(p.outline || [[b[1], b[2]], [b[4], b[2]], [b[4], b[5]], [b[1], b[5]]], p.cnc === 'C1' ? [] : [circ(cb.y, cb.z, cb.d / 2)], T, function (m) { m.rotation.y = Math.PI / 2; m.position.set(b[0] - W / 2, 0, D / 2); });
+    } else if (p.kind === 'panel' && (p.cnc === 'C5' || p.cnc === 'C6')) {
+      var hs = (p.feats || []).filter(function (f) { return f.t === 'vent'; }).map(function (f) { return rrect(b[0] + f.cx, P.LIFT + f.cy, f.w, f.h, 6); });
+      o = new THREE.Group(); var bp = plyShape([[b[0], b[2]], [b[3], b[2]], [b[3], b[5]], [b[0], b[5]]], hs, T, function (m) { m.position.set(-W / 2, 0, -D / 2); }); o.add(bp);
+      (p.feats || []).forEach(function (f) { if (f.t !== 'vent') return; var mm = new THREE.Mesh(new THREE.PlaneGeometry(f.w + 20, f.h + 20), MAT.mesh); mm.position.copy(V(b[0] + f.cx, D - T - 1, P.LIFT + f.cy)); o.add(mm); });
     } else if (p.kind === 'leaf') {
       var holes = [];
       (p.feats || []).forEach(function (f) { if (f.t === 'slot') holes.push(stadium(f.cx, f.cy, f.w, f.h)); else if (f.t === 'pull') holes.push(rrect(f.cx, f.cy, f.w, f.h, 4)); });
@@ -162,13 +166,14 @@
       leafGroups[p.cnc] = o; shadow(o);
       tag(o, ud); G('doors').add(o); all.push({ o: o, p: p }); return;
     } else if (p.kind === 'panel') { o = plyBox(b); }
+    else if (p.kind === 'angle' && p.mat === 'steel') { o = new THREE.Mesh(new THREE.BoxGeometry(b[3] - b[0], b[5] - b[2], b[4] - b[1]), MAT.steel); o.position.copy(V((b[0] + b[3]) / 2, (b[1] + b[4]) / 2, (b[2] + b[5]) / 2)); }
     else if (p.kind === 'angle') { var sx = b[3] - b[0], sz = b[5] - b[2]; o = new THREE.Group();
       var a1 = new THREE.Mesh(new THREE.BoxGeometry(sx, sz, 3), MAT.aluBlack), a2 = new THREE.Mesh(new THREE.BoxGeometry(3, sz, b[4] - b[1]), MAT.aluBlack);
       var c = V((b[0] + b[3]) / 2, b[4] - 1.5, (b[2] + b[5]) / 2); a1.position.copy(c); o.add(a1);
       var nearLeft = (b[0] < 30 || Math.abs(b[0] - (T + 740 + T)) < 1); a2.position.copy(V(nearLeft ? b[0] + 1.5 : b[3] - 1.5, (b[1] + b[4]) / 2, (b[2] + b[5]) / 2)); o.add(a2); }
     else if (p.kind === 'track') { o = new THREE.Group(); var tl = b[3] - b[0];
-      var top = new THREE.Mesh(new THREE.BoxGeometry(tl, 4, b[4] - b[1]), MAT.alu); top.position.copy(V((b[0] + b[3]) / 2, (b[1] + b[4]) / 2, b[5] - 2)); o.add(top);
-      [b[1] + 2, (b[1] + b[4]) / 2, b[4] - 2].forEach(function (y) { var w = new THREE.Mesh(new THREE.BoxGeometry(tl, b[5] - b[2], 3), MAT.alu); w.position.copy(V((b[0] + b[3]) / 2, y, (b[2] + b[5]) / 2)); o.add(w); }); }
+      var top = new THREE.Mesh(new THREE.BoxGeometry(tl, 4, b[4] - b[1]), MAT.aluBlack); top.position.copy(V((b[0] + b[3]) / 2, (b[1] + b[4]) / 2, b[5] - 2)); o.add(top);
+      [b[1] + 2, (b[1] + b[4]) / 2, b[4] - 2].forEach(function (y) { var w = new THREE.Mesh(new THREE.BoxGeometry(tl, b[5] - b[2], 3), MAT.aluBlack); w.position.copy(V((b[0] + b[3]) / 2, y, (b[2] + b[5]) / 2)); o.add(w); }); }
     else if (p.kind === 'stile') { o = new THREE.Mesh(new THREE.BoxGeometry(b[3] - b[0], b[5] - b[2], b[4] - b[1]), MAT.walnut); planarUVlong(o.geometry); o.position.copy(V((b[0] + b[3]) / 2, (b[1] + b[4]) / 2, (b[2] + b[5]) / 2)); }
     else if (p.stl) { o = asaMesh(p); }
     else { o = new THREE.Mesh(new THREE.BoxGeometry(b[3] - b[0], b[5] - b[2], b[4] - b[1]), MAT.grey); o.position.copy(V((b[0] + b[3]) / 2, (b[1] + b[4]) / 2, (b[2] + b[5]) / 2)); }
@@ -233,7 +238,7 @@
     var t = new THREE.CanvasTexture(c); t.encoding = THREE.sRGBEncoding; var s = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, depthTest: false })); s.scale.set(760, 143, 1); s.renderOrder = 9; return s; }
   function dim(a, b, off, txt) { var A = V(a[0], a[1], a[2]).add(off), B = V(b[0], b[1], b[2]).add(off), g = new THREE.BufferGeometry().setFromPoints([A, B]);
     dimG.add(new THREE.Line(g, new THREE.LineBasicMaterial({ color: 0x1d1b19, depthTest: false }))); var l = label(txt); l.position.copy(A.clone().add(B).multiplyScalar(0.5)); dimG.add(l); }
-  dim([-P.CAP_OH_L, -T - P.CAP_OH_F, P.H], [W, -T - P.CAP_OH_F, P.H], new THREE.Vector3(0, 140, 0), (W + P.CAP_OH_L) + ' cap · ' + W + ' body');
+  dim([0, 0, P.H], [W, 0, P.H], new THREE.Vector3(0, 140, 0), W + ' wide');
   dim([W, 0, 0], [W, 0, P.H], new THREE.Vector3(160, 0, 160), P.H + ' high');
   dim([W, 0, 30], [W, D, 30], new THREE.Vector3(160, 0, 0), D + ' deep');
   dim([T, 0, 1000], [T + P.BAY, 0, 1000], new THREE.Vector3(0, 0, 220), P.BAY + ' bay');
@@ -245,7 +250,7 @@
   var leafX = { D1: 0, D2: 0 }, leafTarget = { D1: 0, D2: 0 }, swingNow = 0;
   function targets() { leafTarget.D1 = state.doors === 'fridge' ? (W - 2 * T - P.LEAF_W) : 0; leafTarget.D2 = state.doors === 'laundry' ? -((P.LEAF_W - P.OVL) - P.REAR_STOP) : 0; }
   function stepOf(p) {
-    if (p.group === 'asa' && p.name.indexOf('foot') > 0) return 3; if (p.cnc === 'C4' || (p.group === 'carcass' && p.cnc !== 'C7')) return 4;
+    if (p.group === 'asa' && p.name.indexOf('pad') > 0) return 3; if (p.name.indexOf('louvre') >= 0) return 5; if (p.cnc === 'C4' || (p.group === 'carcass' && p.cnc !== 'C7')) return 4;
     if (p.kind === 'angle') return 5; if (p.cnc === 'C7' || p.kind === 'track') return 7; if (p.kind === 'leaf' || p.kind === 'stile') return 8;
     if (p.name.indexOf('floor guide') >= 0) return 9; if (p.name.indexOf('grommet') >= 0) return 10; return 4; }
   function apply() {
