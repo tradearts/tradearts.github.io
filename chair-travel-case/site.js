@@ -237,7 +237,7 @@
     o.userData = p; G(grpName).add(o); all.push(o);
   });
 
-  /* rivets: 5 x 16 aluminium with washers, 150 mm pitch, both legs. Split body / lid so they lift off with the lid. */
+  /* rivets: 5 x 18 aluminium with washers, 150 mm pitch, both legs. Split body / lid so they lift off with the lid. */
   (function () {
     var LIDD = P.LID || 90, sets = { door: [], extrusion: [] };
     M.rivets.forEach(function (r) { sets[r[6] ? 'door' : 'extrusion'].push(r); });
@@ -246,7 +246,7 @@
       var geo = new THREE.CylinderGeometry(5.5, 6, 2.2, 14), im = new THREE.InstancedMesh(geo, MAT.alu, list.length), d = new THREE.Object3D();
       list.forEach(function (r, i) { var n = [r[3], r[4], r[5]]; d.position.copy(V(r[0] + n[0] * 2.3, r[1] + n[1] * 2.3, r[2] + n[2] * 2.3));
         d.rotation.set(0, 0, 0); if (n[0]) d.rotation.z = Math.PI / 2; if (n[1]) d.rotation.x = Math.PI / 2; d.updateMatrix(); im.setMatrixAt(i, d.matrix); });
-      im.castShadow = true; im.userData = { name: 'Rivets (' + (gname === 'door' ? 'lid' : 'body') + ')', kind: 'rivet', step: 7, desc: M.rivets.length + ' extrusion fixings in all at 150 mm pitch, both legs, 40 mm from each end: 5 x 16 aluminium rivets with backing washers into the 9 mm ply, 8g x 16 wafer screws where the angle lands on the 17 mm base. Latches, handles and corners take more.', supplier: 'Titan AV' };
+      im.castShadow = true; im.userData = { name: 'Rivets (' + (gname === 'door' ? 'lid' : 'body') + ')', kind: 'rivet', step: 7, desc: M.rivets.length + ' extrusion fixings in all at 150 mm pitch, both legs, 40 mm from each end: 5 x 18 aluminium rivets with backing washers into the 9 mm ply, 8g x 16 wafer screws where the angle lands on the 17 mm base. Latches, handles and corners take more.', supplier: 'Titan AV' };
       G(gname).add(im); pickables.push(im); all.push(im);
     });
   })();
