@@ -228,7 +228,7 @@
     var R = p.R, t = p.t, m4 = new THREE.Matrix4();
     m4.set(R[0][0], R[0][1], R[0][2], t[0],  R[2][0], R[2][1], R[2][2], t[2],  -R[1][0], -R[1][1], -R[1][2], -t[1],  0, 0, 0, 1);
     var g = g0.clone(); g.applyMatrix4(m4); g.computeVertexNormals();
-    var mesh = new THREE.Mesh(g, MAT.asa); mesh.castShadow = mesh.receiveShadow = true; return mesh;
+    var mesh = new THREE.Mesh(g, p.mat === 'asa' ? MAT.asa : p.mat === 'eva' ? MAT.rubber : MAT.satinBlack); mesh.castShadow = mesh.receiveShadow = true; return mesh;
   }
   M.parts.forEach(function (p) {
     var grpName = (p.group === 'door' || p.lid) ? 'door' : p.group;
