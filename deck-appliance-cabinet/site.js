@@ -189,6 +189,10 @@
   }
   all.forEach(function (a) { if (a.p.kind === 'stile') leafGroups[a.p.leaf].attach(a.o); });
 
+  /* ---------- screw heads ---------- */
+  (function () { var sg = G('screws'), geo = new THREE.CylinderGeometry(4.6, 4.6, 1.2, 16), mat = MAT.steel;
+    (M.screws || []).forEach(function (sc) { var m = new THREE.Mesh(geo, mat), p = sc.p, n = sc.n;
+      m.position.copy(V(p[0] + n[0] * 0.4, p[1] + n[1] * 0.4, p[2] + n[2] * 0.4)); if (n[1]) m.rotation.x = Math.PI / 2; sg.add(m); }); })();
   /* ---------- appliances ---------- */
   var appG = G('appliances');
   function rbox(w, h, d, r, mat) { var s = new THREE.Shape(), x = -w / 2, y = -h / 2; s.moveTo(x + r, y); s.lineTo(x + w - r, y); s.quadraticCurveTo(x + w, y, x + w, y + r); s.lineTo(x + w, y + h - r); s.quadraticCurveTo(x + w, y + h, x + w - r, y + h); s.lineTo(x + r, y + h); s.quadraticCurveTo(x, y + h, x, y + h - r); s.lineTo(x, y + r); s.quadraticCurveTo(x, y, x + r, y);
@@ -251,9 +255,11 @@
   var leafX = { D1: 0, D2: 0 }, leafTarget = { D1: 0, D2: 0 }, swingNow = 0;
   function targets() { leafTarget.D1 = state.doors === 'fridge' ? (W - 2 * T - P.LEAF_W - (P.FRONT_STOP || 0)) : 0; leafTarget.D2 = state.doors === 'laundry' ? -((P.LEAF_W - P.OVL) - P.REAR_STOP) : 0; }
   function stepOf(p) {
-    if (p.group === 'asa' && p.name.indexOf('pad') > 0) return 3; if (p.name.indexOf('louvre') >= 0) return 5; if (p.cnc === 'C4' || (p.group === 'carcass' && p.cnc !== 'C7')) return 4;
-    if (p.kind === 'angle') return 5; if (p.cnc === 'C7' || p.kind === 'track') return 7; if (p.kind === 'leaf' || p.kind === 'stile') return 8;
-    if (p.name.indexOf('floor guide') >= 0) return 9; if (p.name.indexOf('grommet') >= 0) return 10; return 4; }
+    if (p.group === 'asa' && p.name.indexOf('pad') > 0) return 4;
+    if (p.kind === 'track' || ['C4', 'C1', 'C2', 'C3'].indexOf(p.cnc) >= 0) return 5;
+    if (p.cnc === 'C5' || p.cnc === 'C6' || p.name.indexOf('louvre') >= 0 || p.name.indexOf('Joint angle') === 0) return 6;
+    if (p.name.indexOf('Hold-down') === 0) return 8; if (p.kind === 'leaf' || p.kind === 'stile') return 9;
+    if (p.name.indexOf('floor guide') >= 0) return 10; if (p.name.indexOf('grommet') >= 0) return 11; return 5; }
   function apply() {
     targets();
     G('appliances').visible = state.app; G('context').visible = state.context; G('person').visible = state.person; dimG.visible = state.dims; G('leads').visible = state.leads;
@@ -261,15 +267,16 @@
     all.concat([]).forEach(function (a) { var st = stepOf(a.p); a.o.visible = state.step < 3 || st <= state.step;
       a.o.traverse(function (m) { if (!m.isMesh) return; if (!m.userData._mat) m.userData._mat = m.material;
         var mat = m.userData._mat; if (state.step && st === state.step) mat = MAT.hi; else if (state.xray && (a.p.kind === 'panel' || a.p.kind === 'leaf')) mat = MAT.ghost; m.material = mat; }); });
-    G('appliances').visible = state.app && (!state.step || state.step >= 11);
+    G('appliances').visible = state.app && (!state.step || state.step >= 12);
     if (state.step && state.step < 11) G('leads').visible = false;
+    G('screws').visible = !state.step || state.step >= 6;
     document.querySelectorAll('.tools button[data-k]').forEach(function (b) { var k = b.dataset.k, v = b.dataset.v; b.classList.toggle('on', v ? state[k] === v : !!state[k]); });
     var sw = document.getElementById('swingRow'); if (sw) sw.style.display = state.doors === 'fridge' ? 'flex' : 'none';
   }
   window.__state = state; window.__apply = apply;
   document.querySelectorAll('.tools button[data-k]').forEach(function (b) { b.onclick = function () { var k = b.dataset.k, v = b.dataset.v; if (v) { state[k] = state[k] === v && v !== 'closed' ? 'closed' : v; if (state[k] !== 'fridge') state.swing = 0; } else state[k] = !state[k]; apply(); }; });
   var sl = document.getElementById('swing'); if (sl) sl.oninput = function () { state.swing = +sl.value; };
-  (function () { var first = 1, last = 11;
+  (function () { var first = 1, last = 12;
     function show() { var t = document.getElementById('sTxt'); if (!state.step) t.innerHTML = '<b>Build along</b> Press ▶ to step through the assembly.'; else { var s = STEPS[state.step - 1] || ['', '']; t.innerHTML = '<b>Step ' + state.step + ' · ' + s[0] + '</b> ' + s[1]; } apply(); }
     document.getElementById('sPrev').onclick = function () { state.step = state.step <= first ? 0 : state.step - 1; show(); };
     document.getElementById('sNext').onclick = function () { state.step = !state.step ? first : Math.min(last, state.step + 1); show(); };
