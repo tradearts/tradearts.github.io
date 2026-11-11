@@ -156,7 +156,7 @@
       (p.feats || []).forEach(function (f) { if (f.t === 'slot') holes.push(stadium(f.cx, f.cy, f.w, f.h)); else if (f.t === 'pull') holes.push(rrect(f.cx, f.cy, f.w, f.h, 4)); });
       var L = b[3] - b[0], H = b[5] - b[2];
       o = new THREE.Group();
-      var pu = p.panel_u || [0, L]; var lm = plyShape([[pu[0], 0], [pu[1], 0], [pu[1], H], [pu[0], H]], holes, T, function () {}); lm.position.set(0, 0, -T); o.add(lm);
+      var TD = b[4] - b[1], pu = p.panel_u || [0, L]; var lm = plyShape([[pu[0], 0], [pu[1], 0], [pu[1], H], [pu[0], H]], holes, TD, function () {}); lm.position.set(0, 0, -TD); o.add(lm);
       // stainless insect mesh behind each vent group (low and high)
       [function (f) { return f.cy < H / 2; }, function (f) { return f.cy >= H / 2; }].forEach(function (inG) {
         var ss = (p.feats || []).filter(function (f) { return f.t === 'slot' && inG(f); }); if (!ss.length) return;
@@ -173,8 +173,8 @@
       var c = V((b[0] + b[3]) / 2, b[4] - 1.5, (b[2] + b[5]) / 2); a1.position.copy(c); o.add(a1);
       var nearLeft = (b[0] < 30 || Math.abs(b[0] - (T + 740 + T)) < 1); a2.position.copy(V(nearLeft ? b[0] + 1.5 : b[3] - 1.5, (b[1] + b[4]) / 2, (b[2] + b[5]) / 2)); o.add(a2); }
     else if (p.kind === 'track') { o = new THREE.Group(); var tl = b[3] - b[0];
-      var top = new THREE.Mesh(new THREE.BoxGeometry(tl, 4, b[4] - b[1]), MAT.alu); top.position.copy(V((b[0] + b[3]) / 2, (b[1] + b[4]) / 2, b[5] - 2)); o.add(top);
-      [b[1] + 2, (b[1] + b[4]) / 2, b[4] - 2].forEach(function (y) { var w = new THREE.Mesh(new THREE.BoxGeometry(tl, b[5] - b[2], 3), MAT.alu); w.position.copy(V((b[0] + b[3]) / 2, y, (b[2] + b[5]) / 2)); o.add(w); }); }
+      var top = new THREE.Mesh(new THREE.BoxGeometry(tl, 4, b[4] - b[1]), MAT.aluBlack); top.position.copy(V((b[0] + b[3]) / 2, (b[1] + b[4]) / 2, b[5] - 2)); o.add(top);
+      [b[1] + 2, (b[1] + b[4]) / 2, b[4] - 2].forEach(function (y) { var w = new THREE.Mesh(new THREE.BoxGeometry(tl, b[5] - b[2], 3), MAT.aluBlack); w.position.copy(V((b[0] + b[3]) / 2, y, (b[2] + b[5]) / 2)); o.add(w); }); }
     else if (p.kind === 'stile') { o = new THREE.Mesh(new THREE.BoxGeometry(b[3] - b[0], b[5] - b[2], b[4] - b[1]), MAT.walnut); planarUVlong(o.geometry); o.position.copy(V((b[0] + b[3]) / 2, (b[1] + b[4]) / 2, (b[2] + b[5]) / 2)); }
     else if (p.stl) { o = asaMesh(p); }
     else { o = new THREE.Mesh(new THREE.BoxGeometry(b[3] - b[0], b[5] - b[2], b[4] - b[1]), MAT.grey); o.position.copy(V((b[0] + b[3]) / 2, (b[1] + b[4]) / 2, (b[2] + b[5]) / 2)); }
