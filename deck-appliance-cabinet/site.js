@@ -127,7 +127,7 @@
     var wall = new THREE.Mesh(cg, std({ map: corr, roughness: 0.35, metalness: 0.75, color: 0xffffff })); wall.rotation.y = -Math.PI / 2; wall.position.copy(V(sx, sy - (dd - 600) / 2, 1350)); wall.receiveShadow = true; ctx.add(wall);
     var sp = new THREE.Mesh(new THREE.BoxGeometry(90, 2700, 90), post); sp.position.copy(V(sx - 45, -700, 1350)); shadow(sp); ctx.add(sp);
     // power point on the studio wall (indicative only: position unmeasured)
-    var gpo = new THREE.Mesh(new THREE.BoxGeometry(14, 80, 120), std({ color: 0xf4f4f0, roughness: 0.5 })); gpo.position.copy(V(sx - 7, M.params.cable.y, 1150)); ctx.add(tag(gpo, { name: 'Power point (indicative)', desc: 'Owner confirmed a power point on the studio wall beside the laundry. Position, socket count, rating and weather cover are NOT measured. Electrician to confirm three accessible outlets before the lead holes are cut.' }));
+    var gpo = new THREE.Mesh(new THREE.BoxGeometry(14, 80, 120), std({ color: 0xf4f4f0, roughness: 0.5 })); gpo.position.copy(V(sx - 7, M.params.cable.y, 100)); ctx.add(tag(gpo, { name: 'Power point (indicative)', desc: 'Power point on the studio wall about 100 above the deck (owner). Exact position along the wall to be measured before the lead holes are cut. Outdoor outlet: weatherproof, IP-rated.' }));
     // pergola rafters overhead (open, per the 9 Nov photo)
     var raft = std({ color: 0xcaa16a, roughness: 0.8 }), rg = G('pergola');
     for (var r = 0; r < 6; r++) { var rm = new THREE.Mesh(new THREE.BoxGeometry(45, 190, dd), raft); rm.position.copy(V(-1500 + r * 600, sy - dd / 2 + 200, 2800)); shadow(rm); rg.add(rm); }
@@ -166,14 +166,15 @@
       leafGroups[p.cnc] = o; shadow(o);
       tag(o, ud); G('doors').add(o); all.push({ o: o, p: p }); return;
     } else if (p.kind === 'panel') { o = plyBox(b); }
+    else if (p.kind === 'guide') { o = new THREE.Mesh(new THREE.BoxGeometry(b[3] - b[0], b[5] - b[2], b[4] - b[1]), std({ color: 0xeeeeea, roughness: 0.6 })); o.position.copy(V((b[0] + b[3]) / 2, (b[1] + b[4]) / 2, (b[2] + b[5]) / 2)); }
     else if (p.kind === 'angle' && p.mat === 'steel') { o = new THREE.Mesh(new THREE.BoxGeometry(b[3] - b[0], b[5] - b[2], b[4] - b[1]), MAT.steel); o.position.copy(V((b[0] + b[3]) / 2, (b[1] + b[4]) / 2, (b[2] + b[5]) / 2)); }
     else if (p.kind === 'angle') { var sx = b[3] - b[0], sz = b[5] - b[2]; o = new THREE.Group();
       var a1 = new THREE.Mesh(new THREE.BoxGeometry(sx, sz, 3), MAT.aluBlack), a2 = new THREE.Mesh(new THREE.BoxGeometry(3, sz, b[4] - b[1]), MAT.aluBlack);
       var c = V((b[0] + b[3]) / 2, b[4] - 1.5, (b[2] + b[5]) / 2); a1.position.copy(c); o.add(a1);
       var nearLeft = (b[0] < 30 || Math.abs(b[0] - (T + 740 + T)) < 1); a2.position.copy(V(nearLeft ? b[0] + 1.5 : b[3] - 1.5, (b[1] + b[4]) / 2, (b[2] + b[5]) / 2)); o.add(a2); }
     else if (p.kind === 'track') { o = new THREE.Group(); var tl = b[3] - b[0];
-      var top = new THREE.Mesh(new THREE.BoxGeometry(tl, 4, b[4] - b[1]), MAT.aluBlack); top.position.copy(V((b[0] + b[3]) / 2, (b[1] + b[4]) / 2, b[5] - 2)); o.add(top);
-      [b[1] + 2, (b[1] + b[4]) / 2, b[4] - 2].forEach(function (y) { var w = new THREE.Mesh(new THREE.BoxGeometry(tl, b[5] - b[2], 3), MAT.aluBlack); w.position.copy(V((b[0] + b[3]) / 2, y, (b[2] + b[5]) / 2)); o.add(w); }); }
+      var top = new THREE.Mesh(new THREE.BoxGeometry(tl, 4, b[4] - b[1]), MAT.alu); top.position.copy(V((b[0] + b[3]) / 2, (b[1] + b[4]) / 2, b[5] - 2)); o.add(top);
+      [b[1] + 2, (b[1] + b[4]) / 2, b[4] - 2].forEach(function (y) { var w = new THREE.Mesh(new THREE.BoxGeometry(tl, b[5] - b[2], 3), MAT.alu); w.position.copy(V((b[0] + b[3]) / 2, y, (b[2] + b[5]) / 2)); o.add(w); }); }
     else if (p.kind === 'stile') { o = new THREE.Mesh(new THREE.BoxGeometry(b[3] - b[0], b[5] - b[2], b[4] - b[1]), MAT.walnut); planarUVlong(o.geometry); o.position.copy(V((b[0] + b[3]) / 2, (b[1] + b[4]) / 2, (b[2] + b[5]) / 2)); }
     else if (p.stl) { o = asaMesh(p); }
     else { o = new THREE.Mesh(new THREE.BoxGeometry(b[3] - b[0], b[5] - b[2], b[4] - b[1]), MAT.grey); o.position.copy(V((b[0] + b[3]) / 2, (b[1] + b[4]) / 2, (b[2] + b[5]) / 2)); }
@@ -227,7 +228,7 @@
     tag(k, { name: 'Stacking kit (maker\'s own)', desc: 'Use the stacking kit the washer and dryer makers list for this exact pair. The dryer is secured to the washer by the kit, not by the cabinet.', step: 11 }); appG.add(k); })();
   // leads, indicative: fridge -> divider hole -> behind the laundry -> studio cheek hole -> wall
   (function () { var cb = M.params.cable, fb = M.app.fridge.b, z = cb.z;
-    var pts = [[fb[3] - 40, fb[4], 300], [fb[3] - 40, fb[4] + 60, 300], [P.BAY + T - 30, cb.y, z], [P.BAY + 2 * T + 30, cb.y, z], [W - T - 60, cb.y + 10, z - 20], [W - T - 10, cb.y, z], [W + 40, cb.y, z], [W + M.site.studio_gap - 20, cb.y, 1150]];
+    var pts = [[fb[3] - 40, fb[4], 250], [fb[3] - 30, fb[4] + 60, 200], [P.BAY + T - 30, cb.y, z], [P.BAY + 2 * T + 30, cb.y, z], [W - T - 60, cb.y + 10, z], [W - T - 10, cb.y, z], [W + 40, cb.y, z], [W + M.site.studio_gap - 20, cb.y, 100]];
     var curve = new THREE.CatmullRomCurve3(pts.map(function (p) { return V(p[0], p[1], p[2]); })), tube = new THREE.Mesh(new THREE.TubeGeometry(curve, 80, 5, 8, false), std({ color: 0xe7e5df, roughness: 0.6 }));
     tag(tube, { name: 'Appliance leads (indicative route)', desc: 'Three separate original leads: fridge through the divider and the studio cheek; washer and dryer through the studio cheek. No powerboard, nothing in a door track or under a machine foot. Route only: socket position and plug sizes are unmeasured (HOLD).', step: 10 });
     G('leads').add(tube); })();
@@ -248,7 +249,7 @@
   /* ---------- state ---------- */
   var state = { doors: 'closed', swing: 0, app: true, context: true, person: false, dims: false, xray: false, leads: false, step: 0 };
   var leafX = { D1: 0, D2: 0 }, leafTarget = { D1: 0, D2: 0 }, swingNow = 0;
-  function targets() { leafTarget.D1 = state.doors === 'fridge' ? (W - 2 * T - P.LEAF_W) : 0; leafTarget.D2 = state.doors === 'laundry' ? -((P.LEAF_W - P.OVL) - P.REAR_STOP) : 0; }
+  function targets() { leafTarget.D1 = state.doors === 'fridge' ? (W - 2 * T - P.LEAF_W - (P.FRONT_STOP || 0)) : 0; leafTarget.D2 = state.doors === 'laundry' ? -((P.LEAF_W - P.OVL) - P.REAR_STOP) : 0; }
   function stepOf(p) {
     if (p.group === 'asa' && p.name.indexOf('pad') > 0) return 3; if (p.name.indexOf('louvre') >= 0) return 5; if (p.cnc === 'C4' || (p.group === 'carcass' && p.cnc !== 'C7')) return 4;
     if (p.kind === 'angle') return 5; if (p.cnc === 'C7' || p.kind === 'track') return 7; if (p.kind === 'leaf' || p.kind === 'stile') return 8;
