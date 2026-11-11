@@ -89,6 +89,7 @@
     pine: std({ color: 0xd8b888, roughness: 0.75 }),
     plyEdge: std({ color: 0xffffff, map: plyEdge, roughness: 0.7 }),
     satinBlack: std({ color: 0x1b1b1c, roughness: 0.55 }),
+    asa: std({ color: 0x2a2b2e, roughness: 0.72, metalness: 0.0 }),
     brass: std({ color: 0xd2ad62, map: brushed('#c9a35a', 17), roughness: 0.3, metalness: 1.0 }),
     badge: std({ color: 0xffffff, map: badgeTex, roughness: 0.32, metalness: 0.75 }),
     walnut: std({ color: 0xa88566, map: img('walnut_diff', true), normalMap: img('walnut_nor'), roughness: 0.5 }),
@@ -219,9 +220,19 @@
   var BUILD = { angle: function (p) { return lProfile(p, 30, 1.2, false); }, hybrid: function (p) { return lProfile(p, 25, 1.2, true); }, ball_corner: ballCorner, flat_corner: flatCorner,
     brace: lBrace, latch: latch, handle: handle, castor_plate: castorPlate, castor_wheel: castorWheel, turnbutton: turnButton, badge: badge };
 
+  // Rev H: ASA printed parts use the real STL geometry, placed with the matrix from gen.py (case = R p + t; viewer = (x, z, -y))
+  var asaGeo = {};
+  function asaMesh(p) {
+    var g0 = asaGeo[p.stl];
+    if (!g0) { var d = M.asaMeshes[p.stl]; g0 = new THREE.BufferGeometry(); g0.setAttribute('position', new THREE.Float32BufferAttribute(d.v, 3)); g0.setIndex(d.i); asaGeo[p.stl] = g0 = g0.toNonIndexed(); }
+    var R = p.R, t = p.t, m4 = new THREE.Matrix4();
+    m4.set(R[0][0], R[0][1], R[0][2], t[0],  R[2][0], R[2][1], R[2][2], t[2],  -R[1][0], -R[1][1], -R[1][2], -t[1],  0, 0, 0, 1);
+    var g = g0.clone(); g.applyMatrix4(m4); g.computeVertexNormals();
+    var mesh = new THREE.Mesh(g, MAT.asa); mesh.castShadow = mesh.receiveShadow = true; return mesh;
+  }
   M.parts.forEach(function (p) {
     var grpName = (p.group === 'door' || p.lid) ? 'door' : p.group;
-    var o = (BUILD[p.kind] || simple)(p);
+    var o = p.stl ? asaMesh(p) : (BUILD[p.kind] || simple)(p);
     o.traverse(function (c) { if (c.isMesh) { c.userData = p; c.castShadow = c.receiveShadow = true; pickables.push(c); } });
     o.userData = p; G(grpName).add(o); all.push(o);
   });
@@ -235,7 +246,7 @@
       var geo = new THREE.CylinderGeometry(5.5, 6, 2.2, 14), im = new THREE.InstancedMesh(geo, MAT.alu, list.length), d = new THREE.Object3D();
       list.forEach(function (r, i) { var n = [r[3], r[4], r[5]]; d.position.copy(V(r[0] + n[0] * 2.3, r[1] + n[1] * 2.3, r[2] + n[2] * 2.3));
         d.rotation.set(0, 0, 0); if (n[0]) d.rotation.z = Math.PI / 2; if (n[1]) d.rotation.x = Math.PI / 2; d.updateMatrix(); im.setMatrixAt(i, d.matrix); });
-      im.castShadow = true; im.userData = { name: 'Rivets (' + (gname === 'door' ? 'lid' : 'body') + ')', kind: 'rivet', step: 6, desc: M.rivets.length + ' extrusion fixings in all at 150 mm pitch, both legs, 40 mm from each end: 5 x 16 aluminium rivets with backing washers into the 9 mm ply, 8g x 16 wafer screws where the angle lands on the 17 mm base. Latches, handles and corners take more.', supplier: 'Titan AV' };
+      im.castShadow = true; im.userData = { name: 'Rivets (' + (gname === 'door' ? 'lid' : 'body') + ')', kind: 'rivet', step: 7, desc: M.rivets.length + ' extrusion fixings in all at 150 mm pitch, both legs, 40 mm from each end: 5 x 16 aluminium rivets with backing washers into the 9 mm ply, 8g x 16 wafer screws where the angle lands on the 17 mm base. Latches, handles and corners take more.', supplier: 'Titan AV' };
       G(gname).add(im); pickables.push(im); all.push(im);
     });
   })();
@@ -248,9 +259,9 @@
       for (var i = 0; i < v.length; i += 3) { pos[i] = v[i]; pos[i + 1] = v[i + 2]; pos[i + 2] = -v[i + 1]; }
       var g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.setIndex(d.f); g.computeVertexNormals(); planarUV(g, k === 'walnut' ? 420 : 160);
       var m = new THREE.Mesh(g, cm[k]); m.castShadow = m.receiveShadow = true;
-      m.userData = { name: 'Chair, ' + k.replace('_back', ' back') + " (maker's STEP)", kind: 'chair', step: 11, desc: "maker's STEP model: 927 W x 920 D x 1547 H, about 48 kg (estimate)", supplier: '' };
+      m.userData = { name: 'Chair, ' + k.replace('_back', ' back') + " (maker's STEP)", kind: 'chair', step: 12, desc: "maker's STEP model: 927 W x 920 D x 1547 H, about 48 kg (estimate)", supplier: '' };
       chairG.add(m); pickables.push(m); });
-    chairG.userData = { step: 11 }; all.push(chairG);
+    chairG.userData = { step: 12 }; all.push(chairG);
   }
 
   /* studio floor + person for scale */
@@ -294,7 +305,7 @@
   var hiMat = new Map();
   function highlight(mat) { if (Array.isArray(mat)) return mat.map(highlight); if (!hiMat.has(mat)) { var m = mat.clone(); m.emissive = new THREE.Color(0xff7a00); m.emissiveIntensity = 0.55; hiMat.set(mat, m); } return hiMat.get(mat); }
   function apply() {
-    G('door').visible = state.door; G('door').position.set(state.lidOut ? -260 : 0, state.lidOut ? 45 : 0, state.lidOut ? 950 : 0); G('dims').visible = state.dims; G('lining').visible = state.lining; G('restraint').visible = state.restraint; chairG.visible = state.chair; personG.visible = state.person && !(state.lidOut && state.door);
+    G('door').visible = state.door; G('door').position.set(state.lidOut ? -260 : 0, 0, state.lidOut ? 950 : 0); G('dims').visible = state.dims; G('lining').visible = state.lining; G('restraint').visible = state.restraint; chairG.visible = state.chair; personG.visible = state.person && !(state.lidOut && state.door);
     forMeshes(function (c, o) {
       var p = c.userData || {}, st = p.step || (o.userData && o.userData.step) || 0, m = baseMats.get(c);
       c.visible = true;
@@ -308,7 +319,7 @@
   /* ---------- UI ---------- */
   var tools = document.getElementById('tools');
   function btn(label, on, fn) { var b = document.createElement('button'); b.textContent = label; if (on) b.className = 'on'; b.onclick = function () { fn(b); }; tools.appendChild(b); return b; }
-  [['door', 'Lid'], ['lidOut', 'Lid lifted out'], ['lining', 'Foam'], ['restraint', 'Restraints'], ['chair', 'Chair'], ['person', 'Person'], ['dims', 'Sizes'], ['xray', 'X-ray']].forEach(function (t) {
+  [['door', 'Lid'], ['lidOut', 'Lid off'], ['lining', 'Foam'], ['restraint', 'Restraints'], ['chair', 'Chair'], ['person', 'Person'], ['dims', 'Sizes'], ['xray', 'X-ray']].forEach(function (t) {
     btn(t[1], state[t[0]], function (b) { state[t[0]] = !state[t[0]]; b.className = state[t[0]] ? 'on' : ''; apply(); });
   });
   var VIEWS = { '3/4': [[2700, 1650, 2600], [0, 880, -504]], Front: [[0, 950, 3900], [0, 900, -504]], Side: [[3900, 950, -504], [0, 900, -504]], Back: [[-1800, 1500, -3600], [0, 900, -504]], Top: [[0, 4700, -505], [0, 0, -504]], Under: [[1600, -900, 1400], [0, 150, -504]], Detail: [[900, 1900, 900], [420, 1650, -60]] };
@@ -319,7 +330,7 @@
   // build-step bar
   var sb = document.getElementById('stepbar');
   if (sb) {
-    var first = 4, last = 12;
+    var first = 5, last = 13;
     sb.innerHTML = '<button id="sPrev">◀</button><div id="sTxt"><b>Build along</b> Step through the build from the closed box to the badge.</div><button id="sNext">▶</button><button id="sAll">All</button>';
     function showStep() { var t = document.getElementById('sTxt'); if (!state.step) { t.innerHTML = '<b>Build along</b> Press ▶ to step through the build, part by part.'; } else { var s = STEPS[state.step - 1] || ['', '']; t.innerHTML = '<b>Step ' + state.step + ' · ' + s[0] + '</b> ' + s[1]; } apply(); }
     document.getElementById('sPrev').onclick = function () { state.step = state.step <= first ? 0 : state.step - 1; showStep(); };
