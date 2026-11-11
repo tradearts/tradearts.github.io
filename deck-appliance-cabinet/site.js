@@ -187,7 +187,7 @@
     m4.set(R[0][0], R[0][1], R[0][2], t[0] - W / 2, R[2][0], R[2][1], R[2][2], t[2], -R[1][0], -R[1][1], -R[1][2], -(t[1] - D / 2), 0, 0, 0, 1);
     g.applyMatrix4(m4); g.computeVertexNormals(); return new THREE.Mesh(g, MAT.asa);
   }
-  all.forEach(function (a) { if (a.p.kind === 'stile') leafGroups[a.p.leaf].attach(a.o); });
+  all.forEach(function (a) { if (a.p.leaf && leafGroups[a.p.leaf]) leafGroups[a.p.leaf].attach(a.o); });
 
   /* ---------- screw heads ---------- */
   (function () { var sg = G('screws'), geo = new THREE.CylinderGeometry(4.6, 4.6, 1.2, 16), mat = MAT.steel;
@@ -258,7 +258,7 @@
     if (p.group === 'asa' && p.name.indexOf('pad') > 0) return 4;
     if (p.kind === 'track' || ['C4', 'C1', 'C2', 'C3'].indexOf(p.cnc) >= 0) return 5;
     if (p.cnc === 'C5' || p.cnc === 'C6' || p.name.indexOf('louvre') >= 0 || p.name.indexOf('Joint angle') === 0) return 6;
-    if (p.name.indexOf('Hold-down') === 0) return 8; if (p.kind === 'leaf' || p.kind === 'stile') return 9;
+    if (p.name.indexOf('Hold-down') === 0) return 8; if (p.kind === 'leaf' || p.kind === 'stile' || p.name.indexOf('shoe') >= 0) return 9;
     if (p.name.indexOf('floor guide') >= 0) return 10; if (p.name.indexOf('grommet') >= 0) return 11; return 5; }
   function apply() {
     targets();
