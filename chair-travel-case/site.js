@@ -139,7 +139,7 @@
   }
   function ballCorner(p) {
     var b = p.b, grp = new THREE.Group(), s = [outerSide(b, 0), outerSide(b, 1), outerSide(b, 2)];
-    var c = [s[0] > 0 ? HX : -HX, s[1] > 0 ? ED : 0, s[2] > 0 ? ZT : Z0], L = 40, t = 1.5;
+    var c = [0, 1, 2].map(function (k) { return s[k] > 0 ? b[k + 3] - 5 : b[k] + 5; }), L = 40, t = 1.5;   // sits on the part's own corner, not the case's
     [0, 1, 2].forEach(function (a) { var lo = c.slice(), hi = c.slice(); [0, 1, 2].forEach(function (k) { if (k === a) { lo[k] = c[k]; hi[k] = c[k] + s[k] * t; } else { lo[k] = c[k]; hi[k] = c[k] - s[k] * L; } });
       grp.add(boxMesh(lo[0], lo[1], lo[2], hi[0], hi[1], hi[2], MAT.chrome)); });
     var ball = new THREE.Mesh(new THREE.SphereGeometry(15, 24, 16), MAT.chrome); ball.position.copy(V(c[0] - s[0] * 4, c[1] - s[1] * 4, c[2] - s[2] * 4)); ball.castShadow = true; grp.add(ball);
