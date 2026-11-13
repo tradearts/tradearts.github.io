@@ -1,5 +1,65 @@
 [
  {
+  "file": "cab_04_cable_grommet.stl",
+  "per_set": 2,
+  "sets": 1,
+  "total": 2,
+  "size": [
+   82.0,
+   82.0,
+   20.0
+  ],
+  "bed_mm2": 3425,
+  "overhang_mm2": 0,
+  "bridge_mm2": 0,
+  "vol_cm3": 26.1
+ },
+ {
+  "file": "cab_05_edge_pad.stl",
+  "per_set": 13,
+  "sets": 1,
+  "total": 13,
+  "size": [
+   80.0,
+   24.0,
+   4.0
+  ],
+  "bed_mm2": 1902,
+  "overhang_mm2": 0,
+  "bridge_mm2": 0,
+  "vol_cm3": 7.6
+ },
+ {
+  "file": "cab_06_rear_louvre.stl",
+  "per_set": 12,
+  "sets": 1,
+  "total": 12,
+  "size": [
+   230.0,
+   140.0,
+   30.0
+  ],
+  "bed_mm2": 12861,
+  "overhang_mm2": 0,
+  "bridge_mm2": 0,
+  "vol_cm3": 177.6
+ },
+ {
+  "file": "cab_07_door_top_shoe.stl",
+  "per_set": 4,
+  "sets": 1,
+  "total": 4,
+  "size": [
+   80.0,
+   21.5,
+   41.0
+  ],
+  "bed_mm2": 1636,
+  "overhang_mm2": 134,
+  "bridge_mm2": 94,
+  "vol_cm3": 21.0
+ },
+ {
   "file": "case_01_handle.stl",
   "per_set": 6,
   "sets": 8,
@@ -135,63 +195,18 @@
   "vol_cm3": 469.5
  },
  {
-  "file": "cab_04_cable_grommet.stl",
-  "per_set": 2,
-  "sets": 1,
-  "total": 2,
+  "file": "case_10_door_landing_pad.stl",
+  "per_set": 1,
+  "sets": 8,
+  "total": 8,
   "size": [
-   82.0,
-   82.0,
-   20.0
+   100.0,
+   28.0,
+   6.0
   ],
-  "bed_mm2": 3425,
+  "bed_mm2": 2700,
   "overhang_mm2": 0,
   "bridge_mm2": 0,
-  "vol_cm3": 26.1
- },
- {
-  "file": "cab_05_edge_pad.stl",
-  "per_set": 13,
-  "sets": 1,
-  "total": 13,
-  "size": [
-   80.0,
-   24.0,
-   4.0
-  ],
-  "bed_mm2": 1902,
-  "overhang_mm2": 0,
-  "bridge_mm2": 0,
-  "vol_cm3": 7.6
- },
- {
-  "file": "cab_06_rear_louvre.stl",
-  "per_set": 12,
-  "sets": 1,
-  "total": 12,
-  "size": [
-   230.0,
-   140.0,
-   30.0
-  ],
-  "bed_mm2": 12861,
-  "overhang_mm2": 0,
-  "bridge_mm2": 0,
-  "vol_cm3": 177.6
- },
- {
-  "file": "cab_07_door_top_shoe.stl",
-  "per_set": 4,
-  "sets": 1,
-  "total": 4,
-  "size": [
-   80.0,
-   21.5,
-   41.0
-  ],
-  "bed_mm2": 1636,
-  "overhang_mm2": 134,
-  "bridge_mm2": 94,
-  "vol_cm3": 21.0
+  "vol_cm3": 16.5
  }
 ]

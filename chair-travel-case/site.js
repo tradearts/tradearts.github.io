@@ -174,7 +174,7 @@
     grp.add(rect(L + 6, L + 34, 54, 1.0, 4.0, MAT.chrome)); grp.add(rect(L + 15, L + 25, 10, 1.0, 7.0, MAT.chrome));
     // lid half: dish with the catch (lifts off with the lid)
     lidG.add(rect(L - 52, L - 0.6, 110, 0, 1.4, MAT.chrome)); lidG.add(rect(L - 39, L - 0.6, 80, 0.2, 1.6, MAT.dark)); lidG.add(rect(L - 20, L - 4, 22, 1.0, 4.5, MAT.chrome));
-    var ud = Object.assign({}, p, { name: p.name + ' (catch half, on the lid)' });
+    var ud = Object.assign({}, p, { name: p.name + ' (catch half, on the door)' });
     lidG.traverse(function (m) { if (m.isMesh) { m.userData = ud; pickables.push(m); } }); lidG.userData = ud; G('door').add(lidG); all.push(lidG);
     return grp;
   }
@@ -246,7 +246,7 @@
       var geo = new THREE.CylinderGeometry(5.5, 6, 2.2, 14), im = new THREE.InstancedMesh(geo, MAT.alu, list.length), d = new THREE.Object3D();
       list.forEach(function (r, i) { var n = [r[3], r[4], r[5]]; d.position.copy(V(r[0] + n[0] * 2.3, r[1] + n[1] * 2.3, r[2] + n[2] * 2.3));
         d.rotation.set(0, 0, 0); if (n[0]) d.rotation.z = Math.PI / 2; if (n[1]) d.rotation.x = Math.PI / 2; d.updateMatrix(); im.setMatrixAt(i, d.matrix); });
-      im.castShadow = true; im.userData = { name: 'Rivets (' + (gname === 'door' ? 'lid' : 'body') + ')', kind: 'rivet', step: 7, desc: M.rivets.length + ' extrusion fixings in all at 150 mm pitch, both legs, 40 mm from each end: 4.8 x 19 aluminium rivets with backing washers into the 9 mm ply, 8g x 16 wafer screws where the angle lands on the 17 mm base. Latches, handles and corners take more.', supplier: 'Titan AV' };
+      im.castShadow = true; im.userData = { name: 'Rivets (' + (gname === 'door' ? 'door' : 'body') + ')', kind: 'rivet', step: 7, desc: M.rivets.length + ' extrusion fixings in all at 150 mm pitch, both legs, 40 mm from each end: 4.8 x 19 aluminium rivets with backing washers into the 9 mm ply, 8g x 16 wafer screws where the angle lands on the 17 mm base. Latches, handles and corners take more.', supplier: 'Titan AV' };
       G(gname).add(im); pickables.push(im); all.push(im);
     });
   })();
@@ -293,7 +293,7 @@
     dim([-HX, 0, Z0 + 700], [HX, 0, Z0 + 700], new THREE.Vector3(0, 0, 120), P.EW + ' wide');
     dim([HX, 0, Z0 + 700], [HX, ED, Z0 + 700], new THREE.Vector3(120, 0, 0), ED + ' deep');
     dim([HX, 0, 0], [HX, 0, ZT], new THREE.Vector3(140, 0, 140), P.overall_H + ' high');
-    dim([-HX, 0, Z0 + 300], [-HX, P.LID, Z0 + 300], new THREE.Vector3(-150, 0, 0), 'lid ' + P.LID);
+    dim([-HX, 0, Z0 + 300], [-HX, P.LID, Z0 + 300], new THREE.Vector3(-150, 0, 0), 'door ' + P.LID);
   })();
 
   /* ---------- state: toggles, x-ray, build steps ---------- */
@@ -305,7 +305,7 @@
   var hiMat = new Map();
   function highlight(mat) { if (Array.isArray(mat)) return mat.map(highlight); if (!hiMat.has(mat)) { var m = mat.clone(); m.emissive = new THREE.Color(0xff7a00); m.emissiveIntensity = 0.55; hiMat.set(mat, m); } return hiMat.get(mat); }
   function apply() {
-    G('door').visible = state.door; G('door').position.set(state.lidOut ? -260 : 0, 0, state.lidOut ? 950 : 0); G('dims').visible = state.dims; G('lining').visible = state.lining; G('restraint').visible = state.restraint; chairG.visible = state.chair; personG.visible = state.person && !(state.lidOut && state.door);
+    G('door').visible = state.door; (function () { var g = G('door'), a = state.lidOut ? -(P.OPEN_MAX || 95) * Math.PI / 180 * (P.HINGE_SX < 0 ? 1 : -1) : 0, px = P.HINGE_AX ? P.HINGE_AX[0] : -HX, pz = -(P.HINGE_AX ? P.HINGE_AX[1] : P.LID), c = Math.cos(a), s = Math.sin(a); g.rotation.y = a; g.position.set(px - (px * c + pz * s), 0, pz - (-px * s + pz * c)); })(); G('dims').visible = state.dims; G('lining').visible = state.lining; G('restraint').visible = state.restraint; chairG.visible = state.chair; personG.visible = state.person && !(state.lidOut && state.door);
     forMeshes(function (c, o) {
       var p = c.userData || {}, st = p.step || (o.userData && o.userData.step) || 0, m = baseMats.get(c);
       c.visible = true;
@@ -319,7 +319,7 @@
   /* ---------- UI ---------- */
   var tools = document.getElementById('tools');
   function btn(label, on, fn) { var b = document.createElement('button'); b.textContent = label; if (on) b.className = 'on'; b.onclick = function () { fn(b); }; tools.appendChild(b); return b; }
-  [['door', 'Lid'], ['lidOut', 'Lid off'], ['lining', 'Foam'], ['restraint', 'Restraints'], ['chair', 'Chair'], ['person', 'Person'], ['dims', 'Sizes'], ['xray', 'X-ray']].forEach(function (t) {
+  [['door', 'Door'], ['lidOut', 'Door open'], ['lining', 'Foam'], ['restraint', 'Restraints'], ['chair', 'Chair'], ['person', 'Person'], ['dims', 'Sizes'], ['xray', 'X-ray']].forEach(function (t) {
     btn(t[1], state[t[0]], function (b) { state[t[0]] = !state[t[0]]; b.className = state[t[0]] ? 'on' : ''; apply(); });
   });
   var VIEWS = { '3/4': [[2700, 1650, 2600], [0, 880, -504]], Front: [[0, 950, 3900], [0, 900, -504]], Side: [[3900, 950, -504], [0, 900, -504]], Back: [[-1800, 1500, -3600], [0, 900, -504]], Top: [[0, 4700, -505], [0, 0, -504]], Under: [[1600, -900, 1400], [0, 150, -504]], Detail: [[900, 1900, 900], [420, 1650, -60]] };
