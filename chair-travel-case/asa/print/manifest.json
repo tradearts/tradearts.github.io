@@ -1,0 +1,197 @@
+[
+ {
+  "file": "case_01_handle.stl",
+  "per_set": 6,
+  "sets": 8,
+  "total": 48,
+  "size": [
+   160.0,
+   108.0,
+   60.0
+  ],
+  "bed_mm2": 11216,
+  "overhang_mm2": 2928,
+  "bridge_mm2": 2928,
+  "vol_cm3": 140.8
+ },
+ {
+  "file": "case_02_foot_rail_front.stl",
+  "per_set": 2,
+  "sets": 8,
+  "total": 16,
+  "size": [
+   235.0,
+   16.0,
+   52.0
+  ],
+  "bed_mm2": 3560,
+  "overhang_mm2": 0,
+  "bridge_mm2": 0,
+  "vol_cm3": 178.0
+ },
+ {
+  "file": "case_03_foot_rail_rear.stl",
+  "per_set": 2,
+  "sets": 8,
+  "total": 16,
+  "size": [
+   215.0,
+   16.0,
+   52.0
+  ],
+  "bed_mm2": 3240,
+  "overhang_mm2": 0,
+  "bridge_mm2": 0,
+  "vol_cm3": 161.5
+ },
+ {
+  "file": "case_04_rib_bracket.stl",
+  "per_set": 2,
+  "sets": 8,
+  "total": 16,
+  "size": [
+   100.0,
+   69.0,
+   44.0
+  ],
+  "bed_mm2": 6805,
+  "overhang_mm2": 0,
+  "bridge_mm2": 0,
+  "vol_cm3": 123.5
+ },
+ {
+  "file": "case_05_bar_bracket.stl",
+  "per_set": 2,
+  "sets": 8,
+  "total": 16,
+  "size": [
+   44.0,
+   136.0,
+   34.0
+  ],
+  "bed_mm2": 4616,
+  "overhang_mm2": 99,
+  "bridge_mm2": 20,
+  "vol_cm3": 97.7
+ },
+ {
+  "file": "case_06_bar_keeper.stl",
+  "per_set": 2,
+  "sets": 8,
+  "total": 16,
+  "size": [
+   70.0,
+   18.0,
+   18.0
+  ],
+  "bed_mm2": 1165,
+  "overhang_mm2": 0,
+  "bridge_mm2": 0,
+  "vol_cm3": 10.0
+ },
+ {
+  "file": "case_07_label_holder.stl",
+  "per_set": 1,
+  "sets": 8,
+  "total": 8,
+  "size": [
+   160.0,
+   115.0,
+   5.5
+  ],
+  "bed_mm2": 18318,
+  "overhang_mm2": 0,
+  "bridge_mm2": 0,
+  "vol_cm3": 60.9
+ },
+ {
+  "file": "case_08_rivet_drill_guide.stl",
+  "per_set": 1,
+  "sets": 1,
+  "total": 1,
+  "size": [
+   240.0,
+   30.0,
+   14.0
+  ],
+  "bed_mm2": 7159,
+  "overhang_mm2": 0,
+  "bridge_mm2": 0,
+  "vol_cm3": 39.2
+ },
+ {
+  "file": "case_09_front_bumper.stl",
+  "per_set": 2,
+  "sets": 8,
+  "total": 16,
+  "size": [
+   110.0,
+   80.0,
+   88.0
+  ],
+  "bed_mm2": 8705,
+  "overhang_mm2": 0,
+  "bridge_mm2": 0,
+  "vol_cm3": 469.5
+ },
+ {
+  "file": "cab_04_cable_grommet.stl",
+  "per_set": 2,
+  "sets": 1,
+  "total": 2,
+  "size": [
+   82.0,
+   82.0,
+   20.0
+  ],
+  "bed_mm2": 3425,
+  "overhang_mm2": 0,
+  "bridge_mm2": 0,
+  "vol_cm3": 26.1
+ },
+ {
+  "file": "cab_05_edge_pad.stl",
+  "per_set": 13,
+  "sets": 1,
+  "total": 13,
+  "size": [
+   80.0,
+   24.0,
+   4.0
+  ],
+  "bed_mm2": 1902,
+  "overhang_mm2": 0,
+  "bridge_mm2": 0,
+  "vol_cm3": 7.6
+ },
+ {
+  "file": "cab_06_rear_louvre.stl",
+  "per_set": 12,
+  "sets": 1,
+  "total": 12,
+  "size": [
+   230.0,
+   140.0,
+   30.0
+  ],
+  "bed_mm2": 12861,
+  "overhang_mm2": 0,
+  "bridge_mm2": 0,
+  "vol_cm3": 177.6
+ },
+ {
+  "file": "cab_07_door_top_shoe.stl",
+  "per_set": 4,
+  "sets": 1,
+  "total": 4,
+  "size": [
+   80.0,
+   21.5,
+   41.0
+  ],
+  "bed_mm2": 1636,
+  "overhang_mm2": 134,
+  "bridge_mm2": 94,
+  "vol_cm3": 21.0
+ }
+]
