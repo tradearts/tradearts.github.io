@@ -898,6 +898,13 @@ def normalize_page(path: Path) -> bool:
         text = text.replace("splide@main", f"splide@{SPLIDE_COMMIT}")
         # Self-host the pinned carousel build instead of loading it from a CDN.
         text = text.replace(f"https://cdn.jsdelivr.net/gh/daniil-yatsenko/splide@{SPLIDE_COMMIT}/", "/assets/vendor/splide/")
+        # Never let a missing carousel build stop the rest of the page's scripts.
+        text = text.replace(
+            "document.addEventListener( 'DOMContentLoaded', function() {\n    var splide = new Splide(",
+            "document.addEventListener( 'DOMContentLoaded', function() {\n"
+            "    if (!window.Splide || !document.querySelector('.splide')) return;\n"
+            "    var splide = new Splide(",
+        )
     text = normalize_links(text)
     text = normalize_external_targets(text)
     if canonical:

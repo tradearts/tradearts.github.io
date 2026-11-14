@@ -67,6 +67,10 @@ class SafeFixTests(unittest.TestCase):
             self.assertNotIn("splide@main", source)
             self.assertNotIn("cdn.jsdelivr.net/gh/daniil-yatsenko/splide", source)
             self.assertIn("/assets/vendor/splide/splide.min.js", source)
+            # The article hero carousel must not throw if the build fails to load.
+            self.assertIn("if (!window.Splide || !document.querySelector('.splide')) return;", source)
+            self.assertEqual(source.count("new Splide("), 1, path.as_posix())
+        self.assertTrue((ROOT / "assets/vendor/splide/splide.min.js").is_file())
         self.assertIn(commit, (ROOT / "assets/vendor/splide/SOURCE.txt").read_text(encoding="utf-8"))
 
     def test_shop_pages_do_not_claim_ineffective_cache_headers(self) -> None:

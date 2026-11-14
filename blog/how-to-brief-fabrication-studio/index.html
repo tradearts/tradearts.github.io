@@ -19,6 +19,7 @@
 <!-- Splide setup -->
 <script>
   document.addEventListener( 'DOMContentLoaded', function() {
+    if (!window.Splide || !document.querySelector('.splide')) return;
     var splide = new Splide( '.splide', {
     	gap: "1rem",
     } );
