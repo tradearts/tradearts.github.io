@@ -72,7 +72,8 @@
   "bed_mm2": 11216,
   "overhang_mm2": 2928,
   "bridge_mm2": 2928,
-  "vol_cm3": 140.8
+  "vol_cm3": 166.4,
+  "supports": "none: print flange-down, bridges only"
  },
  {
   "file": "case_02_foot_rail_front.stl",
