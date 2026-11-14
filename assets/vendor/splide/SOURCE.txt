@@ -1,0 +1,2 @@
+Splide carousel, vendored from https://github.com/daniil-yatsenko/splide
+at commit 00901b9ce10eaecfd8279350da06e5a5a246c1ac (previously loaded from jsDelivr).

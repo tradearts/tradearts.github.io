@@ -7,6 +7,7 @@ ranking claims. Organization data is shared with the existing normaliser.
 from __future__ import annotations
 
 import copy
+import html
 import json
 import re
 from datetime import datetime
@@ -103,6 +104,34 @@ def normalize_article_credit(source: str) -> str:
     return source
 
 
+FAQ_ROUTES = {"/info/", "/services/"}
+
+
+def _plain(fragment: str) -> str:
+    text = re.sub(r"<(?:svg|style|script)\b.*?</(?:svg|style|script)>", " ", fragment, flags=re.I | re.S)
+    text = re.sub(r"<[^>]+>", " ", text)
+    text = " ".join(html.unescape(text).split())
+    return re.sub(r"\s+([,.;:!?])", r"\1", text)
+
+
+def faq_pairs(source: str) -> list[tuple[str, str]]:
+    """Question headings already visible on the page and the answer text that
+    follows each one. Never adds questions or answers that readers can't see."""
+    pairs = []
+    headings = list(re.finditer(r"<h3\b[^>]*>(.*?)</h3>", source, re.I | re.S))
+    for index, match in enumerate(headings):
+        question = _plain(match.group(1))
+        if not question.endswith("?"):
+            continue
+        end = headings[index + 1].start() if index + 1 < len(headings) else len(source)
+        tail = source[match.end():end]
+        tail = re.split(r"<h2\b|</section>", tail, maxsplit=1, flags=re.I)[0]
+        answer = _plain(tail)
+        if answer:
+            pairs.append((question, answer))
+    return pairs
+
+
 def build_graph(source: str, canonical: str, base_graph: dict) -> dict | None:
     page = SearchPage(source)
     if "noindex" in page.metas.get("robots", "").lower():
@@ -169,6 +198,20 @@ def build_graph(source: str, canonical: str, base_graph: dict) -> dict | None:
         if image:
             article["image"] = image
         graph["@graph"].append(article)
+
+    pairs = faq_pairs(source) if route in FAQ_ROUTES else []
+    if pairs:
+        faq_id = canonical + "#faq"
+        webpage["hasPart"] = {"@id": faq_id}
+        graph["@graph"].append({
+            "@type": "FAQPage", "@id": faq_id, "url": canonical,
+            "isPartOf": {"@id": webpage["@id"]}, "inLanguage": "en-AU",
+            "mainEntity": [
+                {"@type": "Question", "name": q,
+                 "acceptedAnswer": {"@type": "Answer", "text": a}}
+                for q, a in pairs
+            ],
+        })
     return graph
 
 
