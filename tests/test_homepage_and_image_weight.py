@@ -79,6 +79,26 @@ class ImageWeightTests(unittest.TestCase):
                     offenders.append(f"{page.relative_to(ROOT)} -> {src} ({file.stat().st_size // 1024} KB)")
         self.assertEqual(offenders, [], "\n".join(offenders))
 
+    def test_responsive_candidates_stay_under_the_weight_limit(self) -> None:
+        # Right-sized for its 2x display width and already efficiently encoded;
+        # recompressing it further would only shave a few per cent.
+        allowed = {"/assets/lego-brick-brigade/hero-1152.webp"}
+        offenders = []
+        for page in public_pages():
+            relative = page.relative_to(ROOT)
+            if relative.parts[0] in {"chair-travel-case", "deck-appliance-cabinet"}:
+                continue
+            source = page.read_text(encoding="utf-8")
+            for srcset in re.findall(r'\ssrcset="([^"]+)"', source):
+                for candidate in srcset.split(","):
+                    url = candidate.strip().split(" ")[0].split("?")[0]
+                    file = ROOT / url.lstrip("/")
+                    if url in allowed or not url.startswith("/") or not file.exists():
+                        continue
+                    if file.stat().st_size > SRC_ONLY_IMAGE_LIMIT:
+                        offenders.append(f"{relative} -> {url} ({file.stat().st_size // 1024} KB)")
+        self.assertEqual(sorted(set(offenders)), [])
+
 
 if __name__ == "__main__":
     unittest.main()
