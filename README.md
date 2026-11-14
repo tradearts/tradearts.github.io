@@ -15,6 +15,9 @@ dates for an old article. Concept projects must remain labelled as concepts.
 `robots.txt` allows search crawlers, including OAI-SearchBot. AI-search access and
 model-training controls are separate decisions; don't change one as a side
 effect of the other. No special AI text file or schema guarantees citations.
+`llms.txt` is a short hand-written summary built only from copy already on
+the site; keep its links, address and contact details in step with the pages
+(`tests/test_llms_txt.py` checks the links against the sitemap).
 
 The sitemap is regenerated from indexable pages. Update a page's recorded
 `lastmod` only for a meaningful content/structured-data change; the normaliser
