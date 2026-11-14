@@ -43,19 +43,20 @@
   transform: none !important;
 }
 
+/* Docked bottom-left on wider screens so the hero and first project row stay
+   visible; the compact full-width bar below 768px is unchanged. */
 .consent-banner {
   position: fixed;
   z-index: 99998;
-  right: 1rem;
+  right: auto;
   bottom: 1rem;
   left: 1rem;
-  display: flex;
-  gap: 1.5rem;
-  align-items: flex-end;
-  justify-content: space-between;
-  max-width: 72rem;
-  margin: 0 auto;
-  padding: 1.25rem;
+  display: block;
+  box-sizing: border-box;
+  width: calc(100% - 2rem);
+  max-width: 26.25rem;
+  margin: 0;
+  padding: 1.1rem 1.15rem;
   color: #fff;
   background: #161514;
   border: 1px solid rgba(255, 255, 255, 0.3);
@@ -64,7 +65,7 @@
 }
 
 .consent-banner__copy {
-  max-width: 50rem;
+  max-width: none;
 }
 
 .consent-banner h2 {
@@ -74,8 +75,8 @@
 
 .consent-banner p {
   margin: 0;
-  font-size: 0.95rem;
-  line-height: 1.5;
+  font-size: 0.875rem;
+  line-height: 1.45;
 }
 
 .consent-banner a {
@@ -84,9 +85,14 @@
 }
 
 .consent-banner__actions {
-  display: flex;
-  flex: none;
-  gap: 0.65rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+}
+
+.consent-banner__actions button {
+  width: 100%;
 }
 
 .consent-banner button,

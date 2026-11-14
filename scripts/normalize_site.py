@@ -862,7 +862,7 @@ def normalize_page(path: Path) -> bool:
 
     text = re.sub(r'\s*<link\b(?=[^>]*\bhref=["\']/assets/fonts/outfit-latin-700-normal\.woff2["\'])[^>]*>', "", text, flags=re.I)
     text = insert_before_head(text, '<link rel="preload" href="/assets/fonts/outfit-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>')
-    text = insert_before_head(text, '<link rel="stylesheet" href="/assets/site-fixes.css?v=17">')
+    text = insert_before_head(text, '<link rel="stylesheet" href="/assets/site-fixes.css?v=18">')
     if is_home:
         text = insert_before_head(text, '<link rel="stylesheet" href="/assets/logo-carousel.css?v=2">')
     if had_media:

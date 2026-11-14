@@ -60,6 +60,24 @@ class AuditImprovementTests(unittest.TestCase):
         for weight in ("600", "700"):
             self.assertTrue((ROOT / f"assets/fonts/outfit-latin-{weight}-normal.woff2").is_file())
 
+    def test_consent_banner_docks_bottom_left_on_desktop_and_stays_compact_on_mobile(self) -> None:
+        css = (ROOT / "assets/site-fixes.css").read_text(encoding="utf-8")
+        desktop = re.search(r"^\.consent-banner \{([^}]+)\}", css, re.M).group(1)
+        self.assertRegex(desktop, r"position:\s*fixed")
+        self.assertRegex(desktop, r"right:\s*auto")
+        self.assertRegex(desktop, r"left:\s*1rem")
+        self.assertRegex(desktop, r"bottom:\s*1rem")
+        width = float(re.search(r"max-width:\s*([\d.]+)rem", desktop).group(1))
+        self.assertLessEqual(width * 16, 430)
+        mobile = re.search(r"@media \(max-width: 767px\) \{\s*\.consent-banner \{([^}]+)\}", css).group(1)
+        self.assertRegex(mobile, r"left:\s*\.5rem")
+        self.assertRegex(mobile, r"right:\s*\.5rem")
+        self.assertRegex(mobile, r"padding:\s*\.85rem")
+        consent = (ROOT / "assets/consent.js").read_text(encoding="utf-8")
+        self.assertIn('data-choice="denied"', consent)
+        self.assertIn('data-choice="granted"', consent)
+        self.assertIn("keepFocusInside", consent)
+
     def test_footer_phone_is_tappable(self) -> None:
         source = (ROOT / "index.html").read_text(encoding="utf-8")
         self.assertIn('href="tel:+61431802800"', source)
