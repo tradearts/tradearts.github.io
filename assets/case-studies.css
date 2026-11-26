@@ -53,6 +53,10 @@
 .ta-project-detail #main video,
 .ta-project-detail #main iframe { border-radius: var(--_ui-styles---radius--medium, 12px); }
 .case-figure video { display: block; width: 100%; height: auto; background: #efefef; }
+.case-film [hidden] { display: none; }
+.case-film__play { display: block; position: relative; width: 100%; padding: 0; border: 0; background: transparent; cursor: pointer; border-radius: var(--_ui-styles---radius--medium, 12px); }
+.case-film__label { position: absolute; bottom: clamp(.6rem, 2vw, 1.25rem); left: clamp(.6rem, 2vw, 1.25rem); display: inline-flex; align-items: center; gap: .6em; background: #161514; color: #fff; border-radius: 2rem; padding: .52em .95em; font-size: .875rem; line-height: 1.4; font-weight: 600; }
+.case-film__play:focus-visible, .case-film video:focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }
 .ta-project-detail .info_about-media-wrapper.case-media-still { height: auto; max-height: none; aspect-ratio: auto; }
 .ta-project-detail .case-media-still > img { display: block; width: 100%; height: auto; object-fit: contain; }
 .ta-project-detail .case-gallery { align-items: start; }
@@ -162,6 +166,10 @@
 .case-photo-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 1.5rem; }
 .case-process-stage--compact .case-photo-pair { max-width: 58rem; }
 .case-photo-pair img { height: auto; max-height: none; object-fit: contain; }
+@media (min-width: 768px) {
+  .case-photo-pair--three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+.case-process-stage[id] { scroll-margin-top: 6rem; }
 .ta-service-detail .service_content_image.is-technical-drawing { display: block; width: 100%; height: auto; max-height: none; aspect-ratio: 71 / 52; object-fit: contain; }
 .ta-service-detail .info_about_image-wrapper.is-technical-drawing-frame { height: auto; max-height: none; aspect-ratio: auto; }
 @media (max-width: 767px) {
