@@ -47,6 +47,7 @@
 .case-story p { margin: 0 0 .75rem; max-width: 60ch; }
 .case-story ul { padding-left: 1.2rem; margin: 0; }
 .case-figure { margin: 0; width: 100%; min-width: 0; }
+.case-photo-crop { display: block; width: 100%; height: auto; overflow: hidden; border-radius: var(--_ui-styles---radius--medium, 12px); }
 .case-figure img { display: block; width: 100%; height: auto; border-radius: var(--_ui-styles---radius--medium, 12px); }
 /* One media treatment for every project, including native videos and embeds. */
 .ta-project-detail #main img,
