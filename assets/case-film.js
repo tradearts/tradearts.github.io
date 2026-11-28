@@ -19,13 +19,21 @@ for (const film of document.querySelectorAll('.case-film')) {
     status.hidden = true;
     button.hidden = true;
     video.hidden = false;
-    if (video.error || video.networkState === video.NETWORK_NO_SOURCE) video.load();
-    if (cue) {
-      // A single-frame-accurate seek in the original MP4; never change its src.
-      video.currentTime = at;
-      video.scrollIntoView({block: 'center', behavior: 'instant'});
+    const cold = video.readyState === 0 || video.error || video.networkState === video.NETWORK_NO_SOURCE;
+    if (cold && cue) {
+      // Start the first media request at the native fragment. Some browsers
+      // otherwise present frame zero before applying a pre-metadata seek.
+      video.src = cue.href;
+      video.load();
     } else {
-      video.currentTime = 0;
+      if (cold && (video.error || video.networkState === video.NETWORK_NO_SOURCE)) {
+        video.removeAttribute('src');
+        video.load();
+      }
+      video.currentTime = at;
+    }
+    if (cue) {
+      video.scrollIntoView({block: 'center', behavior: 'instant'});
     }
     const fallback = status.querySelector('a');
     if (fallback) fallback.href = cue ? cue.href : video.querySelector('source').src;
