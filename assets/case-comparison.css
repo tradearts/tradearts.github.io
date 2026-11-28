@@ -1,0 +1,26 @@
+/* A side-by-side screen/workshop comparison, using the sources' actual proportions. */
+.ta-project-detail .info_about_content.case-lead-intro {
+  display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr);
+  align-items: end; gap: 1rem 3rem; margin-bottom: clamp(1.5rem, 3vw, 3rem);
+}
+.ta-project-detail .case-lead-intro .info_about_content-left.work {
+  min-height: 0; height: auto; max-height: none; width: 100%; max-width: none;
+  gap: .6rem; justify-content: flex-start;
+}
+.ta-project-detail .case-lead-intro .works-subheading { padding: 0; margin: 0; }
+.ta-project-detail .case-lead-intro .hero-text-box { width: 100%; max-width: 50ch; }
+.case-pair-label { display: block; margin: 0 0 .55rem; font-size: .9rem; font-weight: 600; }
+.case-jumps { display: flex; align-items: baseline; flex-wrap: wrap; gap: .25rem 1.25rem; border-block: 1px solid currentColor; padding: .75rem 0; margin: .5rem 0 2rem; }
+.case-jumps span { font-weight: 600; }
+.case-cue-link { display: block; width: fit-content; max-width: 100%; min-height: 44px; padding-block: .5rem; }
+.case-jumps a { color: inherit; text-decoration: underline; text-underline-offset: .2em; padding: .25rem 0; }
+.case-jumps + [id] { scroll-margin-top: 7rem; }
+@media (min-width: 768px) {
+  .case-photo-pair--film { grid-template-columns: minmax(0, 3.19fr) minmax(0, 1fr); }
+  .case-photo-pair--paint { grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr); }
+  .case-photo-pair--finish { grid-template-columns: minmax(0, 2.25fr) minmax(0, 1fr); }
+}
+@media (max-width: 767px) {
+  .ta-project-detail .info_about_content.case-lead-intro { grid-template-columns: 1fr; }
+  .case-photo-pair--film { gap: .5rem; }
+}
